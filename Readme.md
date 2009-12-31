@@ -1,9 +1,19 @@
 
-= Kiwi
+# Kiwi
 
-Description
+  JavaScript package management system for node.js
 
-== Features
+## Testing
+  
+Update submodules:
+
+  $ git submodule update -i
+  
+Run tests with vendorized JSpec submodule:
+  
+  $ make test
+
+## Features
 
   * Seed server
   * Packaged as Kiwi "seeds"
@@ -14,11 +24,11 @@ Description
   * Listing / searching / installing / uninstalling / cleaning
   * opening / locating (which)
 
-== License 
+## License 
 
 (The MIT License)
 
-Copyright (c) 2009 Your Name <Your Email>
+Copyright (c) 2009 TJ Holowaychuk &lt;tj@vision-media.ca&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

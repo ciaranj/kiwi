@@ -1,8 +1,8 @@
 
-describe 'YourLib'
-  describe '.someMethod()'
-    it 'should do something'
-      true.should.be true
+describe 'Kiwi'
+  describe '.version'
+    it 'should be a triplet'
+      Kiwi.version.should.match(/^\d+\.\d+\.\d+$/)
     end
   end
 end
