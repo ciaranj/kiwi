@@ -13,17 +13,6 @@ Run tests with vendorized JSpec submodule:
   
   $ make test
 
-## Features
-
-  * Seed server
-  * Packaged as Kiwi "seeds"
-  * Dependency management & resolution
-  * Executable 'kiwi'
-  * Extendable commands
-  * Kiwi 'trees' (environments)
-  * Listing / searching / installing / uninstalling / cleaning
-  * opening / locating (which)
-
 ## License 
 
 (The MIT License)
