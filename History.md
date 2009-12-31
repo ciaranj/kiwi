@@ -1,4 +1,5 @@
 
-=== 0.0.1 / YYYY-MM-DD
+0.0.1 / YYYY-MM-DD
+==================
 
-* Initial release
+  * Initial release
