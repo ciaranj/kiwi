@@ -31,7 +31,9 @@ EOF
 #
 
 install() {
-  if [ $VERBOSE ]; then echo installing $1; fi
+  if [ $VERBOSE ]; then echo ... installing $1; fi
+  local yaml= ruby -r yaml -e "puts YAML.load_file('seeds.json')"
+  echo $yaml
 }
 
 #

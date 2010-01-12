@@ -31,7 +31,7 @@ EOF
 #
 
 install() {
-  if [ $VERBOSE ]; then echo installing $1; fi
+  if [ $VERBOSE ]; then echo ... installing $1; fi
 }
 
 #
