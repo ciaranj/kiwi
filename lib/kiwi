@@ -29,7 +29,7 @@ VERBOSE=
 while getopts "hvVd:" option
   do
     case $option in
-      t)
+      d)
         DEBUG=$OPTARG
         ;;
       v)

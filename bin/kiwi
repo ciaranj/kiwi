@@ -2,6 +2,10 @@
 
 VERSION="0.0.1"
 
+#
+# Output usage
+#
+
 usage() {
 cat << EOF
 Usage:
@@ -16,13 +20,18 @@ Options:
 EOF
 }
 
+#
+# Parse options
+#
+
 DEBUG=
 VERBOSE=
 while getopts "hvVd:" option
   do
     case $option in
-      t)
+      d)
         DEBUG=$OPTARG
+        echo $DEBUG
         ;;
       v)
         VERBOSE=1
