@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+VERSION="0.0.1"
+
+usage() {
+cat << EOF
+Usage:
+  
+  $0 [options] [arguments]
+
+Options:
+  -v     Verbose
+  -d     Debug level
+  -h     Help information
+EOF
+}
+
+DEBUG=
+VERBOSE=
+while getopts "hvd:" option
+  do
+    case $option in
+      t)
+        DEBUG=$OPTARG
+        ;;
+      v)
+        VERBOSE=1
+        ;;
+      \?|h)
+        usage
+        exit
+        ;;
+  esac
+done
