@@ -5,7 +5,7 @@
 #
 
 VERSION="0.0.1"
-VERBOSE=0
+VERBOSE=
 
 #
 # Output usage
@@ -25,7 +25,17 @@ EOF
 }
 
 #
-# Parse options
+# Install a seed.
+# 
+# <name>
+#
+
+install() {
+  if [ $VERBOSE ]; then echo installing $1; fi
+}
+
+#
+# Parse arguments
 #
 
 while [[ $# -gt 0 ]]; do
@@ -34,5 +44,6 @@ while [[ $# -gt 0 ]]; do
     -v|--verbose) VERBOSE=1 ;;
     -V|--version) echo $VERSION ;;
     -h|--help) usage ;;
+    install) install $1 ;;
   esac
 done

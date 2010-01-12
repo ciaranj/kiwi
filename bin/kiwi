@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
+#
+# Defaults
+#
+
 VERSION="0.0.1"
+VERBOSE=
 
 #
 # Output usage
@@ -20,16 +25,25 @@ EOF
 }
 
 #
-# Parse options
+# Install a seed.
+# 
+# <name>
 #
 
-DEBUG=
-VERBOSE=
+install() {
+  if [ $VERBOSE ]; then echo installing $1; fi
+}
+
+#
+# Parse arguments
+#
+
 while [[ $# -gt 0 ]]; do
   token=$1; shift
   case $token in
     -v|--verbose) VERBOSE=1 ;;
     -V|--version) echo $VERSION ;;
     -h|--help) usage ;;
+    install) install $1 ;;
   esac
 done
