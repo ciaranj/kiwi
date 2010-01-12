@@ -6,7 +6,7 @@ usage() {
 cat << EOF
 Usage:
   
-  $0 [options] [arguments]
+  ${0##*/} [options] [arguments]
 
 Options:
   -v     Verbose
