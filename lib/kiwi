@@ -2,6 +2,10 @@
 
 VERSION="0.0.1"
 
+#
+# Output usage
+#
+
 usage() {
 cat << EOF
 Usage:
@@ -15,6 +19,10 @@ Options:
   -h     Help information
 EOF
 }
+
+#
+# Parse options
+#
 
 DEBUG=
 VERBOSE=
