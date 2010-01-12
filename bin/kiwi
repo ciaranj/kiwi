@@ -11,13 +11,14 @@ Usage:
 Options:
   -v     Verbose
   -d     Debug level
+  -V     Output version
   -h     Help information
 EOF
 }
 
 DEBUG=
 VERBOSE=
-while getopts "hvd:" option
+while getopts "hvVd:" option
   do
     case $option in
       t)
@@ -25,6 +26,9 @@ while getopts "hvd:" option
         ;;
       v)
         VERBOSE=1
+        ;;
+      V)
+        echo $VERSION
         ;;
       \?|h)
         usage
