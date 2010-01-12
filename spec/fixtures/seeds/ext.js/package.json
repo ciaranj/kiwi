@@ -1,8 +1,0 @@
-{
-  "name": "ext.js",
-  "version": "0.0.1",
-  "dependencies": [],
-  "author": { "name": "TJ Holowaychuk", "email": "tj@vision-media.ca", "link": "http://vision-media.ca" },
-  "description": "Provides prototype extensions",
-  "keywords": ["prototype", "extensions", "formatting", "utilities"]
-}

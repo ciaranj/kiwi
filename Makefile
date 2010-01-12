@@ -1,7 +1,7 @@
 
-NODE = node
+SPEC = spec
 
 test:
-	@$(NODE) spec/spec.node.js
+	@$(SPEC) spec --color --format specdoc
 	
 .PHONY: test
