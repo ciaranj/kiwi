@@ -8,7 +8,7 @@ VERSION="0.0.1"
 VERBOSE=
 
 #
-# Output usage
+# Output usage.
 #
 
 usage() {
@@ -56,7 +56,7 @@ install() {
 }
 
 #
-# Parse arguments
+# Parse arguments.
 #
 
 while [[ $# -gt 0 ]]; do

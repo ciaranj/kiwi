@@ -34,12 +34,18 @@ abort() {
   echo $* && exit 1
 }
 
+#
+# Log the given <msg ...> when $VERBOSE is true.
+# 
+# <msg ...>
+#
+
 log() {
   if [ $VERBOSE ]; then echo ... $*; fi
 }
 
 #
-# Install a seed.
+# Install a seed <name>
 # 
 # <name>
 #
