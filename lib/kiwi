@@ -5,7 +5,7 @@
 #
 
 VERSION=0.0.1
-SEED_DIR=seeds
+SEED_SRC=seeds
 SEED_DEST=~/.kiwi/seeds
 VERBOSE=
 
@@ -89,7 +89,7 @@ setup_seed() {
 #
 
 info() {
-  cat "$SEED_DIR/$1.yml" | grep $2 | awk '{ print $2 }'
+  cat "$SEED_SRC/$1.yml" | grep $2 | awk '{ print $2 }'
 }
 
 #
@@ -125,7 +125,7 @@ unpack() {
 download() {
   if [[ ! $1 ]]; then abort seed name required.; fi
   log locating $1.yml
-  if [[ ! -f "$SEED_DIR/$1.yml" ]]; then abort failed to locate $1.yml; fi
+  if [[ ! -f "$SEED_SRC/$1.yml" ]]; then abort failed to locate $1.yml; fi
   local version=${2-$(info $1 release)}
   log fetching $1 version $version
   local path=$(info $1 path | sed "s/{version}/$version/")
