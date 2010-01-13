@@ -41,7 +41,7 @@ end
 get '/search' do
   seed_names.map do |name|
     next if params[:name] && !name.include?(params[:name])
-    '%15s : (%s)' % [name, seed_versions(name).join(', ')]
+    '%15s : %s' % [name, seed_versions(name).join(' ')]
   end.compact.join("\n") + "\n"
 end
 

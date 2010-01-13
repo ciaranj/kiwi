@@ -181,6 +181,25 @@ uninstall() {
   fi
 }
 
+installed_versions() {
+  versions=$SEED_DEST/$1/*
+}
+
+list() {
+  local seeds=$SEED_DEST/*
+  for seed in $seeds;
+  do
+    local seed=$(basename $seed)
+    printf "%15s : " $seed $versions
+    installed_versions $seed
+    for version in $versions
+    do
+      echo -n "$(basename $version) "  
+    done
+    echo
+  done
+}
+
 #
 # Update kiwi to the latest version.
 # 
@@ -206,6 +225,7 @@ while [[ $# -gt 0 ]]; do
     update) update_self ;;
     uninstall) uninstall $* ;;
     install) install $* ;;
+    list) list $* ;;
     *) abort "invalid command \`$arg'. Use --help for more information" ;;
   esac
 done
