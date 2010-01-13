@@ -58,7 +58,7 @@ install() {
   local release=$(cat "$SEED_DIR/$1.yml" | grep release | awk '{ print $2 }')
   local version=${2-$release}
   log fetching $1.yml version $version
-  cat "$SEED_DIR/$1.yml" | grep path | awk '{ print $2 }' | sed 's/{version}/FOO/'
+  local path=$(cat "$SEED_DIR/$1.yml" | grep path | awk '{ print $2 }' | sed "s/{version}/$version/")
 }
 
 #
