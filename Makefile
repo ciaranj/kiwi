@@ -16,7 +16,7 @@ test: clean bin/kiwi server
 	@$(SPEC) spec --color --format specdoc
 	
 server:
-	@cd server && rackup -p 8888 -s thin
+	@rackup server/config.ru -p 8888 -s thin
 	
 install: bin/kiwi
 	@cp bin/kiwi $(DEST)/kiwi

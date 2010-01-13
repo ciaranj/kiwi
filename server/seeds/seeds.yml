@@ -1,0 +1,14 @@
+---
+  haml:
+    0.1.1:
+      name: Haml
+      version: 0.1.1
+      description: Haml template engine
+      lib: lib
+  libxmljs:
+    0.1.0:
+      name: Libxml
+      version: 0.1.0
+      description: Libxml2 xml parser support
+      build: scons libxmljs.node
+      lib: .
