@@ -86,6 +86,16 @@ setup_seed() {
 }
 
 #
+# Pack seed <path> as <name>.seed
+# 
+# <path> <name>
+#
+
+pack() {
+  tar -cf $2.seed $1
+}
+
+#
 # Unpack <seed> using tar.
 # 
 # <seed>
