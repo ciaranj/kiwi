@@ -11,6 +11,8 @@
   * Uninstallation of "seeds"
 
 ## Testing
+
+Specs are run using Ruby RSpec's `spec` executable.
   
     $ make test
 
