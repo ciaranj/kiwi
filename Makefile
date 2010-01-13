@@ -21,4 +21,4 @@ install: bin/kiwi
 uninstall: $(DEST)/kiwi
 	@rm $(DEST)/kiwi
 	
-.PHONY: test
+.PHONY: install uninstall clean test
