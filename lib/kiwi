@@ -56,12 +56,12 @@ info() {
 }
 
 #
-# Install a seed <name> with [version]
+# Download seed <name> with [version] to /tmp/<name>.seed
 # 
 # <name> [version]
 #
 
-install() {
+download() {
   if [ ! $1 ]; then abort seed name required.; fi
   log locating $1.yml
   if [ ! -f "$SEED_DIR/$1.yml" ]; then abort failed to locate $1.yml; fi
@@ -69,6 +69,16 @@ install() {
   log fetching $1 version $version
   local path=$(info $1 path | sed "s/{version}/$version/")
   log transfering $path
+}
+
+#
+# Install a seed <name> with [version]
+# 
+# <name> [version]
+#
+
+install() {
+  download $*
 }
 
 #
