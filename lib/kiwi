@@ -58,6 +58,19 @@ setup() {
 }
 
 #
+# Create $SEED_DEST/<name> when not present.
+# 
+# <name>
+#
+
+setup_seed() {
+  if [ ! -d $SEED_DEST/$1 ]; then
+    log creating $SEED_DEST/$1
+    mkdir -p $SEED_DEST/$1
+  fi
+}
+
+#
 # Get seed info for <name> and the given <key>
 # 
 # <name> <key>
@@ -80,10 +93,7 @@ download() {
   local version=${2-$(info $1 release)}
   log fetching $1 version $version
   local path=$(info $1 path | sed "s/{version}/$version/")
-  if [ ! -d $SEED_DEST/$1 ]; then
-    log creating $SEED_DEST/$1
-    mkdir -p $SEED_DEST/$1
-  fi
+  setup_seed $1
   log transfering $path
   curl -L $path -o $SEED_DEST/$1/$1.seed
 }
