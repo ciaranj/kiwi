@@ -68,7 +68,7 @@ info() {
 }
 
 #
-# Download seed <name> with [version] to /tmp/<name>.seed
+# Download seed <name> with [version] to $SEED_DEST/<name>/<name>.seed
 # 
 # <name> [version]
 #
@@ -80,8 +80,22 @@ download() {
   local version=${2-$(info $1 release)}
   log fetching $1 version $version
   local path=$(info $1 path | sed "s/{version}/$version/")
+  if [ ! -d $SEED_DEST/$1 ]; then
+    log creating $SEED_DEST/$1
+    sudo mkdir -p $SEED_DEST/$1
+  fi
   log transfering $path
-  curl -L $path -o /tmp/$1.seed
+  sudo curl -L $path -o $SEED_DEST/$1/$1.seed
+}
+
+#
+# Unpack <seed> using tar.
+# 
+# <seed>
+#
+
+unpack() {
+  tar -xf $1
 }
 
 #
