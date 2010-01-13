@@ -194,7 +194,7 @@ list() {
   for seed in $seeds;
   do
     local seed=$(basename $seed)
-    printf "%15s : " $seed $versions
+    printf "%15s : " $seed
     local versions=$SEED_DEST/$seed/*
     for version in $versions
     do
@@ -230,6 +230,5 @@ while [[ $# -gt 0 ]]; do
     uninstall) uninstall $* ;;
     install) install $* ;;
     list) list $* ;;
-    *) abort "invalid command \`$arg'. Use --help for more information" ;;
   esac
 done

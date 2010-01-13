@@ -85,6 +85,12 @@ describe "Kiwi" do
         kiwi('install haml').should include('haml 0.1.1 is already installed')
       end
       
+      describe "when build command is specified" do
+        it "should execute the build command relative to the seed's directory" do
+          kiwi('install libxml')
+        end
+      end
+      
       describe "<version>" do
         describe "when valid" do
           it "should install the given version" do
