@@ -69,6 +69,7 @@ download() {
   log fetching $1 version $version
   local path=$(info $1 path | sed "s/{version}/$version/")
   log transfering $path
+  curl -L $path -o /tmp/$1.seed
 }
 
 #
