@@ -2,6 +2,13 @@
 # Kiwi
 
   JavaScript package management system for node.js
+  
+## Features
+
+  * Written in bash script
+  * Very fast
+  * Installation of "seeds"
+  * Uninstallation of "seeds"
 
 ## Testing
   
