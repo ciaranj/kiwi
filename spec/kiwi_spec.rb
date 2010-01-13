@@ -25,11 +25,19 @@ describe "Kiwi" do
     
     describe "<name>" do
       it "should uninstall all versions" do
-        kiwi('install libxmljs')
-        File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0')).should be_true
+        `mkdir -p ~/.kiwi/seeds/libxmljs/0.1.0`
         kiwi('uninstall libxmljs')
         File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0')).should be_false
         File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs')).should be_false
+      end
+      
+      describe "<version>" do
+        it "should uninstall the version specified" do
+          `mkdir -p ~/.kiwi/seeds/libxmljs/0.1.0`
+          kiwi('uninstall libxmljs 0.1.0')
+          File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0')).should be_false
+          File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs')).should be_true
+        end
       end
     end
   end
