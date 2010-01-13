@@ -25,12 +25,23 @@ EOF
 }
 
 #
+# Abort with the given <msg ...>
+# 
+# <msg ...>
+#
+
+abort() {
+  echo $* && exit 1
+}
+
+#
 # Install a seed.
 # 
 # <name>
 #
 
 install() {
+  if [ ! $1 ]; then abort seed name required.; fi
   if [ $VERBOSE ]; then echo ... installing $1; fi
 }
 
