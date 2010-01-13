@@ -35,14 +35,24 @@ abort() {
 }
 
 #
-# Install a seed.
+# Log the given <msg ...> when $VERBOSE is true.
+# 
+# <msg ...>
+#
+
+log() {
+  if [ $VERBOSE ]; then echo ... $*; fi
+}
+
+#
+# Install a seed <name>
 # 
 # <name>
 #
 
 install() {
   if [ ! $1 ]; then abort seed name required.; fi
-  if [ $VERBOSE ]; then echo ... installing $1; fi
+  log installing $1
 }
 
 #
