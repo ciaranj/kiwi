@@ -22,7 +22,7 @@
 
 Specs are run using Ruby RSpec's `spec` executable.
   
-    $ make test
+    $ make server-start && make test && make server-stop
 
 ## License 
 
