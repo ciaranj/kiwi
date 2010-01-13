@@ -32,6 +32,7 @@ cat << EOF
     
     install           Installs a seed <name> with optional [version]
     uninstall         Uninstalls all versions of seed <name> or the given [version]
+    update            Updates kiwi to the latest release
   
 EOF
 }
@@ -187,7 +188,7 @@ uninstall() {
 update_self() {
   cd /tmp && git clone $ORIGIN && 
   cd kiwi && sudo make install &&
-  echo -n 'Updated to ' && kiwi --version
+  echo -n 'Updated kiwi to ' && kiwi --version
 }
 
 #
