@@ -58,8 +58,8 @@ end
 # Output latest version for seed _name_.
 
 get '/:name/latest' do
-  versions = seed(params[:name]) || halt(404)
-  versions.keys.first
+  versions = seed_versions(params[:name]) || halt(404)
+  versions.first
 end
 
 ##
