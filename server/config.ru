@@ -22,6 +22,12 @@ helpers do
   end
 end
 
+##
+# Search seeds, all are listed unless filtered by:
+#
+#  - :name
+#
+
 get '/search' do
   seed_info.map do |name, info|
     next if params[:name] && !name.include?(params[:name])
