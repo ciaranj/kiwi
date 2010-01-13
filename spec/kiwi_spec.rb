@@ -50,31 +50,32 @@ describe "Kiwi" do
     end
     
     describe "<name>" do
-      before :each do
-        kiwi('install libxmljs')  
-      end
-      
       after :each do
         `rm -fr ~/.kiwi/seeds`
       end
       
       it "should setup ~/.kiwi/seeds" do
+        kiwi('install libxmljs')
         File.directory?(File.expand_path('~/.kiwi/seeds')).should be_true
       end
       
       it "should setup ~/.kiwi/seeds/<name>/<version>" do
+        kiwi('install libxmljs')
         File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0')).should be_true
       end
       
       it "should install the current version" do
+        kiwi('install libxmljs')
         File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0/src')).should be_true
       end
       
-      it "should remove seed" do
+      it "should remove the seed" do
+        kiwi('install libxmljs')
         File.file?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0/libxmljs.seed')).should be_false
       end
       
       it "should abort when already installed" do
+        `mkdir -p ~/.kiwi/seeds/libxmljs/0.1.0`
         kiwi('install libxmljs').should include('libxmljs 0.1.0 is already installed')
       end
     end
