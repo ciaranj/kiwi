@@ -54,12 +54,9 @@ log() {
 install() {
   if [ ! $1 ]; then abort seed name required.; fi
   log locating $1.yml
-  if [ -f "$SEED_DIR/$1.yml" ]; then
-    log fetching $1.yml
-    cat "$SEED_DIR/$1.yml"
-  else
-    abort failed to locate $1.yml.
-  fi
+  if [ ! -f "$SEED_DIR/$1.yml" ]; then abort failed to locate $1.yml; fi
+  log fetching $1.yml
+  cat "$SEED_DIR/$1.yml"
 }
 
 #
