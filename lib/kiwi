@@ -28,8 +28,8 @@ cat << EOF
     
   Commands:
     
-    install           Installs a seed with optional version
-    uninstall         Uninstalls all versions of a seed or the given version
+    install           Installs a seed <name> with optional [version]
+    uninstall         Uninstalls all versions of seed <name> or the given [version]
   
 EOF
 }
