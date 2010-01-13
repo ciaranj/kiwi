@@ -96,8 +96,16 @@ info() {
 #
 
 unpack() {
+  local dir=$(dirname $1)
   log unpacking $1
-  tar -xf $1 -C $(dirname $1) 
+  tar -xf $1 -C $dir
+  local extracted_dir=$(find $dir -type d -depth 1)
+  log copying contents of $extracted_dir
+  cp -fr $extracted_dir/* $dir
+  log removing $extracted_dir
+  rm -fr $extracted_dir
+  log removing $seed
+  rm -f $seed
 }
 
 #
