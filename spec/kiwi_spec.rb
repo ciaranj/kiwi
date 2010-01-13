@@ -31,18 +31,18 @@ describe "Kiwi" do
     
     describe "<name>" do
       it "should uninstall all versions" do
-        `mkdir -p ~/.kiwi/seeds/libxmljs/0.1.0`
-        kiwi('uninstall libxmljs')
-        File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0')).should be_false
-        File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs')).should be_false
+        `mkdir -p ~/.kiwi/seeds/haml/0.1.1`
+        kiwi('uninstall haml')
+        File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_false
+        File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_false
       end
       
       describe "<version>" do
         it "should uninstall the version specified" do
-          `mkdir -p ~/.kiwi/seeds/libxmljs/0.1.0`
-          kiwi('uninstall libxmljs 0.1.0')
-          File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0')).should be_false
-          File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs')).should be_true
+          `mkdir -p ~/.kiwi/seeds/haml/0.1.1`
+          kiwi('uninstall haml 0.1.1')
+          File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_false
+          File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_true
         end
       end
     end
@@ -61,47 +61,42 @@ describe "Kiwi" do
       end
       
       it "should setup ~/.kiwi/seeds" do
-        kiwi('install libxmljs')
+        kiwi('install haml')
         File.directory?(File.expand_path('~/.kiwi/seeds')).should be_true
       end
       
       it "should setup ~/.kiwi/seeds/<name>/<version>" do
-        kiwi('install libxmljs')
-        File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0')).should be_true
+        kiwi('install haml')
+        File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_true
       end
       
       it "should install the current version" do
-        kiwi('install libxmljs')
-        File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0/src')).should be_true
+        kiwi('install haml')
+        File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1/lib')).should be_true
       end
       
       it "should remove the seed" do
-        kiwi('install libxmljs')
-        File.file?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0/libxmljs.seed')).should be_false
-      end
-      
-      it "should copy the metadata file" do
-        kiwi('install libxmljs')
-        File.file?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0/libxmljs.yml')).should be_true
+        kiwi('install haml')
+        File.file?(File.expand_path('~/.kiwi/seeds/haml/0.1.1/haml.seed')).should be_false
       end
       
       it "should abort when already installed" do
-        `mkdir -p ~/.kiwi/seeds/libxmljs/0.1.0`
-        kiwi('install libxmljs').should include('libxmljs 0.1.0 is already installed')
+        `mkdir -p ~/.kiwi/seeds/haml/0.1.1`
+        kiwi('install haml').should include('haml 0.1.1 is already installed')
       end
       
       describe "<version>" do
         describe "when valid" do
           it "should install the given version" do
-            kiwi('install libxmljs 0.1.0')
-            File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0/src')).should be_true
+            kiwi('install haml 0.1.1')
+            File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1/lib')).should be_true
           end
         end
         
         describe "when invalid" do
           it "should abort after tar figures out seed is invalid" do
-            kiwi('install libxmljs 9.9.9').should include('failed to unpack. Seed is invalid or corrupt')
-            File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/9.9.9')).should be_false
+            kiwi('install haml 9.9.9').should include('failed to unpack. Seed is invalid or corrupt')
+            File.directory?(File.expand_path('~/.kiwi/seeds/haml/9.9.9')).should be_false
           end
         end
       end
