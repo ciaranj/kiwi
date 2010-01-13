@@ -1,0 +1,4 @@
+bin
+*.cache
+*.log
+.DS_Store
