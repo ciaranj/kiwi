@@ -202,9 +202,10 @@ while [[ $# -gt 0 ]]; do
     -V|--version) echo $VERSION ;;
     -S|--seeds) echo $SEED_DEST ;;
     -h|--help) usage ;;
-    --*) echo invalid option $arg. Use --help for more information ;;
+    --*) abort "invalid option \`$arg'. Use --help for more information" ;;
     update) update_self ;;
     uninstall) uninstall $* ;;
     install) install $* ;;
+    *) abort "invalid command \`$arg'. Use --help for more information" ;;
   esac
 done
