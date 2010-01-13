@@ -81,6 +81,17 @@ info() {
 }
 
 #
+# Unpack <seed> using tar.
+# 
+# <seed>
+#
+
+unpack() {
+  log unpacking $1
+  tar -xf $1 -C $(dirname $1) 
+}
+
+#
 # Download seed <name> with [version] to $SEED_DEST/<name>/<name>.seed
 # 
 # <name> [version]
@@ -95,17 +106,9 @@ download() {
   local path=$(info $1 path | sed "s/{version}/$version/")
   setup_seed $1
   log transfering $path
-  curl -L $path -o $SEED_DEST/$1/$1.seed
-}
-
-#
-# Unpack <seed> using tar.
-# 
-# <seed>
-#
-
-unpack() {
-  tar -xf $1
+  local seed=$SEED_DEST/$1/$1.seed
+  curl -L $path -o $seed
+  unpack $seed
 }
 
 #
