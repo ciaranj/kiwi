@@ -1,0 +1,6 @@
+---
+  name: Libxml
+  version: 0.1.0
+  description: Libxml2 xml parser
+  build: scons libxmljs.node
+  lib: .

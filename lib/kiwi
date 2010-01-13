@@ -34,7 +34,6 @@ cat << EOF
     uninstall         Uninstalls all versions of seed <name> or the given [version]
     list              Lists installed seeds and their associated versions
     update            Updates kiwi to the latest release
-  
 EOF
 }
 
@@ -93,6 +92,8 @@ setup_seed() {
 #
 
 pack() {
+  if [[ ! -d $1 ]]; then abort $1 is not a directory; fi
+  if [[ ! $2 ]]; then abort version is required; fi
   tar -cf $2.seed $1
 }
 
