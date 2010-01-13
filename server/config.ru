@@ -5,6 +5,6 @@ require 'sinatra'
 ##
 # Transfer the requested seed when present.
 
-get '/*.seed' do |name|
-  p name
+get '/:seed/:version?' do
+  p params
 end
