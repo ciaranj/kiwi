@@ -12,11 +12,14 @@ bin/kiwi: lib/kiwi
 	@cp lib/kiwi bin/kiwi
 	@chmod 0755 bin/kiwi
 
-test: clean bin/kiwi server
+test: clean bin/kiwi
 	@$(SPEC) spec --color --format specdoc
 	
-server:
-	@rackup server/config.ru -p 8888 -s thin
+server-start:
+	@thin -c server --rackup config.ru start -p 8888 -d -P server.pid
+	
+server-stop:
+	@cd server && cat server.pid | xargs kill -TERM
 	
 install: bin/kiwi
 	@cp bin/kiwi $(DEST)/kiwi
