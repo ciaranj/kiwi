@@ -6,7 +6,7 @@
 
 VERSION=0.0.1
 SEED_DIR=seeds
-SEED_DEST=/usr/local/lib/kiwi/seeds
+SEED_DEST=~/.kiwi/seeds
 VERBOSE=
 
 #
@@ -53,7 +53,7 @@ log() {
 setup() {
   if [ ! -d $SEED_DEST ]; then
     log creating $SEED_DEST
-    sudo mkdir -p $SEED_DEST  
+    mkdir -p $SEED_DEST  
   fi
 }
 
@@ -82,10 +82,10 @@ download() {
   local path=$(info $1 path | sed "s/{version}/$version/")
   if [ ! -d $SEED_DEST/$1 ]; then
     log creating $SEED_DEST/$1
-    sudo mkdir -p $SEED_DEST/$1
+    mkdir -p $SEED_DEST/$1
   fi
   log transfering $path
-  sudo curl -L $path -o $SEED_DEST/$1/$1.seed
+  curl -L $path -o $SEED_DEST/$1/$1.seed
 }
 
 #
