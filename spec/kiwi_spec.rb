@@ -4,7 +4,15 @@ def kiwi *args
 end
 
 describe "Kiwi" do
-  it "should description" do
-    kiwi('--version').should match(/^\d+\.\d+\.\d+$/)
+  describe "--version" do
+    it "should output version triplet" do
+      kiwi('--version').should match(/^\d+\.\d+\.\d+$/)
+    end
+  end
+  
+  describe "--help" do
+    it "should output help information" do
+      kiwi('--help').should include('Usage')
+    end
   end
 end
