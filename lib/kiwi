@@ -43,7 +43,7 @@ abort() {
 #
 
 log() {
-  if [ $VERBOSE ]; then echo ... $*; fi
+  if [[ $VERBOSE ]]; then echo ... $*; fi
 }
 
 #
@@ -51,7 +51,7 @@ log() {
 # 
 
 setup() {
-  if [ ! -d $SEED_DEST ]; then
+  if [[ ! -d $SEED_DEST ]]; then
     log creating $SEED_DEST
     mkdir -p $SEED_DEST  
   fi
@@ -65,7 +65,7 @@ setup() {
 
 setup_seed() {
   local dir=$SEED_DEST/$1/$2
-  if [ ! -d $dir ]; then
+  if [[ ! -d $dir ]]; then
     log creating $dir
     mkdir -p $dir
   fi
@@ -99,9 +99,9 @@ unpack() {
 #
 
 download() {
-  if [ ! $1 ]; then abort seed name required.; fi
+  if [[ ! $1 ]]; then abort seed name required.; fi
   log locating $1.yml
-  if [ ! -f "$SEED_DIR/$1.yml" ]; then abort failed to locate $1.yml; fi
+  if [[ ! -f "$SEED_DIR/$1.yml" ]]; then abort failed to locate $1.yml; fi
   local version=${2-$(info $1 release)}
   log fetching $1 version $version
   local path=$(info $1 path | sed "s/{version}/$version/")
@@ -131,15 +131,15 @@ install() {
 #
 
 uninstall() {
-  if [ $2 ]; then
-    if [ -d $SEED_DEST/$1/$2 ]; then
+  if [[ $2 ]]; then
+    if [[ -d $SEED_DEST/$1/$2 ]]; then
       log uninstalling $1 $2
       rm -fr $SEED_DEST/$1/$2
     else
       log cannot find $1 $2
     fi  
   else
-    if [ -d $SEED_DEST/$1 ]; then
+    if [[ -d $SEED_DEST/$1 ]]; then
       log uninstalling all versions of $1
       rm -fr $SEED_DEST/$1  
     else
