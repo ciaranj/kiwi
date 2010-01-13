@@ -6,7 +6,7 @@
 
 VERSION=0.0.1
 ORIGIN=git://github.com/visionmedia/kiwi.git
-SEED_SRC=seeds
+SERVER=http://0.0.0.0:8888
 SEED_DEST=~/.kiwi/seeds
 VERBOSE=
 
@@ -86,16 +86,6 @@ setup_seed() {
 }
 
 #
-# Get seed info for <name> and the given <key>
-# 
-# <name> <key>
-#
-
-info() {
-  cat "$SEED_SRC/$1.yml" | grep $2 | awk '{ print $2 }'
-}
-
-#
 # Unpack <seed> using tar.
 # 
 # <seed>
@@ -126,16 +116,17 @@ unpack() {
 #
 
 download() {
-  if [[ ! $1 ]]; then abort seed name required.; fi
-  log locating $1.yml
-  if [[ ! -f "$SEED_SRC/$1.yml" ]]; then abort failed to locate $1.yml; fi
-  local version=${2-$(info $1 release)}
-  log fetching $1 version $version
-  local path=$(info $1 path | sed "s/{version}/$version/")
-  setup_seed $1 $version
-  log transfering $path
-  seed=$SEED_DEST/$1/$version/$1.seed
-  curl -L $path -o $seed
+  local name=$1
+  local version=$2
+  if [[ ! $name ]]; then abort seed name required.; fi
+  if [[ ! $version ]]; then
+    log looking up latest version
+    version=$(curl $SERVER/$name/latest)
+  fi
+  setup_seed $name $version
+  log transfering $name $version
+  seed=$SEED_DEST/$name/$version/$name.seed
+  curl $SERVER/$name/$version -o $seed
 }
 
 #
@@ -152,7 +143,6 @@ install() {
   setup
   download $*
   unpack $seed
-  cp $SEED_SRC/$1.yml $(dirname $seed)
 }
 
 #

@@ -40,7 +40,16 @@ end
 
 get '/:name' do 
   versions = seed(params[:name]) || halt(404)
-  transfer_seed params[:name], versions.keys.first
+  version = versions.keys.first
+  transfer_seed params[:name], version
+end
+
+##
+# Output latest version for seed _name_.
+
+get '/:name/latest' do
+  versions = seed(params[:name]) || halt(404)
+  versions.keys.first
 end
 
 ##
