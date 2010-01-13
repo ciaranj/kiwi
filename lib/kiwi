@@ -158,7 +158,11 @@ build() {
     log cd $dir
     cd $dir
     log "building with \`$ $command'"
-    eval $command
+    if [[ $VERBOSE ]]; then
+      eval $command
+    else
+      eval "$command > /dev/null"
+    fi
   else
     log nothing to build
   fi
