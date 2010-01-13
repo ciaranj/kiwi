@@ -12,13 +12,7 @@
 
 ## Testing
   
-Update submodules:
-
-  $ git submodule update -i
-  
-Run tests with vendorized JSpec submodule:
-  
-  $ make test
+    $ make test
 
 ## License 
 
