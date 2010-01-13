@@ -1,0 +1,6 @@
+---
+  name: Libxml
+  description: Libxml support
+  build: scons libxmljs.node
+  path: http://github.com/sprsquish/libxmljs/tarball/v{version}
+  lib: .
