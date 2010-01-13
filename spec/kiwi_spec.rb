@@ -16,6 +16,12 @@ describe "Kiwi" do
     end
   end
   
+  describe "--seeds" do
+    it "should output seed directory" do
+      kiwi('--seeds').should include('.kiwi/seeds')
+    end
+  end
+  
   describe "uninstall" do
     describe "" do
       it "should abort with seed name required" do
