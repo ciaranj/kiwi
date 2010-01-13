@@ -19,11 +19,18 @@ helpers do
 end
 
 ##
-# Transfer the requested seed when present.
+# Transfer the latest version of the requested seed _name_.
 
-get '/*' do |name|
-  versions = seed(name) || halt(404)
-  transfer_seed name, versions.keys.first
+get '/:name' do 
+  versions = seed(params[:name]) || halt(404)
+  transfer_seed params[:name], versions.keys.first
+end
+
+##
+# Transfer _version_ of the requested seed _name_.
+
+get '/:name/:version' do
+  transfer_seed params[:name], params[:version]
 end
 
 run Sinatra::Application
