@@ -66,7 +66,8 @@ setup() {
 }
 
 #
-# Create $SEED_DEST/<name>/<version> when not present.
+# Create $SEED_DEST/<name>/<version> when not present, 
+# otherwise abort with already installed message.
 # 
 # <name> <version>
 #
@@ -76,6 +77,8 @@ setup_seed() {
   if [[ ! -d $dir ]]; then
     log creating $dir
     mkdir -p $dir
+  else
+    abort $1 $2 already installed
   fi
 }
 
