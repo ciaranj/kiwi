@@ -46,6 +46,16 @@ log() {
 }
 
 #
+# Get seed info for <name> and the given <key>
+# 
+# <name> <key>
+#
+
+info() {
+  cat "$SEED_DIR/$1.yml" | grep $2 | awk '{ print $2 }'
+}
+
+#
 # Install a seed <name>
 # 
 # <name>
@@ -57,7 +67,7 @@ install() {
   if [ ! -f "$SEED_DIR/$1.yml" ]; then abort failed to locate $1.yml; fi
   local version=${2-$(cat "$SEED_DIR/$1.yml" | grep release | awk '{ print $2 }')}
   log fetching $1 version $version
-  local path=$(cat "$SEED_DIR/$1.yml" | grep path | awk '{ print $2 }' | sed "s/{version}/$version/")
+  local path=$(cat "$SEED_DIR/$1.yml" | grep path | awk "{ print $2 }" | sed "s/{version}/$version/")
   log transfering $path
 }
 
