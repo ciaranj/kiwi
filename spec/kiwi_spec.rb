@@ -80,6 +80,11 @@ describe "Kiwi" do
         File.file?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0/libxmljs.seed')).should be_false
       end
       
+      it "should copy the metadata file" do
+        kiwi('install libxmljs')
+        File.file?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0/libxmljs.yml')).should be_true
+      end
+      
       it "should abort when already installed" do
         `mkdir -p ~/.kiwi/seeds/libxmljs/0.1.0`
         kiwi('install libxmljs').should include('libxmljs 0.1.0 is already installed')

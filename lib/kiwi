@@ -132,13 +132,16 @@ download() {
   local path=$(info $1 path | sed "s/{version}/$version/")
   setup_seed $1 $version
   log transfering $path
-  local seed=$SEED_DEST/$1/$version/$1.seed
+  seed=$SEED_DEST/$1/$version/$1.seed
   curl -L $path -o $seed
-  unpack $seed
 }
 
 #
-# Install a seed <name> with [version]
+# Install a seed <name> with [version].
+# 
+#   - Downloads seed
+#   - Unpacks the seed
+#   - Copys metadata
 # 
 # <name> [version]
 #
@@ -146,6 +149,8 @@ download() {
 install() {
   setup
   download $*
+  unpack $seed
+  cp $SEED_SRC/$1.yml $(dirname $seed)
 }
 
 #
