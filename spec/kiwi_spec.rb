@@ -16,6 +16,14 @@ describe "Kiwi" do
     end
   end
   
+  describe "uninstall" do
+    describe "with no arguments" do
+      it "should abort with seed name required" do
+        kiwi('uninstall').should include('seed name required')
+      end
+    end
+  end
+  
   describe "install" do
     describe "with no arguments" do
       it "should abort with seed name required" do

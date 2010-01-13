@@ -150,6 +150,7 @@ install() {
 #
 
 uninstall() {
+  if [[ ! $1 ]]; then abort seed name required.; fi
   if [[ $2 ]]; then
     if [[ -d $SEED_DEST/$1/$2 ]]; then
       log uninstalling $1 $2
