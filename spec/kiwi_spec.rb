@@ -78,6 +78,22 @@ describe "Kiwi" do
         `mkdir -p ~/.kiwi/seeds/libxmljs/0.1.0`
         kiwi('install libxmljs').should include('libxmljs 0.1.0 is already installed')
       end
+      
+      describe "<version>" do
+        describe "when valid" do
+          it "should install the given version" do
+            kiwi('install libxmljs 0.1.0')
+            File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0/src')).should be_true
+          end
+        end
+        
+        describe "when invalid" do
+          it "should abort after tar figures out seed is invalid" do
+            kiwi('install libxmljs 9.9.9').should include('failed to unpack. Seed is invalid or corrupt')
+            File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0')).should be_false
+          end
+        end
+      end
     end
     
   end
