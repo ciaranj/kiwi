@@ -4,3 +4,4 @@
   description: Libxml2 xml parser support
   build: scons libxmljs.node
   path: http://github.com/sprsquish/libxmljs/tarball/v{version}
+  lib: .

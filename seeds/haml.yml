@@ -3,3 +3,4 @@
   release: 0.1.1
   description: Haml template engine
   path: http://github.com/creationix/haml-js/tarball/{version}
+  lib: lib

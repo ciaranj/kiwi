@@ -101,7 +101,8 @@ info() {
 unpack() {
   local dir=$(dirname $1)
   log unpacking $1
-  tar -xf $1 -C $dir
+  tar -xf $1 -C $dir 2> /dev/null
+  if [[ $? ]]; then abort failed to unpack. Seed is invalid or corrupt; fi
   local extracted_dir=$(find $dir -type d -depth 1)
   log copying contents of $extracted_dir
   cp -fr $extracted_dir/* $dir
