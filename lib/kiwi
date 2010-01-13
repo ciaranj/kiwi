@@ -58,15 +58,16 @@ setup() {
 }
 
 #
-# Create $SEED_DEST/<name> when not present.
+# Create $SEED_DEST/<name>/<version> when not present.
 # 
-# <name>
+# <name> <version>
 #
 
 setup_seed() {
-  if [ ! -d $SEED_DEST/$1 ]; then
-    log creating $SEED_DEST/$1
-    mkdir -p $SEED_DEST/$1
+  local dir=$SEED_DEST/$1/$2
+  if [ ! -d $dir ]; then
+    log creating $dir
+    mkdir -p $dir
   fi
 }
 
@@ -92,7 +93,7 @@ unpack() {
 }
 
 #
-# Download seed <name> with [version] to $SEED_DEST/<name>/<name>.seed
+# Download seed <name> with [version] to $SEED_DEST/<name>/[version]/<name>.seed
 # 
 # <name> [version]
 #
@@ -104,9 +105,9 @@ download() {
   local version=${2-$(info $1 release)}
   log fetching $1 version $version
   local path=$(info $1 path | sed "s/{version}/$version/")
-  setup_seed $1
+  setup_seed $1 $version
   log transfering $path
-  local seed=$SEED_DEST/$1/$1.seed
+  local seed=$SEED_DEST/$1/$version/$1.seed
   curl -L $path -o $seed
   unpack $seed
 }
@@ -123,17 +124,27 @@ install() {
 }
 
 #
-# Uninstall seed <name> with [version]
+# Uninstall seed <name> with [version]. When [version] is not
+# present all versions of the seed will be removed.
 # 
 # <name> [version]
 #
 
 uninstall() {
-  if [ -d $SEED_DEST/$1 ]; then
-    log uninstalling $1
-    rm -fr $SEED_DEST/$1
+  if [ $2 ]; then
+    if [ -d $SEED_DEST/$1/$2 ]; then
+      log uninstalling $1 $2
+      rm -fr $SEED_DEST/$1/$2
+    else
+      log cannot find $1 $2
+    fi  
   else
-    log cannot find $1
+    if [ -d $SEED_DEST/$1 ]; then
+      log uninstalling all versions of $1
+      rm -fr $SEED_DEST/$1  
+    else
+      log cannot find $1
+    fi
   fi
 }
 
