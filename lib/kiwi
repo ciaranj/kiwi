@@ -4,7 +4,8 @@
 # Defaults
 #
 
-VERSION="0.0.1"
+VERSION=0.0.1
+SEED_DIR=seeds
 VERBOSE=
 
 #
@@ -52,7 +53,13 @@ log() {
 
 install() {
   if [ ! $1 ]; then abort seed name required.; fi
-  log installing $1
+  log locating $1.yml
+  if [ -f "$SEED_DIR/$1.yml" ]; then
+    log fetching $1.yml
+    cat "$SEED_DIR/$1.yml"
+  else
+    abort failed to locate $1.yml.
+  fi
 }
 
 #
