@@ -90,7 +90,7 @@ describe "Kiwi" do
         describe "when invalid" do
           it "should abort after tar figures out seed is invalid" do
             kiwi('install libxmljs 9.9.9').should include('failed to unpack. Seed is invalid or corrupt')
-            File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs')).should be_false
+            File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/9.9.9')).should be_false
           end
         end
       end
