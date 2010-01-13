@@ -1,4 +1,5 @@
 bin
+*.pid
 *.cache
 *.log
 .DS_Store

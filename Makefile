@@ -27,4 +27,4 @@ install: bin/kiwi
 uninstall: $(DEST)/kiwi
 	@rm $(DEST)/kiwi
 	
-.PHONY: install uninstall clean server test
+.PHONY: install uninstall clean server-start server-stop test
