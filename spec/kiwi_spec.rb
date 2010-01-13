@@ -43,6 +43,11 @@ describe "Kiwi" do
       it "should install the current version" do
         File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0/src')).should be_true
       end
+      
+      it "should abort when already installed" do
+        kiwi('install libxmljs').should include('libxmljs 0.1.0 is already installed')
+      end
     end
+    
   end
 end

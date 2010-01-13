@@ -78,7 +78,7 @@ setup_seed() {
     log creating $dir
     mkdir -p $dir
   else
-    abort $1 $2 already installed
+    abort $1 $2 is already installed
   fi
 }
 
