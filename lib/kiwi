@@ -123,6 +123,21 @@ install() {
 }
 
 #
+# Uninstall seed <name> with [version]
+# 
+# <name> [version]
+#
+
+uninstall() {
+  if [ -d $SEED_DEST/$1 ]; then
+    log uninstalling $1
+    rm -fr $SEED_DEST/$1
+  else
+    log cannot find $1
+  fi
+}
+
+#
 # Parse arguments.
 #
 
@@ -133,6 +148,7 @@ while [[ $# -gt 0 ]]; do
     -V|--version) echo $VERSION ;;
     -h|--help) usage ;;
     --*) echo invalid option $arg. Use --help for more information ;;
+    uninstall) uninstall $* ;;
     install) install $* ;;
   esac
 done
