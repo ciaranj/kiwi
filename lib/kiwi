@@ -6,6 +6,7 @@
 
 VERSION=0.0.1
 SEED_DIR=seeds
+SEED_DEST=/usr/local/lib/kiwi/seeds
 VERBOSE=
 
 #
@@ -46,6 +47,17 @@ log() {
 }
 
 #
+# Create $SEED_DEST when not present.
+# 
+
+setup() {
+  if [ ! -d $SEED_DEST ]; then
+    log creating $SEED_DEST
+    sudo mkdir -p $SEED_DEST  
+  fi
+}
+
+#
 # Get seed info for <name> and the given <key>
 # 
 # <name> <key>
@@ -79,6 +91,7 @@ download() {
 #
 
 install() {
+  setup
   download $*
 }
 
