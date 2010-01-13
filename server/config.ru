@@ -6,12 +6,22 @@ require 'yaml'
 SEEDS = File.dirname(__FILE__) + '/seeds'
 
 helpers do
-  def seed_info
-    @info ||= YAML.load_file SEEDS + '/seeds.yml'
+  def seed_paths
+    Dir[SEEDS + '/*']
   end
   
-  def seed name
-    seed_info[name]
+  def seed_versions name
+    Dir[SEEDS + "/#{name}/*.yml"].map do |version| 
+      File.basename(version).sub('.yml', '')
+    end
+  end
+  
+  def seed_names
+    seed_paths.map { |path| File.basename path }
+  end
+  
+  def seed name, version
+    YAML.load_file SEEDS + "/#{name}/#{version}.yml"
   end
   
   def transfer_seed name, version
@@ -29,9 +39,9 @@ end
 #
 
 get '/search' do
-  seed_info.map do |name, info|
+  seed_names.map do |name|
     next if params[:name] && !name.include?(params[:name])
-    '%15s : (%s)' % [name, info.keys.join(', ')]
+    '%15s : (%s)' % [name, seed_versions(name).join(', ')]
   end.compact.join("\n") + "\n"
 end
 
