@@ -122,6 +122,8 @@ unpack() {
 #
 # Download seed <name> with [version] to $SEED_DEST/<name>/[version]/<name>.seed
 # 
+# Populates global $seed with path to the seed archive.
+# 
 # <name> [version]
 #
 
@@ -181,17 +183,13 @@ uninstall() {
   fi
 }
 
-installed_versions() {
-  versions=$SEED_DEST/$1/*
-}
-
 list() {
   local seeds=$SEED_DEST/*
   for seed in $seeds;
   do
     local seed=$(basename $seed)
     printf "%15s : " $seed $versions
-    installed_versions $seed
+    local versions=$SEED_DEST/$seed/*
     for version in $versions
     do
       echo -n "$(basename $version) "  
