@@ -32,6 +32,7 @@ cat << EOF
     
     install           Installs a seed <name> with optional [version]
     uninstall         Uninstalls all versions of seed <name> or the given [version]
+    list              Lists installed seeds and their associated versions
     update            Updates kiwi to the latest release
   
 EOF
@@ -182,6 +183,10 @@ uninstall() {
     fi
   fi
 }
+
+#
+# List install seeds and their associated versions.
+# 
 
 list() {
   local seeds=$SEED_DEST/*
