@@ -17,7 +17,7 @@ describe "Kiwi" do
   end
   
   describe "uninstall" do
-    describe "with no arguments" do
+    describe "" do
       it "should abort with seed name required" do
         kiwi('uninstall').should include('seed name required')
       end
@@ -43,7 +43,7 @@ describe "Kiwi" do
   end
   
   describe "install" do
-    describe "with no arguments" do
+    describe "" do
       it "should abort with seed name required" do
         kiwi('install').should include('seed name required')
       end
@@ -90,7 +90,7 @@ describe "Kiwi" do
         describe "when invalid" do
           it "should abort after tar figures out seed is invalid" do
             kiwi('install libxmljs 9.9.9').should include('failed to unpack. Seed is invalid or corrupt')
-            File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs/0.1.0')).should be_false
+            File.directory?(File.expand_path('~/.kiwi/seeds/libxmljs')).should be_false
           end
         end
       end
