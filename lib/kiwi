@@ -5,6 +5,7 @@
 #
 
 VERSION=0.0.1
+ORIGIN=git://github.com/visionmedia/kiwi.git
 SEED_SRC=seeds
 SEED_DEST=~/.kiwi/seeds
 VERBOSE=
@@ -180,6 +181,16 @@ uninstall() {
 }
 
 #
+# Update kiwi to the latest version.
+# 
+
+update_self() {
+  cd /tmp && git clone $ORIGIN && 
+  cd kiwi && sudo make install &&
+  echo -n 'Updated to ' && kiwi --version
+}
+
+#
 # Parse arguments.
 #
 
@@ -191,6 +202,7 @@ while [[ $# -gt 0 ]]; do
     -S|--seeds) echo $SEED_DEST ;;
     -h|--help) usage ;;
     --*) echo invalid option $arg. Use --help for more information ;;
+    update) update_self ;;
     uninstall) uninstall $* ;;
     install) install $* ;;
   esac
