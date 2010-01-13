@@ -9,6 +9,14 @@
   * Very fast
   * Installation of "seeds"
   * Uninstallation of "seeds"
+  
+## Installation
+
+    $ [sudo] make install
+
+## Uninstallation
+
+    $ [sudo] make uninstall
 
 ## Testing
 
