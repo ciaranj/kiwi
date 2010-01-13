@@ -55,8 +55,10 @@ install() {
   if [ ! $1 ]; then abort seed name required.; fi
   log locating $1.yml
   if [ ! -f "$SEED_DIR/$1.yml" ]; then abort failed to locate $1.yml; fi
-  log fetching $1.yml
-  cat "$SEED_DIR/$1.yml"
+  local release=$(cat "$SEED_DIR/$1.yml" | grep release | awk '{ print $2 }')
+  local version=${2-$release}
+  log fetching $1.yml version $version
+  cat "$SEED_DIR/$1.yml" | grep path | awk '{ print $2 }' | sed 's/{version}/FOO/'
 }
 
 #
@@ -70,6 +72,6 @@ while [[ $# -gt 0 ]]; do
     -V|--version) echo $VERSION ;;
     -h|--help) usage ;;
     --*) echo invalid option $arg. Use --help for more information ;;
-    install) install $1 ;;
+    install) install $* ;;
   esac
 done
