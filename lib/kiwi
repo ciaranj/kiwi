@@ -144,6 +144,27 @@ download() {
 }
 
 #
+# Build seed in the given <dir>.
+# 
+# <dir>
+#
+
+build() {
+  local dir=$1
+  local info=$dir/$(basename $dir).yml
+  if [[ ! -f $info ]]; then abort missing $info; fi
+  local command=$(cat $info | grep build | sed 's/build: *//' )
+  if [[ $command ]]; then
+    log cd $dir
+    cd $dir
+    log "building with \`$ $command'"
+    eval $command
+  else
+    log nothing to build
+  fi
+}
+
+#
 # Install a seed <name> with [version].
 # 
 #   - Downloads seed
@@ -157,6 +178,7 @@ install() {
   setup
   download $*
   unpack $seed
+  build $(dirname $seed)
 }
 
 #
