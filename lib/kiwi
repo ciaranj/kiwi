@@ -15,14 +15,22 @@ VERBOSE=
 
 usage() {
 cat << EOF
-Usage:
-  
-  ${0##*/} [options] [arguments]
 
-Options:
-  -v, --verbose     Verbose
-  -V, --version     Current version triplet
-  -h, --help        Help information
+  Usage:
+    
+    ${0##*/} [options] [command] [arguments]
+    
+  Options:
+    
+    -v, --verbose     Verbose
+    -V, --version     Current version triplet
+    -h, --help        Help information
+    
+  Commands:
+    
+    install           Installs a seed with optional version
+    uninstall         Uninstalls all versions of a seed or the given version
+  
 EOF
 }
 
