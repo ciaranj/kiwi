@@ -7,8 +7,11 @@
 
   * Written in bash script
   * Very fast
-  * Installation of "seeds"
-  * Uninstallation of "seeds"
+  * Installation of "seeds" (archives)
+  * Uninstallation of seeds
+  * Listing of installed seeds and their versions
+  * Ruby seed server with search
+  * Supports arbitrary seed building commands
   
 ## Installation
 
@@ -17,6 +20,10 @@
 ## Uninstallation
 
     $ [sudo] make uninstall
+    
+## Updating 
+
+    $ [sudo] kiwi update
 
 ## Testing
 
