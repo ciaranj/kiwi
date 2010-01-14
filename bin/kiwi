@@ -34,7 +34,7 @@ cat << EOF
     uninstall         Uninstalls all versions of seed <name> or the given [version]
     list              Lists installed seeds and their associated versions
     build             Build <version>.seed with the contents of the current directory
-    update            Updates kiwi to the latest release
+    update self       Updates kiwi to the latest release
 EOF
 }
 
@@ -286,10 +286,16 @@ while [[ $# -gt 0 ]]; do
     -h|--help) usage ;;
     --*) abort "invalid option \`$arg'. Use --help for more information" ;;
     open) open_seed_directory $* ;;
-    update) update_self ;;
     build) pack $* ;;
     uninstall) uninstall $* ;;
     install) install $* ;;
     list) list $* ;;
+    update)
+      if [[ $1 = "self" ]]; then
+        update_self 
+      else
+        abort updating of seeds not yet implemented
+      fi
+      ;;
   esac
 done
