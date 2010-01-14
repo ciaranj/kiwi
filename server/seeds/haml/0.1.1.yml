@@ -4,3 +4,4 @@
   description: Haml template engine
   dependencies:
     - libxmljs 0.1.0
+    - oo 1.2.0
