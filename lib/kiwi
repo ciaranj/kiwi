@@ -231,6 +231,17 @@ list() {
 }
 
 #
+# Open seed directory for the given seed <name>
+# 
+# <name>
+#
+
+open_seed_directory() {
+  if [[ ! $1 ]]; then abort seed name required.; fi
+  $EDITOR $SEED_DEST/$1
+}
+
+#
 # Update kiwi to the latest version.
 # 
 
@@ -252,6 +263,7 @@ while [[ $# -gt 0 ]]; do
     -S|--seeds) echo $SEED_DEST ;;
     -h|--help) usage ;;
     --*) abort "invalid option \`$arg'. Use --help for more information" ;;
+    open) open_seed_directory $* ;;
     update) update_self ;;
     uninstall) uninstall $* ;;
     install) install $* ;;
