@@ -94,7 +94,7 @@ setup_seed() {
 pack() {
   if [[ ! -d $1 ]]; then abort $1 is not a directory; fi
   if [[ ! $2 ]]; then abort version is required; fi
-  tar -cf $2.seed $1
+  tar -czf $2.seed $1
 }
 
 #
@@ -106,7 +106,7 @@ pack() {
 unpack() {
   local dir=$(dirname $1)
   log unpacking $1
-  tar -xf $1 -C $dir 2> /dev/null
+  tar -xzf $1 -C $dir 2> /dev/null
   if [[ $? -ne 0 ]]; then
     log removing $dir
     rm -fr $dir
