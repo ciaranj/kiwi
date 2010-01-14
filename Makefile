@@ -1,6 +1,7 @@
 
 SPEC = spec
-DEST = /usr/bin
+BIN_DEST = /usr/bin
+LIB_DEST = /usr/lib/kiwi
 
 all: clean bin/kiwi
 
@@ -22,9 +23,12 @@ server-stop:
 	@cd server && cat server.pid | xargs kill -TERM
 	
 install: bin/kiwi
-	@cp bin/kiwi $(DEST)/kiwi
+	cp bin/kiwi $(BIN_DEST)/kiwi
+	mkdir -p $(LIB_DEST)
+	cp -fr server $(LIB_DEST)/server
 	
-uninstall: $(DEST)/kiwi
-	@rm $(DEST)/kiwi
+uninstall: $(BIN_DEST)/kiwi
+	rm $(BIN_DEST)/kiwi
+	rm -fr $(LIB_DEST)
 	
 .PHONY: install uninstall clean server-start server-stop test
