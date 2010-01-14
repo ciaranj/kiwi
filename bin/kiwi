@@ -33,7 +33,7 @@ cat << EOF
     install           Installs a seed <name> with optional [version]
     uninstall         Uninstalls all versions of seed <name> or the given [version]
     list              Lists installed seeds and their associated versions
-    build             Build <version>.seed from the given [path] or the current directory
+    build             Build <version>.seed with the contents of the current directory
     update            Updates kiwi to the latest release
 EOF
 }
@@ -92,7 +92,7 @@ setup_seed() {
     log creating $dir
     mkdir -p $dir
   else
-    abort $1 $2 is already installed
+    abort $1 $2 is already installed.
   fi
 }
 
@@ -105,21 +105,18 @@ setup_seed() {
 #
 
 validate() {
-  if [[ ! -f seed.yml ]]; then abort seed.yml required ; fi
+  if [[ ! -f $1/seed.yml ]]; then abort $1/seed.yml required.; fi
 }
 
 #
-# Pack <version>.seed with the contents of [path]
+# Pack <version>.seed with the contents of the current directory.
 # 
-#  - [path] defaults to the current directory
-# 
-# <version> [path]
+# <version>
 #
 
 pack() {
-  if [[ ! $1 ]]; then abort version is required; fi
-  validate ${2-*}
-  tar -czf $1.seed ${2-*}
+  if [[ ! $1 ]]; then abort version is required.; fi
+  tar -czf $1.seed *
 }
 
 #
@@ -135,7 +132,7 @@ unpack() {
   if [[ $? -ne 0 ]]; then
     log removing $dir
     rm -fr $dir
-    abort failed to unpack. Seed is invalid or corrupt
+    abort failed to unpack. Seed is invalid or corrupt.
   fi
   local extracted_dir=$(find $dir -type d -depth 1)
   log copying contents of $extracted_dir

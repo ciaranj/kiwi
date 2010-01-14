@@ -3,6 +3,14 @@ def kiwi *args
   `./bin/kiwi #{args.join(' ')}`
 end
 
+def fixture name
+  File.dirname(__FILE__) + "/fixtures/#{name}"
+end
+
+def in_fixture name, &block
+  Dir.chdir fixture(name), &block
+end
+
 describe "Kiwi" do
   describe "--version" do
     it "should output version triplet" do

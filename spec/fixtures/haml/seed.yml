@@ -1,0 +1,5 @@
+---
+  name: Haml
+  version: 0.1.1
+  description: Haml template engine
+  lib: lib
