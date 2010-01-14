@@ -33,6 +33,7 @@ cat << EOF
     install           Installs a seed <name> with optional [version]
     uninstall         Uninstalls all versions of seed <name> or the given [version]
     list              Lists installed seeds and their associated versions
+    build             Build <version>.seed from the given [path] or the current directory
     update            Updates kiwi to the latest release
 EOF
 }
@@ -96,15 +97,16 @@ setup_seed() {
 }
 
 #
-# Pack seed <path> as <name>.seed
+# Pack <version>.seed with the contents of [path]
 # 
-# <path> <name>
+#  - [path] defaults to the current directory
+# 
+# <version> [path]
 #
 
 pack() {
-  if [[ ! -d $1 ]]; then abort $1 is not a directory; fi
-  if [[ ! $2 ]]; then abort version is required; fi
-  tar -czf $2.seed $1
+  if [[ ! $1 ]]; then abort version is required; fi
+  tar -czf $1.seed ${2-*}
 }
 
 #
@@ -275,6 +277,7 @@ while [[ $# -gt 0 ]]; do
     --*) abort "invalid option \`$arg'. Use --help for more information" ;;
     open) open_seed_directory $* ;;
     update) update_self ;;
+    build) pack $* ;;
     uninstall) uninstall $* ;;
     install) install $* ;;
     list) list $* ;;
