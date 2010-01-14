@@ -1,0 +1,282 @@
+#!/usr/bin/env bash
+
+#
+# Defaults
+#
+
+VERSION=0.0.1
+ORIGIN=git://github.com/visionmedia/kiwi.git
+SERVER=http://0.0.0.0:8888
+SEED_DEST=~/.kiwi/seeds
+VERBOSE=
+
+#
+# Output usage.
+#
+
+usage() {
+cat << EOF
+
+  Usage:
+    
+    ${0##*/} [options] [command] [arguments]
+    
+  Options:
+    
+    -v, --verbose     Verbose
+    -V, --version     Current version triplet
+    -S, --seeds       Output seed directory
+    -h, --help        Help information
+    
+  Commands:
+    
+    install           Installs a seed <name> with optional [version]
+    uninstall         Uninstalls all versions of seed <name> or the given [version]
+    list              Lists installed seeds and their associated versions
+    update            Updates kiwi to the latest release
+EOF
+}
+
+#
+# Abort with the given <msg ...>
+# 
+# <msg ...>
+#
+
+abort() {
+  echo $* && exit 1
+}
+
+#
+# Log the given <msg ...> when $VERBOSE is true.
+# 
+# <msg ...>
+#
+
+log() {
+  if [[ $VERBOSE ]]; then echo ... $*; fi
+}
+
+#
+# Abort unless seed <name> is present.
+# 
+# <name>
+#
+
+require_seed_name() {
+  if [[ ! $1 ]]; then abort seed name required.; fi
+}
+
+#
+# Create $SEED_DEST when not present.
+# 
+
+setup() {
+  if [[ ! -d $SEED_DEST ]]; then
+    log creating $SEED_DEST
+    mkdir -p $SEED_DEST  
+  fi
+}
+
+#
+# Create $SEED_DEST/<name>/<version> when not present, 
+# otherwise abort with already installed message.
+# 
+# <name> <version>
+#
+
+setup_seed() {
+  local dir=$SEED_DEST/$1/$2
+  if [[ ! -d $dir ]]; then
+    log creating $dir
+    mkdir -p $dir
+  else
+    abort $1 $2 is already installed
+  fi
+}
+
+#
+# Pack seed <path> as <name>.seed
+# 
+# <path> <name>
+#
+
+pack() {
+  if [[ ! -d $1 ]]; then abort $1 is not a directory; fi
+  if [[ ! $2 ]]; then abort version is required; fi
+  tar -czf $2.seed $1
+}
+
+#
+# Unpack <seed> using tar.
+# 
+# <seed>
+#
+
+unpack() {
+  local dir=$(dirname $1)
+  log unpacking $1
+  tar -xzf $1 -C $dir 2> /dev/null
+  if [[ $? -ne 0 ]]; then
+    log removing $dir
+    rm -fr $dir
+    abort failed to unpack. Seed is invalid or corrupt
+  fi
+  local extracted_dir=$(find $dir -type d -depth 1)
+  log copying contents of $extracted_dir
+  cp -fr $extracted_dir/* $dir
+  log removing $extracted_dir
+  rm -fr $extracted_dir
+  log removing $seed
+  rm -f $seed
+}
+
+#
+# Download seed <name> with [version] to $SEED_DEST/<name>/[version]/<name>.seed
+# 
+# Populates global $seed with path to the seed archive.
+# 
+# <name> [version]
+#
+
+download() {
+  local name=$1
+  local version=$2
+  require_seed_name $name
+  if [[ ! $version ]]; then
+    log looking up latest version
+    version=$(curl -s $SERVER/$name/latest)
+  fi
+  setup_seed $name $version
+  log transfering $name $version
+  seed=$SEED_DEST/$name/$version/$name.seed
+  curl -s $SERVER/$name/$version -o $seed
+}
+
+#
+# Build seed in the given <dir>.
+# 
+# <dir>
+#
+
+build() {
+  local dir=$1
+  local info=$dir/$(basename $dir).yml
+  if [[ ! -f $info ]]; then abort missing $info; fi
+  local command=$(cat $info | grep build | sed 's/build: *//' )
+  if [[ $command ]]; then
+    log cd $dir
+    cd $dir
+    log "building with \`$ $command'"
+    if [[ $VERBOSE ]]; then
+      eval $command
+    else
+      eval "$command > /dev/null"
+    fi
+  else
+    log "nothing to build; skipping"
+  fi
+}
+
+#
+# Install a seed <name> with [version].
+# 
+#   - Downloads seed
+#   - Unpacks the seed
+#   - Copys metadata
+# 
+# <name> [version]
+#
+
+install() {
+  setup
+  download $*
+  unpack $seed
+  build $(dirname $seed)
+}
+
+#
+# Uninstall seed <name> with [version]. When [version] is not
+# present all versions of the seed will be removed.
+# 
+# <name> [version]
+#
+
+uninstall() {
+  require_seed_name $1
+  if [[ $2 ]]; then
+    if [[ -d $SEED_DEST/$1/$2 ]]; then
+      log uninstalling $1 $2
+      rm -fr $SEED_DEST/$1/$2
+    else
+      log cannot find $1 $2
+    fi  
+  else
+    if [[ -d $SEED_DEST/$1 ]]; then
+      log uninstalling all versions of $1
+      rm -fr $SEED_DEST/$1  
+    else
+      log cannot find $1
+    fi
+  fi
+}
+
+#
+# List install seeds and their associated versions.
+# 
+
+list() {
+  local seeds=$SEED_DEST/*
+  for seed in $seeds;
+  do
+    local seed=$(basename $seed)
+    printf "%15s : " $seed
+    local versions=$SEED_DEST/$seed/*
+    for version in $versions
+    do
+      echo -n "$(basename $version) "  
+    done
+    echo
+  done
+}
+
+#
+# Open seed directory for the given seed <name>
+# 
+# <name>
+#
+
+open_seed_directory() {
+  require_seed_name $1
+  $EDITOR $SEED_DEST/$1
+}
+
+#
+# Update kiwi to the latest version.
+# 
+
+update_self() {
+  cd /tmp && git clone $ORIGIN && 
+  cd kiwi && sudo make install &&
+  echo -n 'Updated kiwi to ' && kiwi --version
+}
+
+#
+# Parse arguments.
+#
+
+while [[ $# -gt 0 ]]; do
+  arg=$1; shift
+  case $arg in
+    -v|--verbose) VERBOSE=1 ;;
+    -V|--version) echo $VERSION ;;
+    -S|--seeds) echo $SEED_DEST ;;
+    -h|--help) usage ;;
+    --*) abort "invalid option \`$arg'. Use --help for more information" ;;
+    open) open_seed_directory $* ;;
+    update) update_self ;;
+    uninstall) uninstall $* ;;
+    install) install $* ;;
+    list) list $* ;;
+  esac
+done
