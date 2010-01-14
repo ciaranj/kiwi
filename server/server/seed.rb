@@ -1,45 +1,76 @@
 
 SEEDS = File.expand_path File.dirname(__FILE__) + '/../seeds'
 
-helpers do
-  
-  ##
-  # Return array of seed paths.
-  
-  def seed_paths
-    Dir[SEEDS + '/*']
-  end
-  
-  ##
-  # Return array of versions for the given seed _name_.
-  
-  def seed_versions name
-    Dir[SEEDS + "/#{name}/*.yml"].map do |version| 
-      File.basename(version).sub('.yml', '')
+module Kiwi
+  class Seed
+    
+    ##
+    # Seed name.
+    
+    attr_reader :name
+    
+    ##
+    # Seed directory.
+    
+    attr_reader :path
+    
+    ##
+    # Initialize with seed _name_.
+    
+    def initialize name
+      @name = name
+      @path = SEEDS + '/' + name
     end
-  end
-  
-  ##
-  # Return array of seed names.
-  
-  def seed_names
-    seed_paths.map { |path| File.basename path }
-  end
-  
-  ##
-  # Read yaml file for seed _name_ and _version_.
-  
-  def seed name, version
-    YAML.load_file SEEDS + "/#{name}/#{version}.yml"
-  end
-  
-  ##
-  # Transfer seed _name_ and _version_ if it exists.
-  
-  def transfer_seed name, version
-    path = SEEDS + "/#{name}/#{version}.seed"
-    File.exists?(path) || halt(404)
-    content_type :tar
-    send_file path
+    
+    ##
+    # Return array of versions available.
+    
+    def versions
+      Dir["#{path}/*.yml"].map do |version|
+        File.basename version, '.yml'
+      end
+    end
+    
+    ##
+    # Load YAML info for the given _version_.
+    
+    def info version
+      YAML.load_file path + "/#{version}.yml"
+    end
+    
+    ##
+    # Check if _version_ of this seed exists.
+    
+    def seed_exists? version
+      File.exists? "#{path}/#{version}.seed"
+    end
+    
+    ##
+    # Transfer _version_ of this seed.
+    
+    def transfer version
+      halt 404 unless seed_exists? version
+      content_type :tar
+      send_file "#{path}/#{version}.seed"
+    end
+    
+    #--
+    # Singleton methods
+    #++
+    
+    ##
+    # Return array of all seed paths.
+    
+    def self.paths
+      Dir[SEEDS + '/*']
+    end
+    
+    ##
+    # Return array of all seed names.
+    
+    def self.names
+      paths.map { |path| File.basename path }
+    end
+    
   end
 end
