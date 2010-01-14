@@ -164,7 +164,7 @@ build() {
       eval "$command > /dev/null"
     fi
   else
-    log nothing to build; skipping
+    log "nothing to build; skipping"
   fi
 }
 
