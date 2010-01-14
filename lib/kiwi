@@ -58,6 +58,16 @@ log() {
 }
 
 #
+# Abort unless seed <name> is present.
+# 
+# <name>
+#
+
+require_seed_name() {
+  if [[ ! $1 ]]; then abort seed name required.; fi
+}
+
+#
 # Create $SEED_DEST when not present.
 # 
 
@@ -132,7 +142,7 @@ unpack() {
 download() {
   local name=$1
   local version=$2
-  if [[ ! $name ]]; then abort seed name required.; fi
+  require_seed_name $name
   if [[ ! $version ]]; then
     log looking up latest version
     version=$(curl -s $SERVER/$name/latest)
@@ -193,7 +203,7 @@ install() {
 #
 
 uninstall() {
-  if [[ ! $1 ]]; then abort seed name required.; fi
+  require_seed_name $1
   if [[ $2 ]]; then
     if [[ -d $SEED_DEST/$1/$2 ]]; then
       log uninstalling $1 $2
@@ -237,7 +247,7 @@ list() {
 #
 
 open_seed_directory() {
-  if [[ ! $1 ]]; then abort seed name required.; fi
+  require_seed_name $1
   $EDITOR $SEED_DEST/$1
 }
 
