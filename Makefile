@@ -23,7 +23,7 @@ server-stop:
 	@cd server && cat server.pid | xargs kill -TERM
 	
 install: bin/kiwi
-	cp bin/kiwi $(BIN_DEST)/kiwi
+	install bin/kiwi $(BIN_DEST)/kiwi
 	mkdir -p $(LIB_DEST)
 	cp -fr server $(LIB_DEST)/server
 	
