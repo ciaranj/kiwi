@@ -39,19 +39,17 @@ module Kiwi
     end
     
     ##
-    # Check if _version_ of this seed exists.
+    # Return the path to _version_'s seed.
     
-    def seed_exists? version
-      File.exists? "#{path}/#{version}.seed"
+    def path_for version
+      "#{path}/#{version}.seed"
     end
     
     ##
-    # Transfer _version_ of this seed.
+    # Check if _version_ of this seed exists.
     
-    def transfer version
-      halt 404 unless seed_exists? version
-      content_type :tar
-      send_file "#{path}/#{version}.seed"
+    def exists? version
+      File.exists? path_for(version)
     end
     
     #--
