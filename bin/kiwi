@@ -317,10 +317,10 @@ while [[ $# -gt 0 ]]; do
       fi
       ;;
     open) open_seed_directory $* ;;
-    build) pack $* ;;
     uninstall) uninstall $* ;;
     install) install $* ;;
     search) search $* ;;
+    build) pack $* ;;
     list) list $* ;;
   esac
 done
