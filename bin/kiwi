@@ -57,7 +57,8 @@ abort() {
 #
 
 log() {
-  if [[ $VERBOSE ]]; then echo ... $*; fi
+  local key=$1; shift
+  if [[ $VERBOSE ]]; then printf "%10s : %s\n" $key "$*"; fi
 }
 
 #
@@ -76,7 +77,7 @@ require_seed_name() {
 
 setup() {
   if [[ ! -d $SEED_DEST ]]; then
-    log creating $SEED_DEST
+    log create $SEED_DEST
     mkdir -p $SEED_DEST  
   fi
 }
@@ -91,7 +92,7 @@ setup() {
 setup_seed() {
   local dir=$SEED_DEST/$1/$2
   if [[ ! -d $dir ]]; then
-    log creating $dir
+    log create $dir
     mkdir -p $dir
   else
     abort $1 $2 is already installed.
@@ -129,7 +130,7 @@ pack() {
 
 unpack() {
   local dir=$(dirname $1)
-  log unpacking $1
+  log unpack $1
   tar -xzf $1 -C $dir 2> /dev/null
   if [[ $? -ne 0 ]]; then
     log removing $dir
@@ -137,11 +138,10 @@ unpack() {
     abort failed to unpack. Seed is invalid or corrupt.
   fi
   local extracted_dir=$(find $dir -type d -depth 1)
-  log copying contents of $extracted_dir
   cp -fr $extracted_dir/* $dir
-  log removing $extracted_dir
+  log remove $extracted_dir
   rm -fr $extracted_dir
-  log removing $seed
+  log remove $seed
   rm -f $seed
 }
 
@@ -168,11 +168,11 @@ download() {
   local version=$2
   require_seed_name $name
   if [[ ! $version ]]; then
-    log looking up latest version
+    log fetch latest version
     version=$(curl -s $SERVER/$name/latest)
   fi
   setup_seed $name $version
-  log transfering $name $version
+  log fetch $version.seed
   seed=$SEED_DEST/$name/$version/$name.seed
   curl -s $SERVER/$name/$version -o $seed
 }
@@ -191,14 +191,14 @@ build() {
   if [[ $command ]]; then
     log cd $dir
     cd $dir
-    log "building with \`$ $command'"
+    log build $command
     if [[ $VERBOSE ]]; then
       eval $command
     else
       eval "$command > /dev/null"
     fi
   else
-    log "nothing to build; skipping"
+    log build skipping
   fi
 }
 
@@ -227,7 +227,7 @@ publish() {
 
 install_dependencies() {
   if [[ ! -f $1 ]]; then abort invalid seed.yml file.; fi
-  log installing dependencies
+  log check dependencies
   cat $1 | awk '$1 == "dependencies:", $1 ~ /\w+:/' | grep ' -' | awk '{ system("kiwi install " $2 " " $3) }'
 }
 
@@ -242,6 +242,7 @@ install_dependencies() {
 #
 
 install() {
+  log install $*
   setup
   download $*
   unpack $seed
@@ -260,17 +261,17 @@ uninstall() {
   require_seed_name $1
   if [[ $2 ]]; then
     if [[ -d $SEED_DEST/$1/$2 ]]; then
-      log uninstalling $1 $2
+      log uninstall $1 $2
       rm -fr $SEED_DEST/$1/$2
     else
       log cannot find $1 $2
     fi  
   else
     if [[ -d $SEED_DEST/$1 ]]; then
-      log uninstalling all versions of $1
+      log uninstall all versions of $1
       rm -fr $SEED_DEST/$1  
     else
-      log cannot find $1
+      log error cannot find $1
     fi
   fi
 }
