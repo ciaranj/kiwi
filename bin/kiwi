@@ -303,6 +303,26 @@ update_self() {
 }
 
 #
+# Require presence of seed <name> or abort.
+# 
+# <name>
+#
+
+require_seed_name() {
+  test $1 || abort "seed name required."
+}
+
+#
+# Require presence of seed <version> or abort.
+# 
+# <version>
+#
+
+require_seed_version() {
+  test $1 || abort "seed version required."
+}
+
+#
 # Parse arguments.
 #
 
@@ -322,23 +342,23 @@ while [[ $# -gt 0 ]]; do
       fi
       ;;
     open)
-      test $1 || abort "seed name required."
+      require_seed_name $1
       open_seed_directory $*
       ;;
     uninstall)
-      test $1 || abort "seed name required."
+      require_seed_name $1
       uninstall $* 
       ;;
     install)
-      test $1 || abort "seed name required."
+      require_seed_name $1
       install $*
       ;;
     publish)
-      test $1 || abort "seed name required."
-      test $2 || abort "seed version required."
+      require_seed_name $1
+      require_seed_version $2
       publish $* ;;
     build)
-      test $1 || abort "seed version required."
+      require_seed_version $1
       pack $*
       ;;
     search) 
