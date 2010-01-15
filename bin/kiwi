@@ -118,9 +118,10 @@ pack() {
 #
 
 unpack() {
+  local seed=$1
   local dir=$(dirname $1)
-  log unpack $1
-  tar -xzf $1 -C $dir 2> /dev/null
+  log unpack $seed
+  tar -xzf $seed -C $dir 2> /dev/null
   if [[ $? -ne 0 ]]; then
     log removing $dir
     rm -fr $dir
@@ -170,7 +171,7 @@ download() {
 build() {
   local dir=$1
   local info=$dir/seed.yml
-  if [[ ! -f $info ]]; then abort missing $info; fi
+  require_seed_info_file $info
   local command=$(cat $info | grep build | sed 's/build: *//' )
   if [[ $command ]]; then
     log cd $dir
@@ -197,7 +198,7 @@ publish() {
   local version=$2
   local seed=$version.seed
   if [[ ! -f $seed ]]; then abort seed not found.; fi
-  if [[ ! -f seed.yml ]]; then abort seed.yml not found.; fi
+  require_seed_info_file seed.yml
   curl -F seed=@$seed -F info=@seed.yml $SERVER/$name
 }
 
@@ -208,7 +209,7 @@ publish() {
 #
 
 install_dependencies() {
-  if [[ ! -f $1 ]]; then abort invalid seed.yml file.; fi
+  require_seed_info_file $1
   log check dependencies
   cat $1 | awk '$1 == "dependencies:", $1 ~ /\w+:/' | grep ' -' | awk '{ system("kiwi install " $2 " " $3) }'
 }
@@ -246,19 +247,21 @@ install() {
 #
 
 uninstall() {
-  if [[ $2 ]]; then
-    if [[ -d $SEED_DEST/$1/$2 ]]; then
-      log uninstall $1 $2
-      rm -fr $SEED_DEST/$1/$2
+  local name=$1
+  local version=$2
+  if [[ $version ]]; then
+    if [[ -d $SEED_DEST/$name/$version ]]; then
+      log uninstall $name $version
+      rm -fr $SEED_DEST/$name/$version
     else
-      log cannot find $1 $2
+      log cannot find $name $version
     fi  
   else
-    if [[ -d $SEED_DEST/$1 ]]; then
-      log uninstall all versions of $1
-      rm -fr $SEED_DEST/$1  
+    if [[ -d $SEED_DEST/$name ]]; then
+      log uninstall all versions of $name
+      rm -fr $SEED_DEST/$name
     else
-      log error cannot find $1
+      log error cannot find $name
     fi
   fi
 }
@@ -300,6 +303,16 @@ update_self() {
   cd /tmp && git clone $ORIGIN && 
   cd kiwi && sudo make install &&
   echo -n 'Updated kiwi to ' && kiwi --version
+}
+
+#
+# Require presence of seed info <file> or abort.
+# 
+# <file>
+#
+
+require_seed_info_file() {
+  if [[ ! -f $1 ]]; then abort seed.yml file required.; fi
 }
 
 #
