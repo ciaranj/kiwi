@@ -211,9 +211,8 @@ install_dependencies() {
   if [[ ! -f $1 ]]; then abort invalid seed.yml file; fi
   log installing dependencies
   # TODO: better solution
-  # TODO: ONLY dependencies:
   # TODO: pass any args such as -v and others ...
-  cat $1 | awk '/ -/ { print system("kiwi install" $2 " " $3) }'
+  cat $1 | awk '$1 == "dependencies:", $1 ~ /\w+:/' | grep ' -' | awk '{ system("kiwi install " $2 " " $3) }'
 }
 
 #
