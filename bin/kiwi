@@ -309,7 +309,7 @@ update_self() {
 #
 
 require_seed_name() {
-  test $1 || abort "seed name required."
+  test $1 || abort seed name required.
 }
 
 #
@@ -319,7 +319,7 @@ require_seed_name() {
 #
 
 require_seed_version() {
-  test $1 || abort "seed version required."
+  test $1 || abort seed version required.
 }
 
 #
