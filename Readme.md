@@ -30,6 +30,19 @@
 Specs are run using Ruby RSpec's `spec` executable.
   
     $ make server-start && make test && make server-stop
+    
+## Dependencies
+
+Program dependencies are as follows:
+
+  * sed
+  * awk
+  * tar
+  
+Currently tested with:
+  
+  * MacOS 1.5.8
+  * tar (GNU tar) 1.15.1
 
 ## License 
 
