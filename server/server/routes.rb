@@ -40,7 +40,8 @@ post '/:name/?' do
   halt 500, 'seed.yml required' unless info
   version = File.basename seed[:filename], '.seed'
   halt 500, '<version> is invalid; must be formatted as "n.n.n"' unless version =~ /\A\d+\.\d+\.\d+\z/
-  FileUtils.mv seed[:tempfile].path, SEEDS + "/#{name}/#{version}.seed"
-  FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml"
-  "published #{name} #{version}"
+  FileUtils.mkdir_p SEEDS + "/#{name}"
+  FileUtils.mv seed[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
+  FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml", :force => true
+  "published #{name} #{version}\n"
 end

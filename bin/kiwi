@@ -35,6 +35,7 @@ cat << EOF
     search            Search remotely available seeds with optional [pattern]
     list              Lists installed seeds and their associated versions
     build             Build <version>.seed with the contents of the current directory
+    publish           Build seed <name> and <version> to the kiwi server
     update self       Updates kiwi to the latest release
 EOF
 }
@@ -214,7 +215,8 @@ publish() {
   test $name || abort name required.
   test $version || abort version required.
   if [[ ! -f $seed ]]; then abort seed not found.; fi
-  echo $(curl -s -F seed=@$seed -F info=@seed.yml $SERVER/$name)
+  if [[ ! -f seed.yml ]]; then abort seed.yml not found.; fi
+  curl -F seed=@$seed -F info=@seed.yml $SERVER/$name
 }
 
 #
