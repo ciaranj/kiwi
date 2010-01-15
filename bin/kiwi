@@ -256,12 +256,12 @@ uninstall() {
 # 
 
 list() {
-  local seeds=$SEED_DEST/*
-  for seed in $seeds;
+  local dirs=$SEED_DEST/*
+  for dir in $dirs;
   do
-    local seed=$(basename $seed)
-    printf "%15s : " $seed
-    local versions=$SEED_DEST/$seed/*
+    local name=$(basename $dir)
+    printf "%15s : " $name
+    local versions=$SEED_DEST/$name/*
     for version in $versions
     do
       echo -n "$(basename $version) "  
@@ -288,6 +288,19 @@ update_self() {
   cd /tmp && git clone $ORIGIN && 
   cd kiwi && sudo make install &&
   echo -n 'Updated kiwi to ' && kiwi --version
+}
+
+#
+# Install the latest version of all installed seeds.
+# 
+
+update_all() {
+  local dirs=$SEED_DEST/*
+  for dir in $dirs;
+  do
+    local name=$(basename $dir)
+    install $name
+  done
 }
 
 #
@@ -336,7 +349,7 @@ while [[ $# -gt 0 ]]; do
       if [[ $1 = "self" ]]; then
         update_self 
       else
-        abort "updating of seeds not yet implemented"
+        update_all
       fi
       ;;
     open)
