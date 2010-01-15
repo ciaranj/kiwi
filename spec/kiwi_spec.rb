@@ -49,7 +49,7 @@ describe "Kiwi" do
   describe "uninstall" do
     describe "" do
       it "should abort with seed name required" do
-        kiwi('uninstall').should include('seed name required')
+        kiwi('uninstall').should include('seed name is required')
       end
     end
     
@@ -75,7 +75,7 @@ describe "Kiwi" do
   describe "install" do
     describe "" do
       it "should abort with seed name required" do
-        kiwi('install').should include('seed name required')
+        kiwi('install').should include('seed name is required')
       end
     end
     

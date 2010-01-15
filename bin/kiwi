@@ -68,7 +68,17 @@ log() {
 #
 
 require_seed_name() {
-  test $1 || abort seed name required.
+  test $1 || abort seed name is required.
+}
+
+#
+# Abort unless seed <version> is present.
+# 
+# <version>
+#
+
+require_seed_version() {
+  test $1 || abort seed version is required.
 }
 
 #
@@ -118,7 +128,7 @@ validate() {
 #
 
 pack() {
-  test $1 || abort version is required.
+  require_seed_version $1
   tar -czf $1.seed *
 }
 
@@ -156,11 +166,11 @@ search() {
 }
 
 #
-# Download seed <name> with [version] to $SEED_DEST/<name>/[version]/<name>.seed
+# Download seed <name> with <version> to $SEED_DEST/<name>/<version>/<name>.seed
 # 
 # Populates global $seed with path to the seed archive.
 # 
-# <name> [version]
+# <name> <version>
 #
 
 download() {
@@ -212,8 +222,8 @@ publish() {
   local name=$1
   local version=$2
   local seed=$version.seed
-  test $name || abort name required.
-  test $version || abort version required.
+  require_seed_name $name
+  require_seed_version $version
   if [[ ! -f $seed ]]; then abort seed not found.; fi
   if [[ ! -f seed.yml ]]; then abort seed.yml not found.; fi
   curl -F seed=@$seed -F info=@seed.yml $SERVER/$name
