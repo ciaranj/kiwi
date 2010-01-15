@@ -84,6 +84,10 @@ describe "Kiwi" do
         `rm -fr ~/.kiwi/seeds`
       end
       
+      it "should output verbose information when -v is used" do
+        kiwi('-v install haml').should include("install : haml\n     fetch : latest version")
+      end
+      
       it "should setup ~/.kiwi/seeds" do
         kiwi('install haml')
         File.directory?(File.expand_path('~/.kiwi/seeds')).should be_true
