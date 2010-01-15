@@ -7,11 +7,13 @@
 
   * Written in bash script
   * Very fast
-  * Installation of "seeds" (archives)
+  * Packaging of "seeds" (tarballs)
+  * Installation of seeds
   * Uninstallation of seeds
   * Listing of installed seeds and their versions
   * Ruby seed server with search
   * Supports arbitrary seed building commands
+  * Publishing of seeds to the kiwi server
   
 ## Installation
 
