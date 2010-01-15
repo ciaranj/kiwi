@@ -30,6 +30,22 @@ describe "Kiwi" do
     end
   end
   
+  describe "search" do
+    describe "" do
+      it "should output a list of available seeds and their associated versions" do
+        kiwi('search').should include('haml : 0.1.1')
+        kiwi('search').should include('  oo : 1.2.0')
+      end
+    end
+    
+    describe "<pattern>" do
+      it "should filter by name" do
+        kiwi('search ml').should include('haml : 0.1.1')
+        kiwi('search ml').should_not include('oo')
+      end
+    end
+  end
+  
   describe "uninstall" do
     describe "" do
       it "should abort with seed name required" do
