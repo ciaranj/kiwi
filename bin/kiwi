@@ -332,7 +332,7 @@ while [[ $# -gt 0 ]]; do
     -v|--verbose) VERBOSE=1 ;;
     -V|--version) echo $VERSION ;;
     -S|--seeds) echo $SEED_DEST ;;
-    -h|--help) usage ;;
+    -h|--help|help) usage ;;
     --*) abort "invalid option \`$arg'. Use --help for more information" ;;
     update)
       if [[ $1 = "self" ]]; then
