@@ -8,6 +8,7 @@ VERSION=0.0.1
 ORIGIN=git://github.com/visionmedia/kiwi.git
 SERVER=http://0.0.0.0:8888
 SEED_DEST=~/.kiwi/seeds
+UPDATE=0
 VERBOSE=
 
 #
@@ -36,6 +37,7 @@ cat << EOF
     list              Lists installed seeds and their associated versions
     build             Build <version>.seed with the contents of the current directory
     publish           Build seed <name> and <version> to the kiwi server
+    update            Install the latest release of every seed installed
     update self       Updates kiwi to the latest release
 EOF
 }
@@ -85,7 +87,9 @@ setup_seed() {
     log create $dir
     mkdir -p $dir
   else
-    abort "$1 $2 is already installed."
+    if [[ $UPDATE -eq 0 ]]; then
+      abort "$1 $2 is already installed."
+    fi
   fi
 }
 
@@ -295,6 +299,7 @@ update_self() {
 # 
 
 update_all() {
+  UPDATE=1
   local dirs=$SEED_DEST/*
   for dir in $dirs;
   do
