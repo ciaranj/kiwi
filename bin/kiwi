@@ -244,9 +244,9 @@ install_dependencies() {
 #
 # Install a seed <name> with [version].
 # 
-#   - Downloads seed
-#   - Unpacks the seed
-#   - Copys metadata
+#   - Fetches latest version when [version] absent
+#   - Downloads seed tarball
+#   - Unpacks the tarball
 # 
 # <name> [version]
 #
