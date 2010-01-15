@@ -90,24 +90,13 @@ setup_seed() {
 }
 
 #
-# Validate the given <path> for seed building.
-# 
-#  - Ensures that seed.yml is present 
-#
-# <path>
-#
-
-validate() {
-  if [[ ! -f $1/seed.yml ]]; then abort $1/seed.yml required.; fi
-}
-
-#
 # Pack <version>.seed with the contents of the current directory.
 # 
 # <version>
 #
 
 pack() {
+  require_seed_info_file seed.yml
   tar -czf $1.seed *
 }
 
