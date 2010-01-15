@@ -210,6 +210,7 @@ build() {
 install_dependencies() {
   if [[ ! -f $1 ]]; then abort invalid seed.yml file; fi
   log installing dependencies
+  cat $1 | awk '/ -/ { print $2, $3 }' | xargs kiwi install
 }
 
 #
