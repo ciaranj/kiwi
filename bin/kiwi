@@ -309,12 +309,6 @@ while [[ $# -gt 0 ]]; do
     -S|--seeds) echo $SEED_DEST ;;
     -h|--help) usage ;;
     --*) abort "invalid option \`$arg'. Use --help for more information" ;;
-    open) open_seed_directory $* ;;
-    build) pack $* ;;
-    uninstall) uninstall $* ;;
-    install) install $* ;;
-    search) search $* ;;
-    list) list $* ;;
     update)
       if [[ $1 = "self" ]]; then
         update_self 
@@ -322,5 +316,11 @@ while [[ $# -gt 0 ]]; do
         abort updating of seeds not yet implemented
       fi
       ;;
+    open) open_seed_directory $* ;;
+    build) pack $* ;;
+    uninstall) uninstall $* ;;
+    install) install $* ;;
+    search) search $* ;;
+    list) list $* ;;
   esac
 done
