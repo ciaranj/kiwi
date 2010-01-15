@@ -67,7 +67,7 @@ log() {
 
 setup() {
   if [[ ! -d $SEED_DEST ]]; then
-    log "create $SEED_DEST"
+    log create $SEED_DEST
     mkdir -p $SEED_DEST  
   fi
 }
@@ -82,7 +82,7 @@ setup() {
 setup_seed() {
   local dir=$SEED_DEST/$1/$2
   if [[ ! -d $dir ]]; then
-    log "create $dir"
+    log create $dir
     mkdir -p $dir
   else
     abort "$1 $2 is already installed."
@@ -112,15 +112,15 @@ unpack() {
   log unpack $seed
   tar -xzf $seed -C $dir 2> /dev/null
   if [[ $? -ne 0 ]]; then
-    log "removing $dir"
+    log removing $dir
     rm -fr $dir
     abort "failed to unpack. Seed is invalid or corrupt."
   fi
   local extracted_dir=$(find $dir -type d -depth 1)
   cp -fr $extracted_dir/* $dir
-  log "remove $extracted_dir"
+  log remove $extracted_dir
   rm -fr $extracted_dir
-  log "remove $seed"
+  log remove $seed
   rm -f $seed
 }
 
@@ -146,7 +146,7 @@ download() {
   local name=$1
   local version=$2
   setup_seed $name $version
-  log "fetch $version.seed"
+  log fetch $version.seed
   seed=$SEED_DEST/$name/$version/$name.seed
   curl -s $SERVER/$name/$version -o $seed
 }
@@ -163,9 +163,9 @@ build() {
   require_seed_info_file $info
   local command=$(cat $info | grep build | sed 's/build: *//' )
   if [[ $command ]]; then
-    log "cd $dir"
+    log cd $dir
     cd $dir
-    log "build $command"
+    log build $command
     if [[ $VERBOSE ]]; then
       eval $command
     else
@@ -217,7 +217,7 @@ install() {
   log install $name $version
   setup
   if [[ ! $version ]]; then
-    log "fetch latest version"
+    log fetch latest version
     version=$(curl -s $SERVER/$name/latest)
   fi
   download $name $version
