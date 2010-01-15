@@ -43,6 +43,7 @@ Currently tested with:
   
   * MacOS 1.5.8
   * tar (GNU tar) 1.15.1
+  * curl 7.16.3
 
 ## License 
 
