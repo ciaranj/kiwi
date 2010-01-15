@@ -184,7 +184,7 @@ download() {
 
 build() {
   local dir=$1
-  local info=$dir/$(basename $dir).yml
+  local info=$dir/seed.yml
   if [[ ! -f $info ]]; then abort missing $info; fi
   local command=$(cat $info | grep build | sed 's/build: *//' )
   if [[ $command ]]; then
@@ -202,6 +202,17 @@ build() {
 }
 
 #
+# Install dependencies defined in the given seed info <file>.
+# 
+# <file>
+#
+
+install_dependencies() {
+  if [[ ! -f $1 ]]; then abort invalid seed.yml file; fi
+  log installing dependencies
+}
+
+#
 # Install a seed <name> with [version].
 # 
 #   - Downloads seed
@@ -216,6 +227,7 @@ install() {
   download $*
   unpack $seed
   build $(dirname $seed)
+  install_dependencies $(dirname $seed)/seed.yml
 }
 
 #
