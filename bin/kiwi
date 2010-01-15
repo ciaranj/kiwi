@@ -62,26 +62,6 @@ log() {
 }
 
 #
-# Abort unless seed <name> is present.
-# 
-# <name>
-#
-
-require_seed_name() {
-  test $1 || abort seed name is required.
-}
-
-#
-# Abort unless seed <version> is present.
-# 
-# <version>
-#
-
-require_seed_version() {
-  test $1 || abort seed version is required.
-}
-
-#
 # Create $SEED_DEST when not present.
 # 
 
@@ -128,7 +108,6 @@ validate() {
 #
 
 pack() {
-  require_seed_version $1
   tar -czf $1.seed *
 }
 
@@ -176,11 +155,6 @@ search() {
 download() {
   local name=$1
   local version=$2
-  require_seed_name $name
-  if [[ ! $version ]]; then
-    log fetch latest version
-    version=$(curl -s $SERVER/$name/latest)
-  fi
   setup_seed $name $version
   log fetch $version.seed
   seed=$SEED_DEST/$name/$version/$name.seed
@@ -222,8 +196,6 @@ publish() {
   local name=$1
   local version=$2
   local seed=$version.seed
-  require_seed_name $name
-  require_seed_version $version
   if [[ ! -f $seed ]]; then abort seed not found.; fi
   if [[ ! -f seed.yml ]]; then abort seed.yml not found.; fi
   curl -F seed=@$seed -F info=@seed.yml $SERVER/$name
@@ -252,9 +224,15 @@ install_dependencies() {
 #
 
 install() {
-  log install $*
+  local name=$1
+  local version=$2
+  log install $name $version
   setup
-  download $*
+  if [[ ! $version ]]; then
+    log fetch latest version
+    version=$(curl -s $SERVER/$name/latest)
+  fi
+  download $name $version
   unpack $seed
   build $(dirname $seed)
   install_dependencies $(dirname $seed)/seed.yml
@@ -268,7 +246,6 @@ install() {
 #
 
 uninstall() {
-  require_seed_name $1
   if [[ $2 ]]; then
     if [[ -d $SEED_DEST/$1/$2 ]]; then
       log uninstall $1 $2
@@ -312,7 +289,6 @@ list() {
 #
 
 open_seed_directory() {
-  require_seed_name $1
   $EDITOR $SEED_DEST/$1
 }
 
@@ -342,15 +318,34 @@ while [[ $# -gt 0 ]]; do
       if [[ $1 = "self" ]]; then
         update_self 
       else
-        abort updating of seeds not yet implemented
+        abort "updating of seeds not yet implemented"
       fi
       ;;
-    open) open_seed_directory $* ;;
-    uninstall) uninstall $* ;;
-    install) install $* ;;
-    publish) publish $* ;;
-    search) search $* ;;
-    build) pack $* ;;
-    list) list $* ;;
+    open)
+      test $1 || abort "seed name required."
+      open_seed_directory $*
+      ;;
+    uninstall)
+      test $1 || abort "seed name required."
+      uninstall $* 
+      ;;
+    install)
+      test $1 || abort "seed name required."
+      install $*
+      ;;
+    publish)
+      test $1 || abort "seed name required."
+      test $2 || abort "seed version required."
+      publish $* ;;
+    build)
+      test $1 || abort "seed version required."
+      pack $*
+      ;;
+    search) 
+      search $*
+      ;;
+    list)
+      list $*
+      ;;
   esac
 done
