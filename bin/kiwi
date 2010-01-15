@@ -67,7 +67,7 @@ log() {
 
 setup() {
   if [[ ! -d $SEED_DEST ]]; then
-    log create $SEED_DEST
+    log "create $SEED_DEST"
     mkdir -p $SEED_DEST  
   fi
 }
@@ -82,10 +82,10 @@ setup() {
 setup_seed() {
   local dir=$SEED_DEST/$1/$2
   if [[ ! -d $dir ]]; then
-    log create $dir
+    log "create $dir"
     mkdir -p $dir
   else
-    abort $1 $2 is already installed.
+    abort "$1 $2 is already installed."
   fi
 }
 
@@ -98,7 +98,7 @@ setup_seed() {
 #
 
 validate() {
-  if [[ ! -f $1/seed.yml ]]; then abort $1/seed.yml required.; fi
+  if [[ ! -f $1/seed.yml ]]; then "abort $1/seed.yml required."; fi
 }
 
 #
@@ -119,18 +119,18 @@ pack() {
 
 unpack() {
   local dir=$(dirname $1)
-  log unpack $1
+  log "unpack $1"
   tar -xzf $1 -C $dir 2> /dev/null
   if [[ $? -ne 0 ]]; then
-    log removing $dir
+    log "removing $dir"
     rm -fr $dir
-    abort failed to unpack. Seed is invalid or corrupt.
+    abort "failed to unpack. Seed is invalid or corrupt."
   fi
   local extracted_dir=$(find $dir -type d -depth 1)
   cp -fr $extracted_dir/* $dir
-  log remove $extracted_dir
+  log "remove $extracted_dir"
   rm -fr $extracted_dir
-  log remove $seed
+  log "remove $seed"
   rm -f $seed
 }
 
@@ -156,7 +156,7 @@ download() {
   local name=$1
   local version=$2
   setup_seed $name $version
-  log fetch $version.seed
+  log "fetch $version.seed"
   seed=$SEED_DEST/$name/$version/$name.seed
   curl -s $SERVER/$name/$version -o $seed
 }
@@ -170,19 +170,17 @@ download() {
 build() {
   local dir=$1
   local info=$dir/seed.yml
-  if [[ ! -f $info ]]; then abort missing $info; fi
+  if [[ ! -f $info ]]; then abort "missing $info."; fi
   local command=$(cat $info | grep build | sed 's/build: *//' )
   if [[ $command ]]; then
-    log cd $dir
+    log "cd $dir"
     cd $dir
-    log build $command
+    log "build $command"
     if [[ $VERBOSE ]]; then
       eval $command
     else
       eval "$command > /dev/null"
     fi
-  else
-    log build skipping
   fi
 }
 
@@ -196,8 +194,8 @@ publish() {
   local name=$1
   local version=$2
   local seed=$version.seed
-  if [[ ! -f $seed ]]; then abort seed not found.; fi
-  if [[ ! -f seed.yml ]]; then abort seed.yml not found.; fi
+  if [[ ! -f $seed ]]; then abort "seed not found."; fi
+  if [[ ! -f seed.yml ]]; then abort "seed.yml not found."; fi
   curl -F seed=@$seed -F info=@seed.yml $SERVER/$name
 }
 
@@ -208,8 +206,8 @@ publish() {
 #
 
 install_dependencies() {
-  if [[ ! -f $1 ]]; then abort invalid seed.yml file.; fi
-  log check dependencies
+  if [[ ! -f $1 ]]; then abort "invalid seed.yml file."; fi
+  log "check dependencies"
   cat $1 | awk '$1 == "dependencies:", $1 ~ /\w+:/' | grep ' -' | awk '{ system("kiwi install " $2 " " $3) }'
 }
 
@@ -229,7 +227,7 @@ install() {
   log install $name $version
   setup
   if [[ ! $version ]]; then
-    log fetch latest version
+    log "fetch latest version"
     version=$(curl -s $SERVER/$name/latest)
   fi
   download $name $version
@@ -248,17 +246,17 @@ install() {
 uninstall() {
   if [[ $2 ]]; then
     if [[ -d $SEED_DEST/$1/$2 ]]; then
-      log uninstall $1 $2
+      log "uninstall $1 $2"
       rm -fr $SEED_DEST/$1/$2
     else
-      log cannot find $1 $2
+      log "cannot find $1 $2"
     fi  
   else
     if [[ -d $SEED_DEST/$1 ]]; then
-      log uninstall all versions of $1
+      log "uninstall all versions of $1"
       rm -fr $SEED_DEST/$1  
     else
-      log error cannot find $1
+      log "error cannot find $1"
     fi
   fi
 }
