@@ -184,7 +184,7 @@ publish() {
   local name=$1
   local version=$2
   local seed=$version.seed
-  if [[ ! -f $seed ]]; then abort seed not found.; fi
+  if [[ ! -f $seed ]]; then abort $seed not found.; fi
   require_seed_info_file seed.yml
   curl -F seed=@$seed -F info=@seed.yml $SERVER/$name
 }
