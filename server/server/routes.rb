@@ -33,7 +33,6 @@ end
 # Publish seed _name_. Requires _seed_ archive and _info_ file.
 
 post '/:name/?' do
-  # curl -F seed=@0.1.1.seed -F info=@seed.yml http://0.0.0.0:8888/ -i
   name = params[:name]
   seed = params[:seed]
   info = params[:info]

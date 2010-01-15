@@ -202,13 +202,29 @@ build() {
 }
 
 #
+# Publish the given <version> of the seed <name> in the current directory.
+# 
+# <name> <version>
+#
+
+publish() {
+  local name=$1
+  local version=$2
+  local seed=$version.seed
+  if [[ ! $name ]]; then abort name required.; fi
+  if [[ ! $version ]]; then abort version required.; fi
+  if [[ ! -f $seed ]]; then abort seed not found.; fi
+  echo $(curl -s -F seed=@$seed -F info=@seed.yml $SERVER/$name)
+}
+
+#
 # Install dependencies defined in the given seed info <file>.
 # 
 # <file>
 #
 
 install_dependencies() {
-  if [[ ! -f $1 ]]; then abort invalid seed.yml file; fi
+  if [[ ! -f $1 ]]; then abort invalid seed.yml file.; fi
   log installing dependencies
   cat $1 | awk '$1 == "dependencies:", $1 ~ /\w+:/' | grep ' -' | awk '{ system("kiwi install " $2 " " $3) }'
 }
@@ -319,6 +335,7 @@ while [[ $# -gt 0 ]]; do
     open) open_seed_directory $* ;;
     uninstall) uninstall $* ;;
     install) install $* ;;
+    publish) publish $* ;;
     search) search $* ;;
     build) pack $* ;;
     list) list $* ;;
