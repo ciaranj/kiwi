@@ -32,6 +32,7 @@ cat << EOF
     
     install           Installs a seed <name> with optional [version]
     uninstall         Uninstalls all versions of seed <name> or the given [version]
+    search            Search remotely available seeds with optional [pattern]
     list              Lists installed seeds and their associated versions
     build             Build <version>.seed with the contents of the current directory
     update self       Updates kiwi to the latest release
@@ -141,6 +142,16 @@ unpack() {
   rm -fr $extracted_dir
   log removing $seed
   rm -f $seed
+}
+
+#
+# Search remote seeds with the given [pattern].
+# 
+# [pattern]
+#
+
+search() {
+  curl -s $SERVER/search?name=$1
 }
 
 #
@@ -289,6 +300,7 @@ while [[ $# -gt 0 ]]; do
     build) pack $* ;;
     uninstall) uninstall $* ;;
     install) install $* ;;
+    search) search $* ;;
     list) list $* ;;
     update)
       if [[ $1 = "self" ]]; then

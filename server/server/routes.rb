@@ -8,7 +8,7 @@
 get '/search' do
   Kiwi::Seed.names.map do |name|
     next if params[:name] && !name.include?(params[:name])
-    '%15s : %s' % [name, seed_versions(name).join(' ')]
+    '%15s : %s' % [name, Kiwi::Seed.new(name).versions.join(' ')]
   end.compact.join("\n") + "\n"
 end
 
