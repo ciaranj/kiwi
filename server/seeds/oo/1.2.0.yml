@@ -1,4 +1,4 @@
 ---
   name: OO
+  description: Object-Oriented Class support
   version: 1.2.0
-  description: Object-Oriented JavaScript class utilities

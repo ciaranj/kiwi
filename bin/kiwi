@@ -97,7 +97,7 @@ setup_seed() {
 
 pack() {
   require_seed_info_file seed.yml
-  log pack $1.seed
+  log pack "* -> $1.seed"
   tar -czf $1.seed *
 }
 
@@ -117,10 +117,6 @@ unpack() {
     rm -fr $dir
     abort "failed to unpack. Seed is invalid or corrupt."
   fi
-  local extracted_dir=$(find $dir -type d -depth 1)
-  cp -fr $extracted_dir/* $dir
-  log remove $extracted_dir
-  rm -fr $extracted_dir
   log remove $seed
   rm -f $seed
 }
