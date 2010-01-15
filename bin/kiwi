@@ -66,7 +66,7 @@ log() {
 #
 
 require_seed_name() {
-  if [[ ! $1 ]]; then abort seed name required.; fi
+  test $1 || abort seed name required.
 }
 
 #
@@ -116,7 +116,7 @@ validate() {
 #
 
 pack() {
-  if [[ ! $1 ]]; then abort version is required.; fi
+  test $1 || abort version is required.
   tar -czf $1.seed *
 }
 
@@ -211,8 +211,8 @@ publish() {
   local name=$1
   local version=$2
   local seed=$version.seed
-  if [[ ! $name ]]; then abort name required.; fi
-  if [[ ! $version ]]; then abort version required.; fi
+  test $name || abort name required.
+  test $version || abort version required.
   if [[ ! -f $seed ]]; then abort seed not found.; fi
   echo $(curl -s -F seed=@$seed -F info=@seed.yml $SERVER/$name)
 }
