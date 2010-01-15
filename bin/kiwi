@@ -210,9 +210,10 @@ build() {
 install_dependencies() {
   if [[ ! -f $1 ]]; then abort invalid seed.yml file; fi
   log installing dependencies
-  # TODO: not installing more than one ... 
+  # TODO: better solution
+  # TODO: ONLY dependencies:
   # TODO: pass any args such as -v and others ...
-  #cat $1 | awk '/ -/ { print $2, $3 }' | xargs kiwi install
+  cat $1 | awk '/ -/ { print system("kiwi install" $2 " " $3) }'
 }
 
 #
