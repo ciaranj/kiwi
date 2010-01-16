@@ -8,7 +8,6 @@ VERSION=0.0.1
 ORIGIN=git://github.com/visionmedia/kiwi.git
 SERVER=http://0.0.0.0:8888
 SEED_DEST=~/.kiwi/seeds
-UPDATE=0
 VERBOSE=
 
 #
@@ -75,22 +74,15 @@ setup() {
 }
 
 #
-# Create $SEED_DEST/<name>/<version> when not present, 
-# otherwise abort with already installed message.
+# Create $SEED_DEST/<name>/<version>.
 # 
 # <name> <version>
 #
 
 setup_seed() {
   local dir=$SEED_DEST/$1/$2
-  if [[ ! -d $dir ]]; then
-    log create $dir
-    mkdir -p $dir
-  else
-    if [[ $UPDATE -eq 0 ]]; then
-      abort "$1 $2 is already installed."
-    fi
-  fi
+  log create $dir
+  mkdir -p $dir
 }
 
 #
@@ -222,10 +214,14 @@ install() {
     log fetch latest version
     version=$(curl -s $SERVER/$name/latest)
   fi
-  download $name $version
-  unpack $seed
-  build $(dirname $seed)
-  install_dependencies $(dirname $seed)/seed.yml
+  if [[ -d $SEED_DEST/$name/$version ]]; then
+    log install already installed
+  else
+    download $name $version
+    unpack $seed
+    build $(dirname $seed)
+    install_dependencies $(dirname $seed)/seed.yml
+  fi
 }
 
 #
@@ -299,7 +295,6 @@ update_self() {
 # 
 
 update_all() {
-  UPDATE=1
   local dirs=$SEED_DEST/*
   for dir in $dirs;
   do
