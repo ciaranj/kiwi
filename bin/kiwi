@@ -59,7 +59,7 @@ abort() {
 
 log() {
   local key=$1; shift
-  if [[ $VERBOSE ]]; then printf "%10s : %s\n" $key "$*"; fi
+  [[ $VERBOSE ]] && printf "%10s : %s\n" $key "$*"
 }
 
 #
@@ -177,7 +177,7 @@ publish() {
   local name=$1
   local version=$2
   local seed=$version.seed
-  if [[ ! -f $seed ]]; then abort $seed not found.; fi
+  [[ ! -f $seed ]] && abort $seed not found.
   require_seed_info_file seed.yml
   log publish "$seed -> $SERVER/$name"
   curl -F seed=@$seed -F info=@seed.yml $SERVER/$name
@@ -313,7 +313,7 @@ update_all() {
 #
 
 require_seed_info_file() {
-  if [[ ! -f $1 ]]; then abort seed.yml file required.; fi
+  [[ ! -f $1 ]] && abort seed.yml file required.
 }
 
 #
@@ -323,7 +323,7 @@ require_seed_info_file() {
 #
 
 require_seed_name() {
-  test $1 || abort seed name required.
+  [[ $1 ]] || abort seed name required.
 }
 
 #
@@ -333,7 +333,7 @@ require_seed_name() {
 #
 
 require_seed_version() {
-  test $1 || abort seed version required.
+  [[ $1 ]] || abort seed version required.
 }
 
 #
@@ -347,7 +347,9 @@ while [[ $# -gt 0 ]]; do
     -V|--version) echo $VERSION ;;
     -S|--seeds) echo $SEED_DEST ;;
     -h|--help|help) usage ;;
-    --*) abort "invalid option \`$arg'. Use --help for more information" ;;
+    --*) 
+      abort "invalid option \`$arg'. Use --help for more information"
+      ;;
     update)
       if [[ $1 = "self" ]]; then
         update_self 
