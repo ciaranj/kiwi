@@ -104,9 +104,9 @@ describe "Kiwi" do
         File.file?(File.expand_path('~/.kiwi/seeds/haml/0.1.1/haml.seed')).should be_false
       end
       
-      it "should abort when already installed" do
-        `mkdir -p ~/.kiwi/seeds/haml/0.1.1`
-        kiwi('install haml').should include('haml 0.1.1 is already installed')
+      it "should skip when already installed" do
+        kiwi('install haml')
+        kiwi('-v install haml').should include('already installed')
       end
       
       describe "when build command is specified" do
