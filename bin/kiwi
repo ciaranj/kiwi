@@ -295,6 +295,7 @@ update_self() {
 # 
 
 update_all() {
+  setup
   [[ -z $(ls -A $SEED_DEST/) ]] && abort no seeds are installed.
   local dirs=$SEED_DEST/*
   echo
