@@ -46,6 +46,27 @@ describe "Kiwi" do
     end
   end
   
+  describe "update" do
+    after :each do
+      `rm -fr ~/.kiwi/seeds`
+    end
+    
+    describe "with no seeds installed" do
+      it "should abort" do
+        kiwi('update').should include('no seeds are installed')
+      end
+    end
+    
+    describe "with several seeds installed" do
+      it "should update them" do
+        kiwi('install haml')
+        kiwi('install oo')
+        kiwi('-v update').should include('install : haml')
+        kiwi('-v update').should include('install : oo')
+      end
+    end
+  end
+  
   describe "uninstall" do
     describe "" do
       it "should abort with seed name required" do
