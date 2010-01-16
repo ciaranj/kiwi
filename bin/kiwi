@@ -296,10 +296,12 @@ update_self() {
 
 update_all() {
   local dirs=$SEED_DEST/*
+  echo
   for dir in $dirs;
   do
     local name=$(basename $dir)
     install $name
+    echo
   done
 }
 
