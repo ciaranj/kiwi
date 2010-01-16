@@ -34,7 +34,7 @@ describe "Kiwi" do
     describe "" do
       it "should output a list of available seeds and their associated versions" do
         kiwi('search').should include('haml : 0.1.1')
-        kiwi('search').should include('  oo : 1.2.0')
+        kiwi('search').should include('  oo : 1.1.0 1.2.0')
       end
     end
     
