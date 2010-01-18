@@ -17,7 +17,7 @@ end
 
 get '/:name/resolve/?' do
   seed = Kiwi::Seed.new params[:name]
-  if params[:version]
+  if params[:version] && !params[:version].empty?
     seed.resolve params[:version]
   else
     seed.current_version
