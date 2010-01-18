@@ -13,18 +13,15 @@ get '/search/?' do
 end
 
 ##
-# Output latest version for seed _name_.
-
-get '/:name/latest/?' do
-  Kiwi::Seed.new(params[:name]).versions.first
-end
-
-##
 # Resolve the given :version for seed _name_.
 
 get '/:name/resolve/?' do
-  not_found ':version required.' unless params[:version]
-  Kiwi::Seed.new(params[:name]).resolve params[:version]
+  seed = Kiwi::Seed.new params[:name]
+  if params[:version]
+    seed.resolve params[:version]
+  else
+    seed.current_version
+  end
 end
 
 ##

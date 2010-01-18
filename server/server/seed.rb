@@ -32,7 +32,14 @@ module Kiwi
     end
     
     ##
-    # Return the first _version_ match in _versions_,
+    # Return the current version triplet.
+    
+    def current_version
+      versions.last
+    end
+    
+    ##
+    # Return the last _version_ match in _versions_,
     # supports the following operators:
     #
     #   =   equal to
@@ -43,7 +50,7 @@ module Kiwi
     
     def resolve version
       op, version = version.strip.split
-      versions.find do |other|
+      versions.select do |other|
         case op
         when '='  ; other == version
         when '>'  ; other > version
@@ -51,7 +58,7 @@ module Kiwi
         when '>~'
           other[0..1] == version[0..1] && other >= version
         end
-      end
+      end.last
     end
     
     ##
