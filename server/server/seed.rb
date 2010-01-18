@@ -26,9 +26,10 @@ module Kiwi
     # Return array of versions available.
     
     def versions
-      Dir["#{path}/*.yml"].map do |version|
+      versions = Dir["#{path}/*.yml"].map do |version|
         File.basename version, '.yml'
       end
+      VersionSorter.rsort versions
     end
     
     ##
