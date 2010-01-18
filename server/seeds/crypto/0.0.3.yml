@@ -1,0 +1,5 @@
+---
+  name: Crypto
+  description: A wrapper around openssl for node.js, currently exposing Hashing, Signing and Verifying methods.
+  version: 0.0.3
+  build: node-waf configure && node-waf build
