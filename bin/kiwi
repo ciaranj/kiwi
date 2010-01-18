@@ -265,7 +265,7 @@ list() {
     local versions=$SEED_DEST/$name/*
     for version in $versions
     do
-      echo -n ${version##*/}
+      echo -n "${version##*/} "
     done
     echo
   done

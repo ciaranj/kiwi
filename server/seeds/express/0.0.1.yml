@@ -3,6 +3,6 @@
   description: Web Development Framework -- Inspired by Sinatra
   version: 0.0.1
   dependencies:
-    - haml
-    - sass
-    - oo
+    - haml >~ 1.0.0
+    - sass >~ 0.0.1
+    - oo >~ 1.2.0
