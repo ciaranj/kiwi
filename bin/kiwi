@@ -108,7 +108,7 @@ unpack() {
   local seed=$1
   local dir=${seed%/*}
   log unpack $seed
-  tar -xzf $seed -C $dir 2> /dev/null
+  tar -xzf $seed -C $dir
   if [[ $? -ne 0 ]]; then
     log remove $dir
     rm -fr $dir
@@ -193,7 +193,7 @@ publish() {
 install_dependencies() {
   require_seed_info_file $1
   log check dependencies
-  cat $1 | awk '$1 == "dependencies:", $1 ~ /\w+:/' | grep ' -' | awk '{ system("kiwi install " $2 " " $3) }'
+  cat $1 | awk '$1 == "dependencies:", $1 ~ /\w+:/' | grep ' -' | awk '{ system("kiwi install " $2 " \"" $3 " " $4 "\"") }'
 }
 
 #
