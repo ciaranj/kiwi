@@ -261,12 +261,12 @@ list() {
   local dirs=$SEED_DEST/*
   for dir in $dirs;
   do
-    local name=$(basename $dir)
+    local name=${dir##*/}
     printf "%15s : " $name
     local versions=$SEED_DEST/$name/*
     for version in $versions
     do
-      echo -n "$(basename $version) "  
+      echo -n ${version##*/}
     done
     echo
   done
