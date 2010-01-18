@@ -256,6 +256,8 @@ uninstall() {
 # 
 
 list() {
+  setup
+  require_seeds
   local dirs=$SEED_DEST/*
   for dir in $dirs;
   do
@@ -296,7 +298,7 @@ update_self() {
 
 update_all() {
   setup
-  [[ -z $(ls -A $SEED_DEST/) ]] && abort no seeds are installed.
+  require_seeds
   local dirs=$SEED_DEST/*
   echo
   for dir in $dirs;
@@ -305,6 +307,14 @@ update_all() {
     install $name
     echo
   done
+}
+
+#
+# Abort unless one or more seeds are installed.
+# 
+
+require_seeds() {
+  [[ -z $(ls -A $SEED_DEST/) ]] && abort no seeds are installed.
 }
 
 #
