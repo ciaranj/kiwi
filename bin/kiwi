@@ -110,9 +110,9 @@ unpack() {
   log unpack $seed
   tar -xzf $seed -C $dir 2> /dev/null
   if [[ $? -ne 0 ]]; then
-    log removing $dir
+    log remove $dir
     rm -fr $dir
-    abort "failed to unpack. Seed is invalid or corrupt."
+    abort failed to unpack. Seed is invalid or corrupt.
   fi
   log remove $seed
   rm -f $seed
