@@ -26,10 +26,32 @@ module Kiwi
     # Return array of versions available.
     
     def versions
-      versions = Dir["#{path}/*.yml"].map do |version|
+      Dir["#{path}/*.yml"].map do |version|
         File.basename version, '.yml'
+      end.sort
+    end
+    
+    ##
+    # Return the first _version_ match in _versions_,
+    # supports the following operators:
+    #
+    #   =   equal to
+    #   >   greather than
+    #   >=  greather than or equal to
+    #   >~  greather than or equal to with compatibility
+    #
+    
+    def resolve version
+      op, version = version.strip.split
+      versions.find do |other|
+        case op
+        when '='  ; other == version
+        when '>'  ; other > version
+        when '>=' ; other >= version
+        when '>~'
+          other[0..1] == version[0..1] && other >= version
+        end
       end
-      VersionSorter.rsort versions
     end
     
     ##
