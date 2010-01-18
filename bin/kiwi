@@ -303,8 +303,7 @@ update_all() {
   echo
   for dir in $dirs;
   do
-    local name=$(basename $dir)
-    install $name
+    install ${dir##*/}
     echo
   done
 }
