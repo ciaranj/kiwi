@@ -207,14 +207,12 @@ install_dependencies() {
 #
 
 install() {
-  local name=$1
-  local version=$2
+  local name=$1; shift
+  local version=$*
   log install $name $version
   setup
-  if [[ ! $version ]]; then
-    log fetch latest version
-    version=$(curl -s $SERVER/$name/latest)
-  fi
+  version=$(curl -s $SERVER/$name/resolve?version=$(urlencode $version))
+  log resolve version $version
   if [[ -d $SEED_DEST/$name/$version ]]; then
     log install already installed
   else
@@ -307,6 +305,16 @@ update_all() {
     install ${dir##*/}
     echo
   done
+}
+
+#
+# Urlencode all args.
+# 
+# <arg ...>
+#
+
+urlencode() {
+  echo $(echo $* | sed 's/>/%3e/g;s/=/%3D/g;s/ /%20/g')
 }
 
 #
