@@ -50,7 +50,7 @@ module Kiwi
     
     def resolve version
       op, version = version.strip.split
-      versions.select do |other|
+      versions.reverse.find do |other|
         case op
         when '='  ; other == version
         when '>'  ; other > version
@@ -58,7 +58,7 @@ module Kiwi
         when '>~'
           other[0..1] == version[0..1] && other >= version
         end
-      end.last
+      end
     end
     
     ##
