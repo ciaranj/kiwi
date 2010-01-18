@@ -106,7 +106,7 @@ pack() {
 
 unpack() {
   local seed=$1
-  local dir=$(dirname $1)
+  local dir=${seed%/*}
   log unpack $seed
   tar -xzf $seed -C $dir 2> /dev/null
   if [[ $? -ne 0 ]]; then
@@ -218,8 +218,8 @@ install() {
   else
     download $name $version
     unpack $seed
-    build $(dirname $seed)
-    install_dependencies $(dirname $seed)/seed.yml
+    build ${seed%/*}
+    install_dependencies ${seed%/*}/seed.yml
   fi
 }
 
