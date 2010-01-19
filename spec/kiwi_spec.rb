@@ -34,7 +34,7 @@ describe "Kiwi" do
     describe "" do
       it "should output a list of available seeds and their associated versions" do
         kiwi('search').should include('haml : 0.1.1')
-        kiwi('search').should include('  oo : 1.1.0 1.2.0')
+        kiwi('search').should include('  oo : 1.2.0 1.1.0')
       end
     end
     
@@ -141,14 +141,14 @@ describe "Kiwi" do
       describe "<version>" do
         describe "when valid" do
           it "should install the given version" do
-            kiwi('install haml 0.1.1')
-            File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1/lib')).should be_true
+            kiwi('install oo "= 1.1.0"')
+            File.directory?(File.expand_path('~/.kiwi/seeds/oo/1.1.0/lib')).should be_true
           end
         end
         
         describe "when invalid" do
           it "should abort after tar figures out seed is invalid" do
-            kiwi('install haml 9.9.9').should include('failed to unpack. Seed is invalid or corrupt')
+            kiwi('install haml "= 9.9.9"').should include('failed to unpack. Seed is invalid or corrupt')
             File.directory?(File.expand_path('~/.kiwi/seeds/haml/9.9.9')).should be_false
           end
         end
