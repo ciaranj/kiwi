@@ -373,67 +373,80 @@ require_seed_version() {
   [[ $1 ]] || abort seed version required.
 }
 
+#
+# Start kiwi REPL.
+# 
+
 repl() {
-  local line=read
-  echo $line
+  echo -n 'kiwi> '
+  read line
+  eval "kiwi $line"
   repl
+}
+
+#
+# Parse the given args.
+# 
+# <arg ...>
+#
+
+parse() {
+  while [[ $# -gt 0 ]]; do
+    arg=$1; shift
+    case $arg in
+      -v|--verbose) VERBOSE=1 ;;
+      -V|--version) echo $VERSION ;;
+      -S|--seeds) echo $SEED_DEST ;;
+      -h|--help|help) usage | less ;;
+      --*) 
+        abort "invalid option \`$arg'. Use --help for more information"
+        ;;
+      update)
+        if [[ $1 = "self" ]]; then
+          update_self 
+        else
+          update_all
+        fi
+        ;;
+      open)
+        require_seed_name $1
+        open_seed_directory $*
+        ;;
+      uninstall)
+        require_seed_name $1
+        uninstall $* 
+        ;;
+      install)
+        require_seed_name $1
+        install $*
+        ;;
+      publish)
+        require_seed_name $1
+        require_seed_version $2
+        publish $* 
+        ;;
+      build)
+        require_seed_version $1
+        pack $*
+        ;;
+      release)
+        require_seed_name $1
+        require_seed_version $2
+        pack $2 && publish $*
+        ;;
+      search) 
+        search $*
+        ;;
+      list)
+        list $*
+        ;;
+    esac
+  done
 }
 
 #
 # Parse arguments.
 #
 
-while [[ $# -gt 0 ]]; do
-  arg=$1; shift
-  case $arg in
-    -v|--verbose) VERBOSE=1 ;;
-    -V|--version) echo $VERSION ;;
-    -S|--seeds) echo $SEED_DEST ;;
-    -h|--help|help) usage | less ;;
-    --*) 
-      abort "invalid option \`$arg'. Use --help for more information"
-      ;;
-    update)
-      if [[ $1 = "self" ]]; then
-        update_self 
-      else
-        update_all
-      fi
-      ;;
-    open)
-      require_seed_name $1
-      open_seed_directory $*
-      ;;
-    uninstall)
-      require_seed_name $1
-      uninstall $* 
-      ;;
-    install)
-      require_seed_name $1
-      install $*
-      ;;
-    publish)
-      require_seed_name $1
-      require_seed_version $2
-      publish $* 
-      ;;
-    build)
-      require_seed_version $1
-      pack $*
-      ;;
-    release)
-      require_seed_name $1
-      require_seed_version $2
-      pack $2 && publish $*
-      ;;
-    search) 
-      search $*
-      ;;
-    list)
-      list $*
-      ;;
-    *)
-      abort invalid command $arg.
-      ;;
-  esac
-done
+[[ $# -eq 0 ]] && repl
+parse $*
