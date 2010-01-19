@@ -373,6 +373,12 @@ require_seed_version() {
   [[ $1 ]] || abort seed version required.
 }
 
+repl() {
+  local line=read
+  echo $line
+  repl
+}
+
 #
 # Parse arguments.
 #
@@ -425,6 +431,9 @@ while [[ $# -gt 0 ]]; do
       ;;
     list)
       list $*
+      ;;
+    *)
+      abort invalid command $arg.
       ;;
   esac
 done
