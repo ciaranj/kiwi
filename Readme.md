@@ -14,6 +14,7 @@
   * Ruby seed server with search
   * Supports arbitrary seed building commands
   * Publishing of seeds to the kiwi server
+  * Version resolution (installing / runtime requiring)
   
 ## Installation
 
@@ -35,7 +36,7 @@ Specs are run using Ruby RSpec's `spec` executable.
     
 ## Dependencies
 
-Program dependencies are as follows:
+Command dependencies are as follows:
 
   * sed
   * awk
@@ -46,7 +47,7 @@ Currently tested with:
   * MacOS 1.5.8
   * tar (GNU tar) 1.15.1
   * curl 7.16.3
-
+  
 ## License 
 
 (The MIT License)
