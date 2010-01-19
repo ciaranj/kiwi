@@ -30,6 +30,7 @@ cat << EOF
     
   Commands:
     
+    <void>            Starts a kiwi interactive console (REPL)
     install           Installs a seed <name> with optional [version]
     uninstall         Uninstalls all versions of seed <name> or the given [version]
     search            Search remotely available seeds with optional [pattern]
@@ -380,7 +381,7 @@ require_seed_version() {
 repl() {
   echo -n 'kiwi> '
   read line
-  eval "kiwi $line"
+  [[ $line ]] && eval "kiwi $line"
   repl
 }
 
