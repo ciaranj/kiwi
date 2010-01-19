@@ -437,6 +437,9 @@ parse() {
       search) 
         search $*
         ;;
+      repl)
+        repl
+        ;;
       list)
         list $*
         ;;
@@ -448,5 +451,12 @@ parse() {
 # Parse arguments.
 #
 
-[[ $# -eq 0 ]] && repl
-parse $*
+if [[ $# -eq 0 ]]; then
+  if [[ $(which rlwrap) ]]; then
+    rlwrap kiwi repl
+  else
+    kiwi repl
+  fi
+else
+  parse $*  
+fi
