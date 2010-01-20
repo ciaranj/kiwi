@@ -118,6 +118,7 @@ pack() {
     log ignore globs in .ignore
     ls -A | egrep --file .ignore > $tmpfile
   fi
+  log ignore common scm directories
   echo -e ".git\n.svn\n.cvs" >> $tmpfile
   log pack "* -> $1.seed"
   tar --exclude-from $tmpfile -czf $1.seed .
