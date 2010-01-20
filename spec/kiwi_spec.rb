@@ -192,11 +192,13 @@ describe "Kiwi" do
           end
         end
         
-        it "should exclude .git" do
+        it "should exclude scms .git, .svn, .csv" do
           in_fixture :valid do
             kiwi('build 0.1.1')
             contents = `tar --list -zf 0.1.1.seed`
             contents.should_not include('.git')
+            contents.should_not include('.svn')
+            contents.should_not include('.cvs')
             `rm 0.1.1.seed`
           end
         end
