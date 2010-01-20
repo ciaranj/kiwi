@@ -51,10 +51,7 @@ module Kiwi
     
     def resolve version
       op, version = version.strip.split
-      unless version
-        version = op
-        op = '='
-      end
+      version, op = op, '=' unless version
       versions.reverse.find do |other|
         case op
         when '='  ; other == version
