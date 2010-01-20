@@ -147,8 +147,22 @@ describe "Kiwi" do
         end
         
         describe "when invalid" do
-          it "should abort after tar figures out seed is invalid" do
+          it "should abort after tar figures out the seed is invalid" do
             kiwi('install haml "= 9.9.9"').should include('failed to unpack. Seed is invalid or corrupt')
+            File.directory?(File.expand_path('~/.kiwi/seeds/haml/9.9.9')).should be_false
+          end
+        end
+        
+        describe "when valid without operator" do
+          it "should install the given version" do
+            kiwi('install oo 1.1.0')
+            File.directory?(File.expand_path('~/.kiwi/seeds/oo/1.1.0/lib')).should be_true
+          end
+        end
+        
+        describe "when invalid without operator" do
+          it "should abort after tar figures out the seed is invalid" do
+            kiwi('install haml 9.9.9').should include('failed to unpack. Seed is invalid or corrupt')
             File.directory?(File.expand_path('~/.kiwi/seeds/haml/9.9.9')).should be_false
           end
         end

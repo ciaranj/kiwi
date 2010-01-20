@@ -55,6 +55,7 @@ Command dependencies are as follows:
 Currently tested with:
   
   * MacOS 1.5.8
+  * GNU bash, version 3.2.17(1)-release (i386-apple-darwin9.0)
   * tar (GNU tar) 1.15.1
   * curl 7.16.3
   * egrep (GNU grep) 2.5.1
