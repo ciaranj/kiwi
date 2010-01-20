@@ -7,6 +7,9 @@ all: test
 test: bin/kiwi
 	@$(SPEC) spec --color --format specdoc
 	
+test-server:
+	@cd server && $(SPEC) spec --color --format specdoc
+	
 server-start:
 	@thin -c server --rackup config.ru start -p 8888 -d -P server.pid
 	
@@ -19,4 +22,4 @@ install: bin/kiwi
 uninstall: $(DEST)/kiwi
 	rm $(DEST)/kiwi
 	
-.PHONY: install uninstall server-start server-stop test
+.PHONY: install uninstall server-start server-stop test test-server
