@@ -155,5 +155,17 @@ describe "Kiwi" do
       end
     end
     
+    describe "build" do
+      it "should abort with seed version required" do
+        kiwi('build').should include('seed version required')
+      end
+      
+      describe "<version>" do
+        it "should respect .ignore" do
+
+        end
+      end
+    end
+    
   end
 end
