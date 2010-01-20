@@ -12,6 +12,10 @@ def in_fixture name, &block
 end
 
 describe "Kiwi" do
+  after :each do
+    `rm -fr ~/.kiwi/seeds`  
+  end
+  
   describe "--version" do
     it "should output version triplet" do
       kiwi('--version').should match(/^\d+\.\d+\.\d+$/)
@@ -47,10 +51,6 @@ describe "Kiwi" do
   end
   
   describe "update" do
-    after :each do
-      `rm -fr ~/.kiwi/seeds`
-    end
-    
     describe "with no seeds installed" do
       it "should abort" do
         kiwi('update').should include('no seeds are installed')
@@ -78,7 +78,6 @@ describe "Kiwi" do
     end
     
     it "should remove empty seed directories" do
-      `rm -fr ~/.kiwi/seeds`
       `mkdir -p ~/.kiwi/seeds/haml/1.0.0`
       kiwi('uninstall haml 1.0.0')
       File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_false
@@ -117,7 +116,6 @@ describe "Kiwi" do
     
     describe "<file>" do
       it "should install from a flat-list of seeds" do
-        `rm -fr ~/.kiwi/seeds`
         kiwi('install ' + fixture('seeds'))
         File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_true
         File.directory?(File.expand_path('~/.kiwi/seeds/oo/1.2.0')).should be_true
@@ -125,10 +123,6 @@ describe "Kiwi" do
     end
     
     describe "<name>" do
-      after :each do
-        `rm -fr ~/.kiwi/seeds`
-      end
-      
       it "should setup ~/.kiwi/seeds" do
         kiwi('install haml')
         File.directory?(File.expand_path('~/.kiwi/seeds')).should be_true
