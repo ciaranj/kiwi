@@ -243,7 +243,6 @@ install_dependencies() {
 # 
 
 remove_empty_seed_directories() {
-  setup
   require_seeds
   local dirs=$SEED_DEST/*
   for dir in $dirs;
@@ -277,7 +276,6 @@ install() {
   local name=$1; shift
   local version=$*
   log install $name $version
-  setup
   if [[ -f $name ]]; then
     log install from file
     cat $name | awk '{ system("kiwi install " $1 " \"" $2 " " $3 "\"") }'
@@ -328,7 +326,6 @@ uninstall() {
 # 
 
 list() {
-  setup
   require_seeds
   local dirs=$SEED_DEST/*
   for dir in $dirs;
@@ -369,7 +366,6 @@ update_self() {
 # 
 
 update_all() {
-  setup
   require_seeds
   local dirs=$SEED_DEST/*
   echo
@@ -505,6 +501,12 @@ parse() {
     esac
   done
 }
+
+#
+# Setup kiwi requirements.
+#
+
+setup
 
 #
 # Parse arguments.
