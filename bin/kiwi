@@ -92,21 +92,20 @@ log() {
 
 switch_environment() {
   local dir=$KIWI_DEST/$1
-  if [[ ! -d $dir ]]; then
-    log create $dir
-    mkdir -p $dir
-  fi
+  [[ -d $dir ]] || mkdir -p $dir
   log switch "current -> $1"
-  rm -f $KIWI_DEST/current
+  rm -fr $KIWI_DEST/current
   ln -s $dir $KIWI_DEST/current
 }
 
 #
-# Create / switch to default environment unless present.
+# - Create / switch to default environment unless present.
+# - Create $SEED_DEST unless present.
 # 
 
 setup() {
   [[ -d $KIWI_DEST/default ]] || switch_environment default
+  [[ -d $SEED_DEST ]] || mkdir -p $SEED_DEST
 }
 
 #
