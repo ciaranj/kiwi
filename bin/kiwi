@@ -97,7 +97,7 @@ switch_environment() {
     mkdir -p $dir
   fi
   log switch "current -> $1"
-  rm $KIWI_DEST/current
+  rm -f $KIWI_DEST/current
   ln -s $dir $KIWI_DEST/current
 }
 
@@ -308,14 +308,14 @@ uninstall() {
       log uninstall $name $version
       rm -fr $SEED_DEST/$name/$version
     else
-      log cannot find $name $version
+      abort cannot find version $version of $name
     fi  
   else
     if [[ -d $SEED_DEST/$name ]]; then
       log uninstall all versions of $name
       rm -fr $SEED_DEST/$name
     else
-      log error cannot find $name
+      abort cannot find any versions of $name
     fi
   fi
   remove_empty_seed_directories
