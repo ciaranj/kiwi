@@ -8,7 +8,7 @@ VERSION=0.0.1
 ORIGIN=git://github.com/visionmedia/kiwi.git
 SERVER=http://0.0.0.0:8888
 KIWI_DEST=~/.kiwi
-SEED_DEST=$KIWI_DEST/current/seeds
+SEED_DEST=$KIWI_DEST/default/seeds
 VERBOSE=
 
 #
@@ -84,13 +84,17 @@ log() {
 }
 
 #
-# Create $SEED_DEST when not present.
+# Create $SEED_DEST and $KIWI_DEST/current when not present.
 # 
 
 setup() {
   if [[ ! -d $SEED_DEST ]]; then
     log create $SEED_DEST
     mkdir -p $SEED_DEST  
+  fi
+  if [[ ! -d $KIWI_DEST/current ]]; then
+    log switch "current -> default"
+    ln -s $KIWI_DEST/default $KIWI_DEST/current
   fi
 }
 
