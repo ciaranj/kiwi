@@ -40,6 +40,18 @@ describe "Kiwi" do
     end
   end
   
+  describe "list" do
+    describe "" do
+      it "should output a list of installed seeds" do
+        mock_seed :haml, '0.1.1'
+        mock_seed :oo, '1.2.0'
+        mock_seed :oo, '1.1.0'
+        kiwi('list').should include('haml : 0.1.1')
+        kiwi('list').should include('  oo : 1.1.0 1.2.0')
+      end
+    end
+  end
+  
   describe "search" do
     describe "" do
       it "should output a list of available seeds and their associated versions" do
