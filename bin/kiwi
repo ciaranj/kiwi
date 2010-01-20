@@ -8,7 +8,7 @@ VERSION=0.0.1
 ORIGIN=git://github.com/visionmedia/kiwi.git
 SERVER=http://0.0.0.0:8888
 KIWI_DEST=~/.kiwi
-SEED_DEST=$KIWI_DEST/default/seeds
+SEED_DEST=$KIWI_DEST/current/seeds
 VERBOSE=
 
 #
@@ -34,6 +34,7 @@ cat << EOF
     <void>            Starts a kiwi interactive console (REPL)
     install           Installs a seed <name> with optional [version]
     uninstall         Uninstalls all versions of seed <name> or the given [version]
+    switch            Switch to kiwi to use the given seed <environment>
     search            Search remotely available seeds with optional [pattern]
     list              Lists installed seeds and their associated versions
     build             Build <version>.seed with the contents of the current directory
@@ -84,18 +85,28 @@ log() {
 }
 
 #
-# Create $SEED_DEST and $KIWI_DEST/current when not present.
+# Switch "current" environment to <env>.
+# 
+# <env>
+#
+
+switch_environment() {
+  local dir=$KIWI_DEST/$1
+  if [[ ! -d $dir ]]; then
+    log create $dir
+    mkdir -p $dir
+  fi
+  log switch "current -> $1"
+  rm $KIWI_DEST/current
+  ln -s $dir $KIWI_DEST/current
+}
+
+#
+# Create / switch to default environment unless present.
 # 
 
 setup() {
-  if [[ ! -d $SEED_DEST ]]; then
-    log create $SEED_DEST
-    mkdir -p $SEED_DEST  
-  fi
-  if [[ ! -d $KIWI_DEST/current ]]; then
-    log switch "current -> default"
-    ln -s $KIWI_DEST/default $KIWI_DEST/current
-  fi
+  [[ -d $KIWI_DEST/default ]] || switch_environment default
 }
 
 #
@@ -477,6 +488,10 @@ parse() {
         require_seed_name $1
         require_seed_version $2
         pack $2 && publish $*
+        ;;
+      switch)
+        [[ $1 ]] || abort environment name required.
+        switch_environment $1
         ;;
       search) 
         search $*
