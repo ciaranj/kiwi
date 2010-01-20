@@ -224,6 +224,7 @@ describe "Kiwi" do
             contents.should_not include('foo.log')
             contents.should_not include('pkg')
             contents.should_not include('pkg/blah.js')
+            contents.should_not include('lib/haml.something')
             `rm 0.1.1.seed`
           end
         end
