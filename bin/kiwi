@@ -224,12 +224,20 @@ install_dependencies() {
 
 #
 # Install a seed <name> with [version].
+#
+# When a <file> is passed, it should be a flat-list
+# of seeds to install, formatted as:
+#   <name> [op] <version>\n
+#   <name> [op] <version>\n
+#   ...
+#
+# Otherwise:
 # 
 #   - Fetches latest version when [version] absent
 #   - Downloads seed tarball
 #   - Unpacks the tarball
 # 
-# <name> [version]
+# <name|file> [version]
 #
 
 install() {
