@@ -12,12 +12,14 @@ def in_fixture name, &block
 end
 
 def mock_seed name, version
-  `mkdir -p ~/.kiwi/seeds/#{name}/#{version}`
+  `mkdir -p ~/.kiwi/current/seeds/#{name}/#{version}`
 end
+
+kiwi('switch test')
 
 describe "Kiwi" do
   after :each do
-    `rm -fr ~/.kiwi/seeds`  
+    `rm -fr ~/.kiwi/current/seeds`  
   end
   
   describe "--version" do
@@ -34,7 +36,7 @@ describe "Kiwi" do
   
   describe "--seeds" do
     it "should output seed directory" do
-      kiwi('--seeds').should include('.kiwi/seeds')
+      kiwi('--seeds').should include('.kiwi/current/seeds')
     end
   end
   
@@ -76,15 +78,15 @@ describe "Kiwi" do
       mock_seed :haml, '1.0.0'
       mock_seed :haml, '2.0.0'
       kiwi('uninstall haml 1.0.0')
-      File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_true
-      File.directory?(File.expand_path('~/.kiwi/seeds/haml/2.0.0')).should be_true
-      File.directory?(File.expand_path('~/.kiwi/seeds/haml/1.0.0')).should be_false
+      File.directory?(File.expand_path('~/.kiwi/current/seeds/haml')).should be_true
+      File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/2.0.0')).should be_true
+      File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/1.0.0')).should be_false
     end
     
     it "should remove empty seed directories" do
       mock_seed :haml, '1.0.0'
       kiwi('uninstall haml 1.0.0')
-      File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_false
+      File.directory?(File.expand_path('~/.kiwi/current/seeds/haml')).should be_false
     end
     
     describe "" do
@@ -97,15 +99,15 @@ describe "Kiwi" do
       it "should uninstall all versions" do
         mock_seed :haml, '0.1.1'
         kiwi('uninstall haml')
-        File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_false
-        File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_false
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1')).should be_false
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/haml')).should be_false
       end
       
       describe "<version>" do
         it "should uninstall the version specified" do
           mock_seed :haml, '0.1.1'
           kiwi('uninstall haml 0.1.1')
-          File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_false
+          File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1')).should be_false
         end
       end
     end
@@ -121,30 +123,30 @@ describe "Kiwi" do
     describe "<file>" do
       it "should install from a flat-list of seeds" do
         kiwi('install ' + fixture('seeds'))
-        File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_true
-        File.directory?(File.expand_path('~/.kiwi/seeds/oo/1.2.0')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.2.0')).should be_true
       end
     end
     
     describe "<name>" do
-      it "should setup ~/.kiwi/seeds" do
+      it "should setup ~/.kiwi/current/seeds" do
         kiwi('install haml')
-        File.directory?(File.expand_path('~/.kiwi/seeds')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds')).should be_true
       end
       
-      it "should setup ~/.kiwi/seeds/<name>/<version>" do
+      it "should setup ~/.kiwi/current/seeds/<name>/<version>" do
         kiwi('install haml')
-        File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1')).should be_true
       end
       
       it "should install the current version" do
         kiwi('install haml')
-        File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1/lib')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1/lib')).should be_true
       end
       
       it "should remove the seed" do
         kiwi('install haml')
-        File.file?(File.expand_path('~/.kiwi/seeds/haml/0.1.1/haml.seed')).should be_false
+        File.file?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1/haml.seed')).should be_false
       end
       
       it "should skip when already installed" do
@@ -154,9 +156,9 @@ describe "Kiwi" do
       
       describe "when build command is specified" do
         it "should execute the build command relative to the seed's directory" do
-          File.file?(File.expand_path('~/.kiwi/seeds/crypto/0.0.3/crypto.node')).should be_false
+          File.file?(File.expand_path('~/.kiwi/current/seeds/crypto/0.0.3/crypto.node')).should be_false
           kiwi('install crypto "= 0.0.3"')
-          File.file?(File.expand_path('~/.kiwi/seeds/crypto/0.0.3/crypto.node')).should be_true
+          File.file?(File.expand_path('~/.kiwi/current/seeds/crypto/0.0.3/crypto.node')).should be_true
         end
       end
       
@@ -164,28 +166,28 @@ describe "Kiwi" do
         describe "when valid" do
           it "should install the given version" do
             kiwi('install oo "= 1.1.0"')
-            File.directory?(File.expand_path('~/.kiwi/seeds/oo/1.1.0/lib')).should be_true
+            File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.1.0/lib')).should be_true
           end
         end
         
         describe "when invalid" do
           it "should abort after tar figures out the seed is invalid" do
             kiwi('install haml "= 9.9.9"').should include('failed to unpack. Seed is invalid or corrupt')
-            File.directory?(File.expand_path('~/.kiwi/seeds/haml/9.9.9')).should be_false
+            File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/9.9.9')).should be_false
           end
         end
         
         describe "when valid without operator" do
           it "should install the given version" do
             kiwi('install oo 1.1.0')
-            File.directory?(File.expand_path('~/.kiwi/seeds/oo/1.1.0/lib')).should be_true
+            File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.1.0/lib')).should be_true
           end
         end
         
         describe "when invalid without operator" do
           it "should abort after tar figures out the seed is invalid" do
             kiwi('install haml 9.9.9').should include('failed to unpack. Seed is invalid or corrupt')
-            File.directory?(File.expand_path('~/.kiwi/seeds/haml/9.9.9')).should be_false
+            File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/9.9.9')).should be_false
           end
         end
       end
