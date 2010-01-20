@@ -11,6 +11,10 @@ def in_fixture name, &block
   Dir.chdir fixture(name), &block
 end
 
+def mock_seed name, version
+  `mkdir -p ~/.kiwi/seeds/#{name}/#{version}`
+end
+
 describe "Kiwi" do
   after :each do
     `rm -fr ~/.kiwi/seeds`  
@@ -69,8 +73,8 @@ describe "Kiwi" do
   
   describe "uninstall" do
     it "should not remove seed directories which contain seeds" do
-      `mkdir -p ~/.kiwi/seeds/haml/1.0.0`
-      `mkdir -p ~/.kiwi/seeds/haml/2.0.0`
+      mock_seed :haml, '1.0.0'
+      mock_seed :haml, '2.0.0'
       kiwi('uninstall haml 1.0.0')
       File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_true
       File.directory?(File.expand_path('~/.kiwi/seeds/haml/2.0.0')).should be_true
@@ -78,7 +82,7 @@ describe "Kiwi" do
     end
     
     it "should remove empty seed directories" do
-      `mkdir -p ~/.kiwi/seeds/haml/1.0.0`
+      mock_seed :haml, '1.0.0'
       kiwi('uninstall haml 1.0.0')
       File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_false
     end
@@ -91,7 +95,7 @@ describe "Kiwi" do
     
     describe "<name>" do
       it "should uninstall all versions" do
-        `mkdir -p ~/.kiwi/seeds/haml/0.1.1`
+        mock_seed :haml, '0.1.1'
         kiwi('uninstall haml')
         File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_false
         File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_false
@@ -99,7 +103,7 @@ describe "Kiwi" do
       
       describe "<version>" do
         it "should uninstall the version specified" do
-          `mkdir -p ~/.kiwi/seeds/haml/0.1.1`
+          mock_seed :haml, '0.1.1'
           kiwi('uninstall haml 0.1.1')
           File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_false
         end
