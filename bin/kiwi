@@ -223,6 +223,23 @@ install_dependencies() {
 }
 
 #
+# Remove empty seed directories.
+# 
+
+remove_empty_seed_directories() {
+  setup
+  require_seeds
+  local dirs=$SEED_DEST/*
+  for dir in $dirs;
+  do
+    if [[ -z $(ls -A $dir/) ]]; then
+      log remove $dir
+      rmdir $dir
+    fi
+  done
+}
+
+#
 # Install a seed <name> with [version].
 #
 # When a <file> is passed, it should be a flat-list
@@ -287,6 +304,7 @@ uninstall() {
       log error cannot find $name
     fi
   fi
+  remove_empty_seed_directories
 }
 
 #

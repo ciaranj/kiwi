@@ -68,6 +68,22 @@ describe "Kiwi" do
   end
   
   describe "uninstall" do
+    it "should not remove seed directories which contain seeds" do
+      `mkdir -p ~/.kiwi/seeds/haml/1.0.0`
+      `mkdir -p ~/.kiwi/seeds/haml/2.0.0`
+      kiwi('uninstall haml 1.0.0')
+      File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_true
+      File.directory?(File.expand_path('~/.kiwi/seeds/haml/2.0.0')).should be_true
+      File.directory?(File.expand_path('~/.kiwi/seeds/haml/1.0.0')).should be_false
+    end
+    
+    it "should remove empty seed directories" do
+      `rm -fr ~/.kiwi/seeds`
+      `mkdir -p ~/.kiwi/seeds/haml/1.0.0`
+      kiwi('uninstall haml 1.0.0')
+      File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_false
+    end
+    
     describe "" do
       it "should abort with seed name required" do
         kiwi('uninstall').should include('seed name required')
@@ -87,7 +103,6 @@ describe "Kiwi" do
           `mkdir -p ~/.kiwi/seeds/haml/0.1.1`
           kiwi('uninstall haml 0.1.1')
           File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_false
-          File.directory?(File.expand_path('~/.kiwi/seeds/haml')).should be_true
         end
       end
     end
