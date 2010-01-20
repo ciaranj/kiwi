@@ -100,6 +100,15 @@ describe "Kiwi" do
       end
     end
     
+    describe "<file>" do
+      it "should install from a flat-list of seeds" do
+        `rm -fr ~/.kiwi/seeds`
+        kiwi('install ' + fixture('seeds'))
+        File.directory?(File.expand_path('~/.kiwi/seeds/haml/0.1.1')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/seeds/oo/1.2.0')).should be_true
+      end
+    end
+    
     describe "<name>" do
       after :each do
         `rm -fr ~/.kiwi/seeds`

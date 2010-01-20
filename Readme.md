@@ -19,6 +19,7 @@
     - listing of installed seeds and their versions
     - searching of remote seeds
     - arbitrary build commands (so you can make, scons, jake, etc)
+    - installation via flat-list of seeds and associated versions
   * Version resolution
     - via installation
     - via runtime
