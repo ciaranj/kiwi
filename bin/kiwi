@@ -113,8 +113,13 @@ setup_seed() {
 
 pack() {
   require_seed_info_file seed.yml
+  local tmpfile=$(mktemp -t 'kiwi-ignore')
+  if [[ -f .ignore ]]; then
+    log ignore globs in .ignore
+    ls -A | egrep --file .ignore > $tmpfile
+  fi
   log pack "* -> $1.seed"
-  tar -czf $1.seed *
+  tar --exclude-from $tmpfile -czf $1.seed *
 }
 
 #
