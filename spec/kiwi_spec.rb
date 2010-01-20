@@ -88,6 +88,7 @@ describe "Kiwi" do
         File.directory?(File.expand_path('~/.kiwi/trying_new_stuff/seeds/oo')).should be_true
         File.directory?(File.expand_path('~/.kiwi/test/seeds/oo')).should be_false
         kiwi('switch test')
+        `rm -fr ~/.kiwi/trying_new_stuff`
       end
     end
   end
