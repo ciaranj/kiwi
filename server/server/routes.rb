@@ -48,5 +48,5 @@ post '/:name/?' do
   FileUtils.mkdir_p SEEDS + "/#{name}"
   FileUtils.mv seed[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
   FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml", :force => true
-  "published #{name} #{version}\n"
+  "Succesfully published #{name} #{version}\n"
 end
