@@ -184,6 +184,7 @@ describe "Kiwi" do
             kiwi('build 0.1.1')
             contents = `tar --list -zf 0.1.1.seed`
             contents.should include('.foo')
+            contents.should include('.ignore')
             contents.should_not include('foo.log')
             contents.should_not include('pkg')
             contents.should_not include('pkg/blah.js')
