@@ -116,7 +116,7 @@ pack() {
   local tmpfile=$(mktemp -t 'kiwi-ignore')
   if [[ -f .ignore ]]; then
     log ignore globs in .ignore
-    ls -A | egrep --file .ignore > $tmpfile
+    ls -AR | egrep --file .ignore > $tmpfile
   fi
   log ignore common scm directories
   echo -e ".git\n.svn\n.cvs" >> $tmpfile
