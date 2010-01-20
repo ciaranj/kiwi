@@ -242,7 +242,7 @@ install_dependencies() {
 # 
 
 remove_empty_seed_directories() {
-  require_seeds
+  [[ -z $(ls -A $SEED_DEST/) ]] && exit
   local dirs=$SEED_DEST/*
   for dir in $dirs;
   do
