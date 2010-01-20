@@ -116,10 +116,11 @@ pack() {
   local tmpfile=$(mktemp -t 'kiwi-ignore')
   if [[ -f .ignore ]]; then
     log ignore globs in .ignore
-    ls -A | egrep --file .ignore --invert-match > $tmpfile
+    ls -A | egrep --file .ignore > $tmpfile
   fi
+  echo .git >> $tmpfile
   log pack "* -> $1.seed"
-  tar --files-from $tmpfile -czf $1.seed
+  tar --exclude-from $tmpfile -czf $1.seed .
 }
 
 #
