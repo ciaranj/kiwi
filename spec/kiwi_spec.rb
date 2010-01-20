@@ -73,6 +73,25 @@ describe "Kiwi" do
     end
   end
   
+  describe "switch" do
+    describe "" do
+      it "should abort with environment name required" do
+        kiwi('switch').should include('environment name required')
+      end
+    end
+    
+    describe "<env>" do
+      it "should switch the current environment" do
+        kiwi('switch trying_new_stuff')
+        kiwi('install oo')
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/oo')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/trying_new_stuff/seeds/oo')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/test/seeds/oo')).should be_false
+        kiwi('switch test')
+      end
+    end
+  end
+  
   describe "uninstall" do
     it "should not remove seed directories which contain seeds" do
       mock_seed :haml, '1.0.0'
