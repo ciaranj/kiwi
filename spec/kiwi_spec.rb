@@ -1,6 +1,6 @@
 
 def kiwi *args
-  `./bin/kiwi #{args.join(' ')}`
+  `#{File.dirname(__FILE__)}/../bin/kiwi #{args.join(' ')}`
 end
 
 def fixture name
@@ -161,8 +161,27 @@ describe "Kiwi" do
       end
       
       describe "<version>" do
+        describe "when seed.yml is present" do
+          it "should build <version>.seed" do
+            in_fixture :valid do
+              kiwi('build 0.1.1')
+              File.exists?('0.1.1.seed').should be_true
+            end
+          end
+        end
+        
+        describe "when seed.yml is not present" do
+          it "should abort with seed.yml file required" do
+            in_fixture :invalid do
+              kiwi('build 0.1.1').should include('seed.yml file required')
+            end
+          end
+        end
+        
         it "should respect .ignore" do
-
+          in_fixture :valid do
+            
+          end
         end
       end
     end
