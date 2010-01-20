@@ -207,7 +207,7 @@ publish() {
   [[ ! -f $seed ]] && abort $seed not found.
   require_seed_info_file seed.yml
   log publish "$seed -> $SERVER/$name"
-  curl -F seed=@$seed -F info=@seed.yml $SERVER/$name
+  curl --data-binary -F seed=@$seed -F info=@seed.yml $SERVER/$name
 }
 
 #
