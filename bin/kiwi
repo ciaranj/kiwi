@@ -245,15 +245,20 @@ install() {
   local version=$*
   log install $name $version
   setup
-  version=$(curl -s $SERVER/$name/resolve?version=$(urlencode $version))
-  log resolve version $version
-  if [[ -d $SEED_DEST/$name/$version ]]; then
-    log install already installed
+  if [[ -f $name ]]; then
+    log install from file
+    cat $name | awk '{ system("kiwi install " $1 " \"" $2 " " $3 "\"") }'
   else
-    download $name $version
-    unpack $seed
-    build ${seed%/*}
-    install_dependencies ${seed%/*}/seed.yml
+    version=$(curl -s $SERVER/$name/resolve?version=$(urlencode $version))
+    log resolve version $version
+    if [[ -d $SEED_DEST/$name/$version ]]; then
+      log install already installed
+    else
+      download $name $version
+      unpack $seed
+      build ${seed%/*}
+      install_dependencies ${seed%/*}/seed.yml
+    fi
   fi
 }
 
