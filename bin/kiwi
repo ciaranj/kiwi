@@ -120,7 +120,7 @@ pack() {
   fi
   echo .git >> $tmpfile
   log pack "* -> $1.seed"
-  tar --exclude-from $tmpfile -czf $1.seed *
+  tar --exclude-from $tmpfile -czf $1.seed .
 }
 
 #
