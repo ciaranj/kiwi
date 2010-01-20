@@ -5,19 +5,25 @@
   
 ## Features
 
-  * Written in bash script
-  * Very fast
+  * Fast / Solid
+    - Written in bash script
+    - Utilizes battle-tested programs
   * Packaging of "seeds" (tarballs)
     - Ignores .{git,svn,cvs}
     - Ignores globs in .ignore when packing
-  * Installation of seeds
-  * Uninstallation of seeds
-  * Listing of installed seeds and their versions
-  * Ruby seed server with search
-  * Supports arbitrary seed building commands
-  * Publishing of seeds to the kiwi server
-  * Version resolution (installing / runtime requiring)
-  * Interactive console (REPL)
+  * Distributed packages as "seeds"
+    - installation
+    - uninstallation
+    - updating
+    - publishing to the kiwi seed server (similar to gemcutter for RubyGems)
+    - listing of installed seeds and their versions
+    - searching of remote seeds
+    - arbitrary build commands (so you can make, scons, jake, etc)
+  * Version resolution
+    - via installation
+    - via runtime
+  * Interactive console or REPL
+    - Auto-detects and utilizes rlwrap
   
 ## Installation
 
