@@ -183,12 +183,15 @@ describe "Kiwi" do
           in_fixture :valid do
             kiwi('build 0.1.1')
             contents = `tar --list -zf 0.1.1.seed`
+            contents.should include('.ignore')
+            contents.should include('.foo')
             contents.should_not include('foo.log')
             contents.should_not include('pkg')
             contents.should_not include('pkg/blah.js')
             `rm 0.1.1.seed`
           end
         end
+        
       end
     end
     
