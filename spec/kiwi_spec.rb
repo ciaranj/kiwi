@@ -1,6 +1,6 @@
 
 def kiwi *args
-  `./bin/kiwi #{args.join(' ')}`
+  `#{File.dirname(__FILE__)}/../bin/kiwi #{args.join(' ')}`
 end
 
 def fixture name
@@ -152,6 +152,57 @@ describe "Kiwi" do
             File.directory?(File.expand_path('~/.kiwi/seeds/haml/9.9.9')).should be_false
           end
         end
+      end
+    end
+    
+    describe "build" do
+      it "should abort with seed version required" do
+        kiwi('build').should include('seed version required')
+      end
+      
+      describe "<version>" do
+        describe "when seed.yml is present" do
+          it "should build <version>.seed" do
+            in_fixture :valid do
+              kiwi('build 0.1.1')
+              File.exists?('0.1.1.seed').should be_true
+              `rm 0.1.1.seed`
+            end
+          end
+        end
+        
+        describe "when seed.yml is not present" do
+          it "should abort with seed.yml file required" do
+            in_fixture :invalid do
+              kiwi('build 0.1.1').should include('seed.yml file required')
+            end
+          end
+        end
+        
+        it "should respect .ignore" do
+          in_fixture :valid do
+            kiwi('build 0.1.1')
+            contents = `tar --list -zf 0.1.1.seed`
+            contents.should include('.foo')
+            contents.should include('.ignore')
+            contents.should_not include('foo.log')
+            contents.should_not include('pkg')
+            contents.should_not include('pkg/blah.js')
+            `rm 0.1.1.seed`
+          end
+        end
+        
+        it "should exclude scms .git, .svn, .csv" do
+          in_fixture :valid do
+            kiwi('build 0.1.1')
+            contents = `tar --list -zf 0.1.1.seed`
+            contents.should_not include(".git\n")
+            contents.should_not include(".svn\n")
+            contents.should_not include(".cvs\n")
+            `rm 0.1.1.seed`
+          end
+        end
+        
       end
     end
     
