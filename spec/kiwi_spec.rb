@@ -152,6 +152,13 @@ describe "Kiwi" do
             File.directory?(File.expand_path('~/.kiwi/seeds/haml/9.9.9')).should be_false
           end
         end
+        
+        describe "when valid without operator" do
+          it "should install the given version" do
+            kiwi('install oo 1.1.0')
+            File.directory?(File.expand_path('~/.kiwi/seeds/oo/1.1.0/lib')).should be_true
+          end
+        end
       end
     end
     
