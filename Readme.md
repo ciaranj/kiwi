@@ -8,6 +8,8 @@
   * Written in bash script
   * Very fast
   * Packaging of "seeds" (tarballs)
+    - Ignores .{git,svn,cvs}
+    - Ignores globs in .ignore when packing
   * Installation of seeds
   * Uninstallation of seeds
   * Listing of installed seeds and their versions
@@ -15,6 +17,7 @@
   * Supports arbitrary seed building commands
   * Publishing of seeds to the kiwi server
   * Version resolution (installing / runtime requiring)
+  * Interactive console (REPL)
   
 ## Installation
 
@@ -41,12 +44,14 @@ Command dependencies are as follows:
   * sed
   * awk
   * tar
+  * egrep
   
 Currently tested with:
   
   * MacOS 1.5.8
   * tar (GNU tar) 1.15.1
   * curl 7.16.3
+  * egrep (GNU grep) 2.5.1
   
 ## License 
 
