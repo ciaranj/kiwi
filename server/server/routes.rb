@@ -87,18 +87,21 @@ end
 # Publish seed _name_. Requires _seed_ archive and _info_ file.
 
 post '/:name/?' do
-  # TODO: seperate messages for publishing, overwritting, registering seeds etc
+  state = :published
   name, password = credentials
   user = User.first(:name => name, :password => Digest::MD5.hexdigest(password)) || halt(500, 'failed to authenticate, register first')
   name = params[:name]
   seed = params[:seed]
   info = params[:info]
   if inst = Seed.first(:name => name)
-    unless inst.user == user
+    if inst.user == user
+      state = :overwrote
+    else
       fail "unauthorized to publish #{name}"
     end
   else
     user.seeds.create :name => name
+    state = :registered
   end
   fail '<version>.seed required' unless seed
   fail 'seed.yml required' unless info
@@ -107,5 +110,5 @@ post '/:name/?' do
   FileUtils.mkdir_p SEEDS + "/#{name}"
   FileUtils.mv seed[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
   FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml", :force => true
-  "Succesfully published #{name} #{version}\n"
+  "Succesfully #{state} #{name} #{version}\n"
 end
