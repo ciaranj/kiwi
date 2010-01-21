@@ -1,6 +1,4 @@
 
-require 'server/seed'
-
 describe Kiwi::Seed do
   before :each do
     @seed = Kiwi::Seed.new 'oo'  

@@ -78,7 +78,7 @@ get '/:name/:version/?' do
   seed = Kiwi::Seed.new params[:name]
   not_found 'seed does not exist.' unless seed.exists? params[:version]
   content_type :tar
-  send_file seed.path_for params[:version]
+  send_file seed.path_for(params[:version])
 end
 
 ##
