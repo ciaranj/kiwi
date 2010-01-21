@@ -5,8 +5,6 @@ require 'digest/md5'
 
 DataMapper.setup :default, 'sqlite3::memory:'
 
-# TODO: halt 500 -> #error ?
-
 class User
   include DataMapper::Resource
   property :id,       Serial
