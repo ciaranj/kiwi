@@ -89,6 +89,8 @@ end
 # Publish seed _name_. Requires _seed_ archive and _info_ file.
 
 post '/:name/?' do
+  # TODO: seperate messages for publishing, overwritting, registering seeds etc
+  # TODO: add fail helper ending string with \n
   name, password = credentials
   user = User.first(:name => name, :password => Digest::MD5.hexdigest(password)) || halt(500, 'failed to authenticate, register first')
   name = params[:name]
