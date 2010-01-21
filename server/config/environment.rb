@@ -11,6 +11,11 @@ require 'server/seed'
 require 'server/routes'
 require 'digest/md5'
 
+configure do
+  DataMapper.setup :default, 'sqlite3::memory:'
+  DataMapper.auto_migrate!
+end
+
 configure :test do
   DataMapper.setup :default, 'sqlite3::memory:'
   DataMapper.auto_migrate!

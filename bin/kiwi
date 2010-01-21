@@ -6,7 +6,9 @@
 
 VERSION=0.0.1
 ORIGIN=git://github.com/visionmedia/kiwi.git
-SERVER=http://0.0.0.0:8888
+SERVER_PORT=8888
+SERVER_ADDR=0.0.0.0
+SERVER=http://$SERVER_ADDR:$SERVER_PORT
 KIWI_DEST=~/.kiwi
 SEED_DEST=$KIWI_DEST/current/seeds
 VERBOSE=
@@ -42,6 +44,7 @@ cat << EOF
     release           Build and publish seed <name> and <version>
     update            Install the latest release of every seed installed
     update self       Updates kiwi to the latest release
+    register          Attempt to register the given <user> name and <password>
     
   Install:
   
@@ -376,6 +379,16 @@ update_all() {
 }
 
 #
+# Attempt to register the given <user> with <password>.
+# 
+# <user> <password>
+#
+
+register_user() {
+  curl -s http://$1:$2@$SERVER_ADDR:$SERVER_PORT/user -d ''
+}
+
+#
 # Urlencode all args.
 # 
 # <arg ...>
@@ -487,6 +500,11 @@ parse() {
       switch)
         [[ $1 ]] || abort environment name required.
         switch_environment $1
+        ;;
+      register)
+        [[ $1 ]] || abort user name required.
+        [[ $2 ]] || abort password required.
+        register_user $1 $2
         ;;
       search) 
         search $*
