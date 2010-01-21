@@ -1,10 +1,4 @@
 
 $:.unshift File.dirname(__FILE__) 
-require 'rubygems'
-require 'sinatra'
-require 'fileutils'
-require 'yaml'
-require 'server/seed'
-require 'server/routes'
-
+require 'config/environment'
 run Sinatra::Application

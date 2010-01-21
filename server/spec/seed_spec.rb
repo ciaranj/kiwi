@@ -1,6 +1,4 @@
 
-require 'server/seed'
-
 describe Kiwi::Seed do
   before :each do
     @seed = Kiwi::Seed.new 'oo'  
@@ -27,6 +25,26 @@ describe Kiwi::Seed do
   describe "#info" do
     it "should return yml info for the given version" do
       @seed.info('1.1.0')['name'].should == 'oo'
+    end
+  end
+  
+  describe "#exists?" do
+    it "should return true when the seed has versions" do
+      @seed.exists?.should be_true
+    end
+    
+    it "should return false when the seed has no versions" do
+      Kiwi::Seed.new('invalid').exists?.should be_false
+    end
+    
+    describe "given a version" do
+      it "should return true when the version exists" do
+        @seed.exists?('1.2.0').should be_true
+      end
+      
+      it "should return false when the version does not exist" do
+        @seed.exists?('9.9.9').should be_false
+      end
     end
   end
   
