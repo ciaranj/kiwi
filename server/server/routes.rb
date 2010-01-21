@@ -1,4 +1,7 @@
 
+##
+# Register user via HTTP basic auth credentials.
+
 post '/user' do
   name, password = credentials
   user = User.new :name => name, :password => Digest::MD5.hexdigest(password)
