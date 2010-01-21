@@ -6,6 +6,10 @@ class User
   property :password, String, :index => true, :required => true
   validates_is_unique :name, :on => :register
   has n, :seeds
+  
+  before :save do
+    self.password = Digest::MD5.hexdigest(password) if new?
+  end
 end
 
 class Seed

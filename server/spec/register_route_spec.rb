@@ -27,7 +27,7 @@ describe "POST /user" do
         post '/user', {}, basic_auth(:tj, :bar)
         last_response.status.should == 500
         last_response.body.should include('registration failed')
-        User.first(:name => 'tj').password.should == 'foobar'
+        User.first(:name => 'tj').password.should == '3858f62230ac3c915f300c664312c63f'
       end
     end
   end
