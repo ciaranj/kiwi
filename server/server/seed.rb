@@ -78,10 +78,14 @@ module Kiwi
     end
     
     ##
-    # Check if _version_ of this seed exists.
+    # Check if _version_ or and versions of this seed exist.
     
-    def exists? version
-      File.exists? path_for(version)
+    def exists? version = nil
+      if version
+        File.exists? path_for(version)
+      else
+        File.directory? path
+      end
     end
     
     #--

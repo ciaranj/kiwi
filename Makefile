@@ -8,7 +8,7 @@ test: bin/kiwi
 	@$(SPEC) spec --color
 	
 test-server:
-	@cd server && $(SPEC) spec --color
+	@cd server && $(SPEC) spec -r spec/spec_helper --color
 	
 server-start:
 	@thin -c server --rackup config.ru start -p 8888 -d -P server.pid
