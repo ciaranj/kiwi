@@ -29,15 +29,13 @@ DataMapper.auto_migrate!
 helpers do
   def credentials
     auth ||=  Rack::Auth::Basic::Request.new request.env
-    halt 500, 'http basic auth credentials required' unless auth.provided? && auth.basic?
+    fail 'http basic auth credentials required' unless auth.provided? && auth.basic?
     auth.credentials
   end
-end
-
-get '/user' do
-  name, password = credentials
-  user = User.first :name => name, :password => Digest::MD5.hexdigest(password)
-  "user #{name}:#{password} currently has #{user.seeds.length} seeds: " + user.seeds.map{ |seed| seed.name }.join(', ')
+  
+  def fail msg
+    error "#{msg}.\n"
+  end
 end
 
 post '/user' do
@@ -46,7 +44,7 @@ post '/user' do
   if user.save :register
     'registration successful'
   else
-    halt 500, 'registration failed'
+    fail 'registration failed'
   end
 end
 
@@ -90,7 +88,6 @@ end
 
 post '/:name/?' do
   # TODO: seperate messages for publishing, overwritting, registering seeds etc
-  # TODO: add fail helper ending string with \n
   name, password = credentials
   user = User.first(:name => name, :password => Digest::MD5.hexdigest(password)) || halt(500, 'failed to authenticate, register first')
   name = params[:name]
@@ -98,15 +95,15 @@ post '/:name/?' do
   info = params[:info]
   if inst = Seed.first(:name => name)
     unless inst.user == user
-      halt 500, "unauthorized to publish #{name}"
+      fail "unauthorized to publish #{name}"
     end
   else
     user.seeds.create :name => name
   end
-  halt 500, '<version>.seed required' unless seed
-  halt 500, 'seed.yml required' unless info
+  fail '<version>.seed required' unless seed
+  fail 'seed.yml required' unless info
   version = File.basename seed[:filename], '.seed'
-  halt 500, '<version> is invalid; must be formatted as "n.n.n"' unless version =~ /\A\d+\.\d+\.\d+\z/
+  fail '<version> is invalid; must be formatted as "n.n.n"' unless version =~ /\A\d+\.\d+\.\d+\z/
   FileUtils.mkdir_p SEEDS + "/#{name}"
   FileUtils.mv seed[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
   FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml", :force => true
