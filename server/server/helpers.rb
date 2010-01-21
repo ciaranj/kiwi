@@ -1,0 +1,19 @@
+
+helpers do
+  def credentials
+    auth ||=  Rack::Auth::Basic::Request.new request.env
+    fail 'http basic auth credentials required' unless auth.provided? && auth.basic?
+    auth.credentials
+  end
+  
+  def fail msg
+    error "#{msg}.\n"
+  end
+  
+  def requires_seed seed, version = nil
+    not_found 'seed does not exist.' unless seed.exists?
+    if version
+      not_found 'seed version does not exist.' unless seed.exists? version
+    end
+  end
+end
