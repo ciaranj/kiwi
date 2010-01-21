@@ -10,6 +10,7 @@ SERVER_PORT=8888
 SERVER_ADDR=0.0.0.0
 SERVER=http://$SERVER_ADDR:$SERVER_PORT
 KIWI_DEST=~/.kiwi
+AUTH_DEST=$KIWI_DEST/.auth
 SEED_DEST=$KIWI_DEST/current/seeds
 VERBOSE=
 
@@ -381,11 +382,15 @@ update_all() {
 #
 # Attempt to register the given <user> with <password>.
 # 
+#   - Saves credentials to $AUTH_DEST
+# 
 # <user> <password>
 #
 
 register_user() {
   curl -s http://$1:$2@$SERVER_ADDR:$SERVER_PORT/user -d ''
+  log create $AUTH_DEST
+  echo $1:$2 > $AUTH_DEST
 }
 
 #
