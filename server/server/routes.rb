@@ -1,29 +1,4 @@
 
-require 'dm-core'
-require 'dm-validations'
-require 'digest/md5'
-
-DataMapper.setup :default, 'sqlite3::memory:'
-
-class User
-  include DataMapper::Resource
-  property :id,       Serial
-  property :name,     String, :index => true, :required => true
-  property :password, String, :index => true, :required => true
-  validates_is_unique :name, :on => :register
-  has n, :seeds
-end
-
-class Seed
-  include DataMapper::Resource
-  property :id,       Serial
-  property :name,     String, :index => true, :required => true
-  validates_is_unique :name, :on => :register
-  belongs_to :user
-end
-
-DataMapper.auto_migrate!
-
 helpers do
   def credentials
     auth ||=  Rack::Auth::Basic::Request.new request.env
