@@ -6,7 +6,7 @@ post '/user' do
   name, password = credentials
   user = User.new :name => name, :password => password
   if user.save :register
-    "registration successful\n."
+    "registration successful.\n"
   else
     fail 'registration failed'
   end
