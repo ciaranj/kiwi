@@ -12,6 +12,13 @@ describe "POST /user" do
         last_response.body.should include('registration successful')
         User.first(:name => 'foo').should be_a(User)
       end
+      
+      it "should md5 hash the password" do
+        post '/user', {}, basic_auth(:someone, :awesome)
+        last_response.should be_ok
+        last_response.body.should include('registration successful')
+        User.first(:name => 'someone').password.should == 'be121740bf988b2225a313fa1f107ca1'
+      end
     end
     
     describe "when the user exists" do
