@@ -1,9 +1,13 @@
 
+def basic_auth user, password
+  { 'HTTP_AUTHORIZATION' => 'Basic ' + ["#{user}:#{password}"].pack('m*') }
+end
+
 describe "POST /user" do
   describe "when given HTTP basic auth" do
     describe "when the user does not exist" do
       it "should create the user" do
-        post '/user', {}, 'HTTP_AUTHORIZATION' => 'Basic ' + ['foo:bar'].pack('m*')
+        post '/user', {}, basic_auth(:foo, :bar)
         last_response.should be_ok
         last_response.body.should include('registration successful')
         User.first(:name => 'foo').should be_a(User)
@@ -13,7 +17,7 @@ describe "POST /user" do
     describe "when the user exists" do
       it "should respond with 500" do
         User.create :name => 'tj', :password => 'foobar'
-        post '/user', {}, 'HTTP_AUTHORIZATION' => 'Basic ' + ['tj:bar'].pack('m*')
+        post '/user', {}, basic_auth(:tj, :bar)
         last_response.status.should == 500
         last_response.body.should include('registration failed')
         User.first(:name => 'tj').password.should == 'foobar'
