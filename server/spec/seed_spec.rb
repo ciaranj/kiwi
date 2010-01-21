@@ -28,6 +28,26 @@ describe Kiwi::Seed do
     end
   end
   
+  describe "#exists?" do
+    it "should return true when the seed has versions" do
+      @seed.exists?.should be_true
+    end
+    
+    it "should return false when the seed has no versions" do
+      Kiwi::Seed.new('invalid').exists?.should be_false
+    end
+    
+    describe "given a version" do
+      it "should return true when the version exists" do
+        @seed.exists?('1.2.0').should be_true
+      end
+      
+      it "should return false when the version does not exist" do
+        @seed.exists?('9.9.9').should be_false
+      end
+    end
+  end
+  
   describe "#resolve" do
     describe "<version>" do
       it "should match exact version" do
