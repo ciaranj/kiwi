@@ -2,7 +2,9 @@
 describe "GET /:name/resolve" do
   describe "when :name does not exist" do
     it "should respond with 404" do
-      
+      get '/invalid/resolve'
+      last_response.status.should == 404
+      last_response.body.should include('seed does not exist')
     end
   end
   

@@ -64,6 +64,7 @@ end
 
 get '/:name/resolve/?' do
   seed = Kiwi::Seed.new params[:name]
+  not_found 'seed does not exist.' unless seed.exists?
   if params[:version] && !params[:version].empty?
     seed.resolve params[:version]
   else
