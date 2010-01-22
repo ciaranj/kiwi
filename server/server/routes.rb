@@ -56,9 +56,7 @@ post '/:name/?' do
   state = :published
   name, password = credentials
   user = User.first(:name => name, :password => md5(password)) or fail 'failed to authenticate, register first'
-  name = params[:name]
-  seed = params[:seed]
-  info = params[:info]
+  name, seed, info = params[:name], params[:seed], params[:info]
   if inst = Seed.first(:name => name)
     if inst.user == user
       state = :overwrote
