@@ -225,8 +225,9 @@ publish() {
   local seed=$version.seed
   [[ ! -f $seed ]] && abort $seed not found.
   require_seed_info_file seed.yml
+  require_auth
   log publish "$seed -> $SERVER/$name"
-  curl --data-binary -F seed=@$seed -F info=@seed.yml $SERVER/$name
+  curl -F seed=@$seed -F info=@seed.yml http://$auth@$SERVER_ADDR:$SERVER_PORT/$name -H 'Accept: text/plain'
 }
 
 #
@@ -377,6 +378,17 @@ update_all() {
     install ${dir##*/}
     echo
   done
+}
+
+#
+# Require authentication.
+# 
+#  - Populates $auth with the contents of $AUTH_DEST when present
+#
+
+require_auth() {
+  [[ -f $AUTH_DEST ]] || abort please register before attempting to publish a seed.
+  auth=$(cat $AUTH_DEST)
 }
 
 #

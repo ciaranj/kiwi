@@ -49,14 +49,13 @@ class Seed
   #++
   
   property :id,       Serial
-  property :name,     String, :index => true, :required => true
+  property :name,     String, :index => true, :required => true, :format => /\A\w+\z/
   
   #--
   # Validations
   #++
   
   validates_is_unique :name, :on => :register
-  validates_format :name, :format => /\A\w+\z/
   
   #--
   # Associations

@@ -55,7 +55,7 @@ end
 post '/:name/?' do
   state = :published
   name, password = credentials
-  user = User.first(:name => name, :password => password) || halt(500, 'failed to authenticate, register first')
+  user = User.first(:name => name, :password => md5(password)) or fail 'failed to authenticate, register first'
   name = params[:name]
   seed = params[:seed]
   info = params[:info]
