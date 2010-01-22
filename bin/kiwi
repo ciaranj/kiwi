@@ -58,6 +58,7 @@ cat << EOF
   
     The following operators are supported for matching versions:
     
+      n/a               Equal to
       =                 Equal to
       >                 Greater than
       >=                Greater than or equal to
