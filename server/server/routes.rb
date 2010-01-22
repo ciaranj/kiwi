@@ -6,7 +6,7 @@ post '/user' do
   name, password = credentials
   user = User.new :name => name, :password => password
   if user.save :register
-    'registration successful'
+    "registration successful.\n"
   else
     fail 'registration failed'
   end
@@ -55,7 +55,7 @@ end
 post '/:name/?' do
   state = :published
   name, password = credentials
-  user = User.first(:name => name, :password => password) || halt(500, 'failed to authenticate, register first')
+  user = User.first(:name => name, :password => md5(password)) or fail 'failed to authenticate, register first'
   name = params[:name]
   seed = params[:seed]
   info = params[:info]
@@ -76,5 +76,5 @@ post '/:name/?' do
   FileUtils.mkdir_p SEEDS + "/#{name}"
   FileUtils.mv seed[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
   FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml", :force => true
-  "Succesfully #{state} #{name} #{version}\n"
+  "Succesfully #{state} #{name} #{version}.\n"
 end

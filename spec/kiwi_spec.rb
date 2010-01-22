@@ -40,6 +40,20 @@ describe "Kiwi" do
     end
   end
   
+  describe "register" do
+    describe "" do
+      it "should abort with user name required" do
+        kiwi('register').should include('user name required')
+      end
+    end
+    
+    describe "<user>" do
+      it "should abort with password required" do
+        kiwi('register tj').should include('password required')
+      end
+    end
+  end
+  
   describe "list" do
     describe "" do
       it "should output a list of installed seeds" do
