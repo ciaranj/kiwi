@@ -26,7 +26,7 @@ cat << EOF
     
   Options:
     
-    -v, --verbose     Verbose
+    -v, --verbose     Verbose output
     -V, --version     Current version triplet
     -S, --seeds       Output seed directory
     -h, --help        Help information
