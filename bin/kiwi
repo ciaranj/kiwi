@@ -41,7 +41,7 @@ cat << EOF
     search            Search remotely available seeds with optional [pattern]
     list              Lists installed seeds and their associated versions
     build             Build <version>.seed with the contents of the current directory
-    publish           Build seed <name> and <version> to the kiwi server
+    publish           Push seed <name> and <version> to the kiwi server
     release           Build and publish seed <name> and <version>
     update            Install the latest release of every seed installed
     update self       Updates kiwi to the latest release
