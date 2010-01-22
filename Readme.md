@@ -65,7 +65,7 @@ Currently tested with:
   
 ## Example REPL (interactive console) Session
 
-  http://gist.github.com/283360
+  [http://gist.github.com/283360](http://gist.github.com/283360)
   
 ## License 
 
