@@ -238,7 +238,13 @@ publish() {
 install_dependencies() {
   require_seed_info_file $1
   log check dependencies
-  cat $1 | awk '$1 == "dependencies:", $1 ~ /\w+:/' | grep '-' | awk '{ system("kiwi install " $2 " \"" $3 " " $4 "\"") }'
+  deps=0
+  cat $1 | while read line; do
+    [[ $line =~ dependencies: ]] && deps=1
+    [[ $deps -ne 0 && $line =~ ^\s*- ]] && deps=2
+    [[ $deps -eq 2 && $line =~ ^\s*.+: ]] && deps=0
+    [[ $deps -eq 2 ]] && kiwi $FLAGS install $(normalize_version $line)
+  done
 }
 
 #
@@ -281,7 +287,9 @@ install() {
   log install $name $version
   if [[ -f $name ]]; then
     log install from file
-    cat $name | awk '{ system("kiwi install " $1 " \"" $2 " " $3 "\"") }'
+    cat $name | while read line; do
+      [[ $line =~ ^\s*- ]] && kiwi $FLAGS install $(normalize_version $line)
+    done
   else
     version=$(curl -s $SERVER/$name/resolve?version=$(urlencode $version))
     log resolve version $version
@@ -415,6 +423,19 @@ urlencode() {
 }
 
 #
+# Normalize version args.
+# 
+# For example '- sass >= 0.0.1' will become 'sass ">= 0.0.1"',
+# making it bash-friendly for installation etc.
+# 
+# <arg ...>
+#
+
+normalize_version() {
+  echo $(echo ${*##*-} | awk '{ print $1 " \"" $2 " " $3 "\"" }')
+}
+
+#
 # Abort unless one or more seeds are installed.
 # 
 
@@ -473,10 +494,13 @@ parse() {
   while [[ $# -gt 0 ]]; do
     arg=$1; shift
     case $arg in
-      -v|--verbose) VERBOSE=1 ;;
       -V|--version) echo $VERSION ;;
       -S|--seeds) echo $SEED_DEST ;;
       -h|--help|help) usage | less ;;
+      -v|--verbose) 
+        VERBOSE=1
+        FLAGS="$FLAGS --verbose"
+        ;;
       --*) 
         abort "invalid option \`$arg'. Use --help for more information"
         ;;
