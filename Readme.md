@@ -20,6 +20,8 @@
     - searching of remote seeds
     - arbitrary build commands (so you can make, scons, jake, etc)
     - installation via flat-list of seeds and associated versions
+    - user registration
+    - user authentication
   * Version resolution
     - via installation
     - via runtime
@@ -60,6 +62,10 @@ Currently tested with:
   * tar (GNU tar) 1.15.1
   * curl 7.16.3
   * egrep (GNU grep) 2.5.1
+  
+## Example REPL (interactive console) Session
+
+  http://gist.github.com/283360
   
 ## License 
 
