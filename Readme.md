@@ -27,6 +27,8 @@
     - via runtime
   * Interactive console or REPL
     - Auto-detects and utilizes rlwrap
+  * Multiple environments
+    - Use one or more environments to manage your seeds
   
 ## Installation
 
