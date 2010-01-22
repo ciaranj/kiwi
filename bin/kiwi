@@ -12,7 +12,6 @@ SERVER=http://$SERVER_ADDR:$SERVER_PORT
 KIWI_DEST=~/.kiwi
 AUTH_DEST=$KIWI_DEST/.auth
 SEED_DEST=$KIWI_DEST/current/seeds
-VERBOSE=
 
 #
 # Output usage.
