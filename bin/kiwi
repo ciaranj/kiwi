@@ -243,7 +243,7 @@ install_dependencies() {
     [[ $line =~ dependencies: ]] && deps=1
     [[ $deps -ne 0 && $line =~ ^\s*- ]] && deps=2
     [[ $deps -eq 2 && $line =~ ^\s*.+: ]] && deps=0
-    [[ $deps -eq 2 ]] && kiwi $FLAGS install $(echo ${line##*-} | awk '{ print $1 " \"" $2 " " $3 "\"" }')
+    [[ $deps -eq 2 ]] && kiwi $FLAGS install $(normalize_version $line)
   done
 }
 
@@ -287,7 +287,9 @@ install() {
   log install $name $version
   if [[ -f $name ]]; then
     log install from file
-    cat $name | awk '{ system("kiwi install " $1 " \"" $2 " " $3 "\"") }'
+    cat $name | while read line; do
+      [[ $line =~ ^\s*- ]] && kiwi $FLAGS install $(normalize_version $line)
+    done
   else
     version=$(curl -s $SERVER/$name/resolve?version=$(urlencode $version))
     log resolve version $version
@@ -418,6 +420,19 @@ register_user() {
 
 urlencode() {
   echo $(echo $* | sed 's/>/%3e/g;s/=/%3D/g;s/ /%20/g')
+}
+
+#
+# Normalize version args.
+# 
+# For example '- sass >= 0.0.1' will become 'sass ">= 0.0.1"',
+# making it bash-friendly for installation etc.
+# 
+# <arg ...>
+#
+
+normalize_version() {
+  echo $(echo ${*##*-} | awk '{ print $1 " \"" $2 " " $3 "\"" }')
 }
 
 #
