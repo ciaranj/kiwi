@@ -30,7 +30,7 @@ end
 
 get '/:name/resolve/?' do
   seed = Kiwi::Seed.new params[:name]
-  requires_seed seed
+  require_seed seed
   if params[:version] && !params[:version].empty?
     seed.resolve(params[:version]) or not_found 'seed version does not exist.'
   else
@@ -43,8 +43,8 @@ end
 
 get '/:name/:version/?' do
   seed = Kiwi::Seed.new params[:name]
-  requires_seed seed
-  requires_seed seed, params[:version]
+  require_seed seed
+  require_seed seed, params[:version]
   content_type :tar
   send_file seed.path_for(params[:version])
 end

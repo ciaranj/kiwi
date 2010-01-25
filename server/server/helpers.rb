@@ -20,7 +20,7 @@ helpers do
   ##
   # Require existance of _seed_ and optional _version_.
   
-  def requires_seed seed, version = nil
+  def require_seed seed, version = nil
     not_found 'seed does not exist.' unless seed.exists?
     if version
       not_found 'seed version does not exist.' unless seed.exists? version
