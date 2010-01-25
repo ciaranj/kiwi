@@ -50,10 +50,12 @@ class Seed
   # Properties
   #++
   
-  property :id,         Serial
-  property :name,       String,   :index => true, :required => true, :format => /\A\w+\z/
-  property :created_at, DateTime, :index => true
-  property :updated_at, DateTime, :index => true
+  property :id,          Serial
+  property :name,        String,   :index => true, :required => true, :format => /\A\w+\z/
+  property :build,       String,   :index => true
+  property :description, String,   :index => true
+  property :created_at,  DateTime, :index => true
+  property :updated_at,  DateTime, :index => true
   
   #--
   # Validations
