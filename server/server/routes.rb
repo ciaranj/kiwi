@@ -63,7 +63,7 @@ post '/:name/?' do
       fail "unauthorized to publish #{name}"
     end
   else
-    user.seeds.create :name => name
+    @user.seeds.create :name => name
     state = :registered
   end
   fail '<version>.seed required' unless seed
