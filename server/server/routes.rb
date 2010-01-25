@@ -53,12 +53,11 @@ end
 # Publish seed _name_. Requires _seed_ archive and _info_ file.
 
 post '/:name/?' do
+  require_authentication
   state = :published
-  name, password = credentials
-  user = User.first(:name => name, :password => md5(password)) or fail 'failed to authenticate, register first'
   name, seed, info = params[:name], params[:seed], params[:info]
   if inst = Seed.first(:name => name)
-    if inst.user == user
+    if inst.user == @user
       state = :overwrote
     else
       fail "unauthorized to publish #{name}"

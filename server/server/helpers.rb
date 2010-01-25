@@ -11,6 +11,15 @@ helpers do
   end
   
   ##
+  # Attempt to authenticate via HTTP basic auth, and assign
+  # @user to the current user or fail.
+  
+  def require_authentication
+    name, password = credentials
+    @user = User.first(:name => name, :password => md5(password)) or fail 'failed to authenticate, register first'
+  end
+  
+  ##
   # Fail with terminal-friendly _msg_. Appends ".\n".
   
   def fail msg
