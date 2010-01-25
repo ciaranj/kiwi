@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'dm-core'
 require 'dm-validations'
+require 'dm-timestamps'
 require 'yaml'
 require 'sinatra'
 require 'fileutils'

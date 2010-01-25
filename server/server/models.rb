@@ -11,9 +11,11 @@ class User
   # Properties
   #++
   
-  property :id,       Serial
-  property :name,     String, :index => true, :required => true
-  property :password, String, :index => true, :required => true
+  property :id,         Serial
+  property :name,       String,   :index => true, :required => true
+  property :password,   String,   :index => true, :required => true
+  property :created_at, DateTime, :index => true  
+  property :updated_at, DateTime, :index => true  
   
   #--
   # Validations
@@ -48,8 +50,10 @@ class Seed
   # Properties
   #++
   
-  property :id,       Serial
-  property :name,     String, :index => true, :required => true, :format => /\A\w+\z/
+  property :id,         Serial
+  property :name,       String,   :index => true, :required => true, :format => /\A\w+\z/
+  property :created_at, DateTime, :index => true
+  property :updated_at, DateTime, :index => true
   
   #--
   # Validations
