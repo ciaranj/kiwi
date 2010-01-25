@@ -40,6 +40,7 @@ class User
 end
 
 class Version
+  
   #--
   # Mixins
   #++
@@ -52,7 +53,7 @@ class Version
   
   property :id,          Serial
   property :build,       String,   :index => true
-  property :version,     String,   :index => true
+  property :version,     String,   :index => true, :required => true, :format => /\A\d+\.\d+\.\d+\z/
   property :description, String,   :index => true
   property :created_at,  DateTime, :index => true
   property :updated_at,  DateTime, :index => true
