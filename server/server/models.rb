@@ -36,6 +36,33 @@ class User
   before :save do
     self.password = Digest::MD5.hexdigest(password) if new?
   end
+  
+end
+
+class Version
+  #--
+  # Mixins
+  #++
+  
+  include DataMapper::Resource
+  
+  #--
+  # Properties
+  #++
+  
+  property :id,          Serial
+  property :build,       String,   :index => true
+  property :version,     String,   :index => true
+  property :description, String,   :index => true
+  property :created_at,  DateTime, :index => true
+  property :updated_at,  DateTime, :index => true
+  
+  #--
+  # Associations
+  #++
+  
+  belongs_to :seed
+  
 end
 
 class Seed
@@ -52,8 +79,6 @@ class Seed
   
   property :id,          Serial
   property :name,        String,   :index => true, :required => true, :format => /\A\w+\z/
-  property :build,       String,   :index => true
-  property :description, String,   :index => true
   property :created_at,  DateTime, :index => true
   property :updated_at,  DateTime, :index => true
   
@@ -68,4 +93,6 @@ class Seed
   #++
   
   belongs_to :user
+  has n, :versions
+  
 end
