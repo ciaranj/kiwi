@@ -11,5 +11,9 @@ Spec::Runner.configure do |c|
     def app
       Sinatra::Application
     end
+    
+    def basic_auth user, password
+      { 'HTTP_AUTHORIZATION' => 'Basic ' + ["#{user}:#{password}"].pack('m*') }
+    end
   }
 end
