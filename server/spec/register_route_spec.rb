@@ -1,8 +1,4 @@
 
-def basic_auth user, password
-  { 'HTTP_AUTHORIZATION' => 'Basic ' + ["#{user}:#{password}"].pack('m*') }
-end
-
 describe "POST /user" do
   describe "when given HTTP basic auth" do
     describe "when the user does not exist" do

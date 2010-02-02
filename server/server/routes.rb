@@ -30,7 +30,7 @@ end
 
 get '/:name/resolve/?' do
   seed = Kiwi::Seed.new params[:name]
-  requires_seed seed
+  require_seed seed
   if params[:version] && !params[:version].empty?
     seed.resolve(params[:version]) or not_found 'seed version does not exist.'
   else
@@ -43,8 +43,8 @@ end
 
 get '/:name/:version/?' do
   seed = Kiwi::Seed.new params[:name]
-  requires_seed seed
-  requires_seed seed, params[:version]
+  require_seed seed
+  require_seed seed, params[:version]
   content_type :tar
   send_file seed.path_for(params[:version])
 end
@@ -53,18 +53,17 @@ end
 # Publish seed _name_. Requires _seed_ archive and _info_ file.
 
 post '/:name/?' do
+  require_authentication
   state = :published
-  name, password = credentials
-  user = User.first(:name => name, :password => md5(password)) or fail 'failed to authenticate, register first'
   name, seed, info = params[:name], params[:seed], params[:info]
   if inst = Seed.first(:name => name)
-    if inst.user == user
+    if inst.user == @user
       state = :overwrote
     else
       fail "unauthorized to publish #{name}"
     end
   else
-    user.seeds.create :name => name
+    @user.seeds.create :name => name
     state = :registered
   end
   fail '<version>.seed required' unless seed
