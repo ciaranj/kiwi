@@ -19,7 +19,7 @@ end
 #
 
 get '/search/?' do
-  Kiwi::Seed.names.map do |name|
+  Seed.names.map do |name|
     next if params[:name] and not name.include? params[:name]
     '%15s : %s' % [name, Kiwi::Seed.new(name).versions.reverse.join(' ')]
   end.compact.join("\n") + "\n"
