@@ -96,4 +96,22 @@ class Seed
   belongs_to :user
   has n, :versions
   
+  #--
+  # Singleton methods
+  #++
+  
+  ##
+  # Return array of all seed paths.
+  
+  def self.paths
+    Dir[SEEDS + '/*']
+  end
+  
+  ##
+  # Return array of all seed names.
+  
+  def self.names
+    paths.map { |path| File.basename path }
+  end
+  
 end
