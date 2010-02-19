@@ -11,7 +11,7 @@ test-server:
 	@cd server && $(SPEC) spec -r spec/spec_helper --color
 	
 server-start:
-	@thin -c server --rackup config.ru start -p 8888 -d -P server.pid -l server/server.log
+	@thin -c server --rackup config.ru start -p 8888 -d -P server.pid -l server.log
 	
 server-stop:
 	@cat server/server.pid | xargs kill -TERM
