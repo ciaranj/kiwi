@@ -14,7 +14,7 @@ server-start:
 	@thin -c server --rackup config.ru start -p 8888 -d -P server.pid
 	
 server-stop:
-	@cd server && cat server.pid | xargs kill -TERM
+	@cat server/server.pid | xargs kill -TERM
 	
 install: bin/kiwi
 	install bin/kiwi $(DEST)/kiwi
