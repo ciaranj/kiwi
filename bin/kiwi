@@ -37,6 +37,7 @@ cat << EOF
     install           Installs a seed <name> with optional [version]
     uninstall         Uninstalls all versions of seed <name> or the given [version]
     switch            Switch to kiwi to use the given seed <environment>
+    envs              List environments available to kiwi
     search            Search remotely available seeds with optional [pattern]
     list              Lists installed seeds and their associated versions
     build             Build <version>.seed with the contents of the current directory
@@ -381,10 +382,18 @@ update_all() {
   require_seeds
   local dirs=$SEED_DEST/*
   echo
-  for dir in $dirs;
+  for dir in $dirs
   do
     install ${dir##*/}
     echo
+  done
+}
+
+list_environments() {
+  for dir in $KIWI_DEST/*
+  do
+    name=${dir##*/}
+    [[ $name = "current" ]] || echo $name
   done
 }
 
@@ -549,6 +558,9 @@ parse() {
         ;;
       search) 
         search $*
+        ;;
+      envs)
+        list_environments
         ;;
       repl)
         repl
