@@ -389,11 +389,23 @@ update_all() {
   done
 }
 
+#
+# List environments, prefixing '*' to the current env.
+# 
+
 list_environments() {
+  local link=$(readlink $KIWI_DEST/current)
+  local current=${link##*/}
   for dir in $KIWI_DEST/*
   do
-    name=${dir##*/}
-    [[ $name = "current" ]] || echo $name
+    local name=${dir##*/}
+    if [[ $name != "current" ]]; then
+      if [[ $current = $name ]]; then
+        echo "* $name"
+      else
+        echo "  $name"
+      fi
+    fi
   done
 }
 
@@ -559,7 +571,7 @@ parse() {
       search) 
         search $*
         ;;
-      envs)
+      env|envs)
         list_environments
         ;;
       repl)
