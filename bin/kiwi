@@ -188,7 +188,7 @@ download() {
   setup_seed $name $version
   log fetch $version.seed
   seed=$SEED_DEST/$name/$version/$name.seed
-  curl -s $SERVER/$name/$version -o $seed
+  curl -s $SERVER/seeds/$name/$version.seed -o $seed
 }
 
 #

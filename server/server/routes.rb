@@ -41,7 +41,7 @@ end
 ##
 # Transfer _version_ of the requested seed _name_.
 
-get '/:name/:version/?' do
+get '/seeds/:name/:version.seed' do
   seed = Kiwi::Seed.new params[:name]
   require_seed seed
   require_seed seed, params[:version]
