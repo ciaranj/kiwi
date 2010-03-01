@@ -21,3 +21,7 @@ configure :test do
   DataMapper.setup :default, 'sqlite3::memory:'
   DataMapper.auto_migrate!
 end
+
+configure :production do
+  DataMapper.setup :default, File.read('/home/admin/.kiwi-mysql')
+end
