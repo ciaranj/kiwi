@@ -6,6 +6,7 @@ post '/user' do
   name, password = credentials
   user = User.new :name => name, :password => password
   if user.save :register
+    log "register : #{name}"
     "registration successful.\n"
   else
     fail 'registration failed'
@@ -19,6 +20,7 @@ end
 #
 
 get '/search/?' do
+  log "search : #{params[:name] || :all}"
   Seed.names.map do |name|
     next if params[:name] and not name.include? params[:name]
     '%15s : %s' % [name, Kiwi::Seed.new(name).versions.reverse.join(' ')]
@@ -46,6 +48,7 @@ get '/seeds/:name/:version.seed' do
   require_seed seed
   require_seed seed, params[:version]
   content_type :tar
+  log "transfer : #{params[:name]}.#{params[:version]}.seed"
   send_file seed.path_for(params[:version])
 end
 
@@ -73,5 +76,6 @@ post '/:name/?' do
   FileUtils.mkdir_p SEEDS + "/#{name}"
   FileUtils.mv seed[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
   FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml", :force => true
+  log "#{state} : #{name}.#{version}.seed"
   "Succesfully #{state} #{name} #{version}.\n"
 end
