@@ -1,5 +1,5 @@
 
-SEEDS = File.expand_path File.dirname(__FILE__) + '/../seeds'
+SEEDS = ENV['KIWI_SEEDS'] || File.expand_path(File.dirname(__FILE__) + '/../seeds')
 
 module Kiwi
   class Seed
