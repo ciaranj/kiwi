@@ -6,13 +6,10 @@ require 'dm-timestamps'
 require 'yaml'
 require 'sinatra'
 require 'fileutils'
-require 'server/helpers'
-require 'server/models'
-require 'server/seed'
-require 'server/routes'
 require 'digest/md5'
 
 configure do
+  set :seed_path, File.dirname(__FILE__) + '/../seeds'
   DataMapper.setup :default, 'sqlite3::memory:'
   DataMapper.auto_migrate!
 end
@@ -23,5 +20,11 @@ configure :test do
 end
 
 configure :production do
+  set :seed_path, '/var/www/seeds'
   DataMapper.setup :default, File.read('/home/admin/.kiwi-mysql').strip
 end
+
+require 'server/helpers'
+require 'server/models'
+require 'server/seed'
+require 'server/routes'

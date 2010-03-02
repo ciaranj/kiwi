@@ -1,5 +1,5 @@
 
-SEEDS = ENV['KIWI_SEEDS'] || File.expand_path(File.dirname(__FILE__) + '/../seeds')
+SEEDS = File.expand_path Sinatra::Application.seed_path
 
 module Kiwi
   class Seed
