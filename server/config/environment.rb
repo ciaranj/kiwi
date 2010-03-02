@@ -23,5 +23,5 @@ configure :test do
 end
 
 configure :production do
-  DataMapper.setup :default, File.read('/home/admin/.kiwi-mysql')
+  DataMapper.setup :default, File.read('/home/admin/.kiwi-mysql').strip
 end
