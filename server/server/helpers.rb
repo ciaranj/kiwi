@@ -2,13 +2,6 @@
 helpers do
   
   ##
-  # Output log _msg_.
-  
-  def log msg
-    puts '%s : %s' % [Time.now, msg]
-  end
-  
-  ##
   # Requires and returns authentication credentials.
   
   def credentials
