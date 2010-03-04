@@ -537,7 +537,7 @@ parse() {
         require_seed_name $1
         open_seed_directory $*
         ;;
-      uninstall)
+      uninstall|remove|delete|rm)
         require_seed_name $1
         uninstall $* 
         ;;
