@@ -577,7 +577,7 @@ parse() {
       repl)
         repl
         ;;
-      list)
+      list|ls)
         list $*
         ;;
     esac
