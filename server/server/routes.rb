@@ -29,12 +29,12 @@ end
 # Resolve the given :version for seed _name_.
 
 get '/:name/resolve/?' do
-  seed = Kiwi::Seed.new params[:name]
-  require_seed seed
-  if params[:version] && !params[:version].empty?
-    seed.resolve(params[:version]) or not_found 'seed version does not exist.'
+  version = params[:version]
+  require_seed params[:name]
+  if version and not version.empty?
+    @seed.resolve(version) or not_found 'seed version does not exist.'
   else
-    seed.current_version
+    @seed.current_version.number
   end
 end
 
