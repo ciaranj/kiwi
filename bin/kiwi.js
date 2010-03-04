@@ -90,7 +90,10 @@ function splitArgs(argString) {
  * [args]
  * [inRepl]
  */
-function parseArguments(args, inRepl) {
+function parseArguments(args, callback) {  
+    var inRepl = (callback != undefined);
+    if( !callback) callback=  function() {};
+
     var argIndex= inRepl?0:2,
         keepGoing= true, 
         arg="";
@@ -98,6 +101,7 @@ function parseArguments(args, inRepl) {
 
     while(keepGoing && argIndex < args.length) {
         var command= args[argIndex++];   
+        keepGoing=false;
         switch(command) {
             case "help":
             case "-h":
@@ -115,28 +119,33 @@ function parseArguments(args, inRepl) {
             case "-v":
             case "--verbose":
                 if(!inRepl) inVerboseMode= true;
+                keepGoing= true;
                 break;
             case "update":
-              if( args[argIndex] == 'self' ) updateSelf();
-              else update();
-              keepGoing= false;
+              if( args[argIndex] == 'self' ) updateSelf(callback);
+              else update(callback);
               break;
+            case "search":
+                search(null, callback);
+                break;
             case "repl":
               if(!inRepl) repl();
+              else callback();
               break;
             case "list":
             case "ls":
-                list();
+                list(callback);
                 break;
             default:
                 if(!inRepl) sys.puts("Error: invalid option `"+ command + "'. Use --help for more information");
+                else callback();
         }
     }
 }
 
-function update() { sys.puts('update');}
-function updateSelf() { sys.puts('update self');} 
-function list() { sys.puts('list');}  
+function update(callback) { sys.puts('update');callback();}
+function updateSelf(callback) { sys.puts('update self');callback();} 
+function list(callback) { sys.puts('list');callback();}  
    
 function run() {
     if( process.argv.length == 2 && process.argv[0] == 'node' ) {
@@ -172,21 +181,6 @@ function search(pattern, callback) {
     request.close();     */
 }
  
-/*
-* Execute a particular command
-*/
-function executeCommand(command, callback) {   
-    var commandFound= true;
-    parseArguments(command, true);
-    
-    switch( command ) {
-        case 'search':
-            search(null, callback);
-            break;
-        default: 
-            callback();
-    }
-}
 
 function trim(str) {
     return str.replace(/^\s*/, '').replace(/\s*$/, ''); 
@@ -209,7 +203,7 @@ function repl() {
             process.stdio.close();
             sys.puts('Bye Bye');
         } else {
-            executeCommand(data, function(error) {
+            parseArguments(data, function() {
                 prompt(); 
             });
         } 
