@@ -1,6 +1,7 @@
 
 SPEC = spec
 DEST = /usr/bin
+LIB_DEST = /usr/local/lib/node/libraries
 
 all: test
 
@@ -18,6 +19,7 @@ server-stop:
 	
 install: bin/kiwi
 	install bin/kiwi $(DEST)/kiwi
+	install lib/kiwi.js $(LIB_DEST)/kiwi.js
 	
 uninstall: $(DEST)/kiwi
 	rm $(DEST)/kiwi

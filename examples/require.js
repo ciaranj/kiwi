@@ -1,5 +1,4 @@
 
-require.paths.unshift('lib')
 var kiwi = require('kiwi'),
     sys = require('sys')
 
