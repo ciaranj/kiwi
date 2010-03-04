@@ -188,6 +188,7 @@ describe "Kiwi" do
     describe "<file>" do
       it "should install from a flat-list of seeds" do
         kiwi('install ' + fixture('seeds'))
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/crypto/0.0.3')).should be_true
         File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1')).should be_true
         File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.2.0')).should be_true
       end
