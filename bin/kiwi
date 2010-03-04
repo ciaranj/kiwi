@@ -33,19 +33,19 @@ cat << EOF
     
   Commands:
     
-    <void>            Starts a kiwi interactive console (REPL)
-    install           Installs a seed <name> with optional [version]
-    uninstall         Uninstalls all versions of seed <name> or the given [version]
-    switch            Switch to kiwi to use the given seed <environment>
-    envs              List environments available to kiwi
-    search            Search remotely available seeds with optional [pattern]
-    list              Lists installed seeds and their associated versions
-    build             Build <version>.seed with the contents of the current directory
-    publish           Push seed <name> and <version> to the kiwi server
-    release           Build and publish seed <name> and <version>
-    update            Install the latest release of every seed installed
-    update self       Updates kiwi to the latest release
-    register          Attempt to register the given <user> name and <password>
+    <void>                       Starts a kiwi interactive console (REPL)
+    install <name> [version]     Installs a seed <name> with optional [version]
+    uninstall <name> [version]   Uninstalls all versions of seed <name> or the given [version]
+    switch <env>                 Switch to kiwi to use the given seed <env>
+    search [pattern]             Search remotely available seeds with optional [pattern]
+    build <version>              Build <version>.seed with the contents of the current directory
+    publish <name> <version>     Push seed <name> and <version> to the kiwi server
+    release <name> <version>     Build and publish seed <name> and <version>
+    register <name> <password>   Attempt to register the given <user> name and <password>
+    update                       Install the latest release of every seed installed
+    update self                  Updates kiwi to the latest release
+    list                         Lists installed seeds and their associated versions
+    envs                         List environments available to kiwi
     
   Install:
   
