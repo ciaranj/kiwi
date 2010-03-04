@@ -52,7 +52,6 @@ class Version
   #++
   
   property :id,          Serial
-  property :build,       String,   :index => true
   property :version,     String,   :index => true, :required => true, :format => /\A\d+\.\d+\.\d+\z/
   property :description, String,   :index => true
   property :downloads,   Integer,  :index => true, :default => 0

@@ -46,8 +46,11 @@ get '/seeds/:name/:version.seed' do
   require_seed seed
   require_seed seed, params[:version]
   content_type :tar
-  version = Seed.first(:name => params[:name]).versions.first :version => params[:version]
-  version.update :downloads => version.downloads + 1
+  if isnt = Seed.first(:name => params[:name])
+    if version = inst.versions.first(:version => params[:version])
+      version.update :downloads => version.downloads + 1
+    end
+  end
   send_file seed.path_for(params[:version])
 end
 
@@ -65,7 +68,7 @@ post '/:name/?' do
       fail "unauthorized to publish #{name}"
     end
   else
-    @user.seeds.create :name => name
+    inst = @user.seeds.create :name => name
     state = :registered
   end
   fail '<version>.seed required' unless seed
@@ -75,5 +78,6 @@ post '/:name/?' do
   FileUtils.mkdir_p SEEDS + "/#{name}"
   FileUtils.mv seed[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
   FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml", :force => true
+  inst.versions.first_or_create :version => version, :description => Kiwi::Seed.new(name).info(version)['description']
   "Succesfully #{state} #{name} #{version}.\n"
 end

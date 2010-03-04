@@ -7,6 +7,7 @@ require 'yaml'
 require 'sinatra'
 require 'fileutils'
 require 'digest/md5'
+require 'server/models'
 
 configure do
   set :seed_path, File.dirname(__FILE__) + '/../seeds'
@@ -25,6 +26,5 @@ configure :production do
 end
 
 require 'server/helpers'
-require 'server/models'
 require 'server/seed'
 require 'server/routes'
