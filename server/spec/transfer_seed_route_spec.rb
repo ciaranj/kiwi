@@ -3,8 +3,8 @@ describe "GET /seeds/:name/:version.seed" do
   before :each do
     DataMapper.auto_migrate!
     @user = User.create :name => 'tj', :password => 'foobar'
-    @oo = Seed.create :name => 'oo', :user => @user
-    @oo.versions.create :version => '1.2.0'  
+    @oo = @user.seeds.create :name => 'oo'
+    @oo.versions.create :number => '1.2.0'  
   end
   
   describe "when seed does not exist" do
@@ -33,7 +33,7 @@ describe "GET /seeds/:name/:version.seed" do
     it "should bump download count" do
       get '/seeds/oo/1.2.0.seed'
       last_response.should be_ok
-      @oo.reload.versions.first(:version => '1.2.0').downloads.should == 1
+      @oo.reload.versions.first(:number => '1.2.0').downloads.should == 1
     end
   end
 end

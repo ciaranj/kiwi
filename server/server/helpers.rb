@@ -16,7 +16,7 @@ helpers do
   
   def require_authentication
     name, password = credentials
-    @user = User.first(:name => name, :password => md5(password)) or fail 'failed to authenticate, register first'
+    @user = User.first(:name => name, :password => md5(password)) or fail 'failed to authenticate, please register'
   end
   
   ##
@@ -27,12 +27,13 @@ helpers do
   end
   
   ##
-  # Require existance of _seed_ and optional _version_.
+  # Require existance of seed _name_ and optional _version_,
+  # sets @seed and @version.
   
-  def require_seed seed, version = nil
-    not_found 'seed does not exist.' unless seed.exists?
+  def require_seed name, version = nil
+    not_found 'seed does not exist.' unless @seed = Seed.first(:name => name)
     if version
-      not_found 'seed version does not exist.' unless seed.exists? version
+      not_found 'seed version does not exist.' unless @version = @seed.versions.first(:number => version)
     end
   end
   

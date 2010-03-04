@@ -1,5 +1,15 @@
 
 describe "GET /:name/resolve" do
+  before :each do
+    DataMapper.auto_migrate!
+    @user = User.create :name => 'foo', :password => 'bar'
+    @sass = @user.seeds.create :name => 'sass'
+    @sass.versions.create :number => '0.0.1', :description => 'Sass to css engine'
+    @oo = @user.seeds.create :name => 'oo'
+    @oo.versions.create :number => '1.2.0', :description => 'Class implementation for JavaScript'  
+    @oo.versions.create :number => '1.1.0', :description => 'Class implementation'  
+  end
+  
   describe "when :name does not exist" do
     it "should respond with 404" do
       get '/invalid/resolve'
