@@ -4,10 +4,10 @@ describe Seed do
     DataMapper.auto_migrate!
     @user = User.create :name => 'foo', :password => 'bar'
     @sass = @user.seeds.create :name => 'sass'
-    @sass.versions.create :version => '0.0.1', :description => 'Sass to css engine'
+    @sass.versions.create :number => '0.0.1', :description => 'Sass to css engine'
     @oo = @user.seeds.create :name => 'oo'
-    @oo.versions.create :version => '1.2.0', :description => 'Class implementation for JavaScript'  
-    @oo.versions.create :version => '1.1.0', :description => 'Class implementation' 
+    @oo.versions.create :number => '1.2.0', :description => 'Class implementation for JavaScript'  
+    @oo.versions.create :number => '1.1.0', :description => 'Class implementation' 
   end
   
   describe "#path" do
@@ -25,13 +25,7 @@ describe Seed do
   describe "#current_version" do
     it "should return the latest Version" do
       @oo.current_version.should be_a(Version)
-      @oo.current_version.version.should == '1.2.0'
-    end
-  end
-  
-  describe "#current_version_number" do
-    it "should return the latest version" do
-      @oo.current_version_number.should == '1.2.0'
+      @oo.current_version.number.should == '1.2.0'
     end
   end
   
