@@ -41,6 +41,25 @@
 ## Updating 
 
     $ [sudo] kiwi update
+    
+## Example Walkthrough
+
+First we need to install a few seeds:
+    $ kiwi -v install haml
+    $ kiwi -v install oo
+    
+Now we can create a file named _app.js_ anywhere
+on our system and add:
+
+    var kiwi = require('kiwi'),
+        sys = require('sys')
+    
+    sys.p(kiwi.require('haml', '= 0.1.2'))
+    sys.p(kiwi.require('oo', '1.2.0'))
+    sys.p(kiwi.require('oo'))
+    
+Then run it with node:
+    $ node app.js
 
 ## Testing
 
