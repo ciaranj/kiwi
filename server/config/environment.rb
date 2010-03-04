@@ -26,5 +26,4 @@ configure :production do
 end
 
 require 'server/helpers'
-require 'server/seed'
 require 'server/routes'
