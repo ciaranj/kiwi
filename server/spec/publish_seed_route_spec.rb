@@ -4,7 +4,7 @@ describe "POST /:name" do
     DataMapper.auto_migrate!
     @joe = User.create :name => 'joe', :password => 'foobar'
     @bob = User.create :name => 'bob', :password => 'foobar'
-    @sass = Seed.create :name => 'sass', :user => @bob
+    @sass = @bob.seeds.create :name => 'sass'
   end
   
   describe "when not given authentication" do
