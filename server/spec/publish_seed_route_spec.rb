@@ -24,10 +24,12 @@ describe "POST /:name" do
   end
   
   describe "when :name does not exist" do
-    it "should publish" do
-      # post '/something', { :seed => '', :info => '' }, basic_auth(:joe, :foobar)
-      # last_response.should be_ok
-      # last_response.body.should include('Succesfully registered something 0.0.1')
+    it "should publish the seed" do
+      tarball = Rack::Test::UploadedFile.new '../server/seeds/oo/1.1.0.seed', 'application/x-tar-gzip'
+      info = Rack::Test::UploadedFile.new '../server/seeds/oo/1.1.0.yml', 'text/yaml'
+      post '/oo', { :seed => tarball, :info => info }, basic_auth(:joe, :foobar)
+      last_response.should be_ok
+      last_response.body.should include('Succesfully registered oo 1.1.0')
     end
   end
 end
