@@ -72,8 +72,8 @@ post '/:name/?' do
   
   # Validate files
   
-  fail '<version>.seed tarball required' unless tarball
-  fail 'seed.yml required' unless info
+  fail '<version>.seed tarball is required' unless tarball
+  fail 'seed.yml is required' unless info
   version = File.basename tarball[:filename], '.seed'
   fail 'version is invalid; must be formatted as "n.n.n"' unless version =~ /\A\d+\.\d+\.\d+\z/
     
