@@ -46,6 +46,8 @@ get '/seeds/:name/:version.seed' do
   require_seed seed
   require_seed seed, params[:version]
   content_type :tar
+  version = Seed.first(:name => params[:name]).versions.first :version => params[:version]
+  version.update :downloads => version.downloads + 1
   send_file seed.path_for(params[:version])
 end
 
