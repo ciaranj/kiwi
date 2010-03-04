@@ -64,6 +64,17 @@ class Version
   
   belongs_to :seed
   
+  #--
+  # Instance methods
+  #++
+  
+  ##
+  # Return path to seed tarball.
+  
+  def path
+    seed.path + "/#{number}.seed"
+  end
+  
 end
 
 class Seed
@@ -105,13 +116,6 @@ class Seed
   
   def path
     SEEDS + '/' + name
-  end
-  
-  ##
-  # Return path for seed _version_.
-  
-  def path_for version
-    path + "/#{version}.seed"
   end
   
   ##
