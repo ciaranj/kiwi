@@ -46,6 +46,19 @@ describe "POST /:name" do
       post '/oo', { :seed => @tarball, :info => @info }, basic_auth(:joe, :foobar)
       last_response.should be_ok
       last_response.body.should include('Succesfully registered oo 1.1.0')
+      Seed.first(:name => 'oo').user.should == @joe
+      Seed.first(:name => 'oo').version_numbers.should == ['1.1.0']
+    end
+  end
+  
+  describe "when :name does exist but is owned" do
+    it "should overwrite the seed" do
+      post '/oo', { :seed => @tarball, :info => @info }, basic_auth(:joe, :foobar)
+      post '/oo', { :seed => @tarball, :info => @info }, basic_auth(:joe, :foobar)
+      last_response.should be_ok
+      last_response.body.should include('Succesfully replaced oo 1.1.0')
+      Seed.first(:name => 'oo').user.should == @joe
+      Seed.first(:name => 'oo').version_numbers.should == ['1.1.0']
     end
   end
 end
