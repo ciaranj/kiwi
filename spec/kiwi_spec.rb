@@ -1,6 +1,6 @@
 
 def kiwi *args
-  `export SERVER_ADDR=0.0.0.0; #{File.dirname(__FILE__)}/../bin/kiwi #{args.join(' ')}`
+  `export SERVER_ADDR=0.0.0.0; export SERVER_PORT=8888; #{File.dirname(__FILE__)}/../bin/kiwi #{args.join(' ')}`
 end
 
 def fixture name
