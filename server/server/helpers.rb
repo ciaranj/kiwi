@@ -27,13 +27,13 @@ helpers do
   end
   
   ##
-  # Require existance of seed _name_ and optional version _number_,
+  # Require existance of seed _name_ and optional _version_,
   # sets @seed and @version.
   
   def require_seed name, version = nil
     not_found 'seed does not exist.' unless @seed = Seed.first(:name => name)
     if version
-      not_found 'seed version does not exist.' unless @version = @seed.versions.first(:number => number)
+      not_found 'seed version does not exist.' unless @version = @seed.versions.first(:number => version)
     end
   end
   

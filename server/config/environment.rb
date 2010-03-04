@@ -27,3 +27,5 @@ end
 
 require 'server/helpers'
 require 'server/routes'
+
+SEEDS = File.expand_path Sinatra::Application.seed_path

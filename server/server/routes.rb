@@ -19,8 +19,9 @@ end
 #
 
 get '/search/?' do
-  Seed.all.each do |seed|
-    next if params[:name] and not seed.name.include? params[:name]
+  name = params[:name]
+  Seed.all.map do |seed|
+    next if name and not seed.name.include? name
     '%15s : %s' % [seed.name, seed.version_numbers.join(' ')]
   end.compact.join("\n") + "\n"
 end
@@ -54,24 +55,39 @@ end
 post '/:name/?' do
   require_authentication
   state = :published
-  name, seed, info = params[:name], params[:seed], params[:info]
-  if inst = Seed.first(:name => name)
-    if inst.user == @user
-      state = :overwrote
+  name, tarball, info = params[:name], params[:seed], params[:info]
+  
+  # Verify ownership
+  
+  if seed = Seed.first(:name => name)
+    if seed.user == @user
+      state = :replaced
     else
       fail "unauthorized to publish #{name}"
     end
   else
-    inst = @user.seeds.create :name => name
+    seed = @user.seeds.create :name => name
     state = :registered
   end
-  fail '<version>.seed required' unless seed
+  
+  # Validate files
+  
+  fail '<version>.seed tarball required' unless tarball
   fail 'seed.yml required' unless info
-  version = File.basename seed[:filename], '.seed'
-  fail '<version> is invalid; must be formatted as "n.n.n"' unless version =~ /\A\d+\.\d+\.\d+\z/
+  
+  version = File.basename tarball[:filename], '.seed'
+  fail 'version is invalid; must be formatted as "n.n.n"' unless version =~ /\A\d+\.\d+\.\d+\z/
+    
+  # Save the seed data
+  
   FileUtils.mkdir_p SEEDS + "/#{name}"
-  FileUtils.mv seed[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
+  FileUtils.mv tarball[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
   FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml", :force => true
-  inst.versions.first_or_create :number => version, :description => Kiwi::Seed.new(name).info(version)['description']
+  
+  # Update version data
+  
+  info = YAML.load_file info[:tempfile].path
+  seed.versions.first_or_create :number => version, :description => info['description']
+  
   "Succesfully #{state} #{name} #{version}.\n"
 end
