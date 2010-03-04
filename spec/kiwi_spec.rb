@@ -219,6 +219,14 @@ describe "Kiwi" do
         kiwi('-v install haml').should include('already installed')
       end
       
+      it "should install dependencies" do
+        kiwi('install express')
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/express/0.0.1')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/sass/0.0.1')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.2.0')).should be_true
+      end
+      
       describe "when build command is specified" do
         it "should execute the build command relative to the seed's directory" do
           File.file?(File.expand_path('~/.kiwi/current/seeds/crypto/0.0.3/crypto.node')).should be_false
