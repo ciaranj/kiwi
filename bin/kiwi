@@ -431,7 +431,7 @@ output_username() {
     echo ${auth%%:*}
   else
     echo "Credentials cannot be found, please register first."
-    echo "  if you have previously registered simply run:"
+    echo "  If you have previously registered simply run:"
     echo "  $ echo user:pass > $AUTH_DEST"
   fi
 }

@@ -19,7 +19,7 @@ kiwi('switch test')
 
 describe "Kiwi" do
   after :each do
-    `rm -fr ~/.kiwi/test ~/.kiwi/current`  
+    `rm -fr ~/.kiwi/test ~/.kiwi/current ~/.kiwi/.auth`  
   end
   
   describe "--version" do
@@ -51,6 +51,19 @@ describe "Kiwi" do
       it "should abort with password required" do
         kiwi('register tj').should include('password required')
       end
+    end
+  end
+  
+  describe "whoami" do
+    it "should output auth help when not registered" do
+      kiwi('whoami').should include('Credentials cannot be found')
+      kiwi('whoami').should include('If you have previously registered simply run:')
+    end
+    
+    it "should output username when registered" do
+      kiwi('register foo bar')
+      kiwi('whoami').should include('foo')
+      kiwi('whoami').should_not include('bar')
     end
   end
   
