@@ -108,6 +108,13 @@ class Seed
   end
   
   ##
+  # Return path for seed _version_.
+  
+  def path_for version
+    path + "/#{version}.seed"
+  end
+  
+  ##
   # Return array of version numbers.
   
   def version_numbers

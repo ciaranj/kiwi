@@ -29,8 +29,8 @@ end
 # Resolve the given :version for seed _name_.
 
 get '/:name/resolve/?' do
-  version = params[:version]
   require_seed params[:name]
+  version = params[:version]
   if version and not version.empty?
     @seed.resolve(version) or not_found 'seed version does not exist.'
   else
@@ -42,16 +42,10 @@ end
 # Transfer _version_ of the requested seed _name_.
 
 get '/seeds/:name/:version.seed' do
-  seed = Kiwi::Seed.new params[:name]
-  require_seed seed
-  require_seed seed, params[:version]
+  require_seed params[:name], params[:version]
   content_type :tar
-  if isnt = Seed.first(:name => params[:name])
-    if version = inst.versions.first(:number => params[:version])
-      version.update :downloads => version.downloads + 1
-    end
-  end
-  send_file seed.path_for(params[:version])
+  @version.update :downloads => @version.downloads + 1
+  send_file @seed.path_for(@version.number)
 end
 
 ##
