@@ -121,6 +121,31 @@ class Seed
     versions.first :order => [:number.desc]
   end
   
+  ##
+  # Return the last _version_ match in _versions_,
+  # supports the following operators:
+  #
+  #   N/A  equal to
+  #   =    equal to
+  #   >    greather than
+  #   >=   greather than or equal to
+  #   >~   greather than or equal to with compatibility
+  #
+  
+  def resolve version
+    op, version = version.strip.split
+    version, op = op, '=' unless version
+    version_numbers.find do |other|
+      case op
+      when '='  ; other == version
+      when '>'  ; other > version
+      when '>=' ; other >= version
+      when '>~'
+        other[0..1] == version[0..1] && other >= version
+      end
+    end
+  end
+  
   #--
   # Singleton methods
   #++

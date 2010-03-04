@@ -29,13 +29,6 @@ describe Seed do
     end
   end
   
-  describe "#info" do
-    it "should return yml info for the given version" do
-      # TODO: move to version_spec.rb
-      @oo.current_version.info['name'].should == 'oo'
-    end
-  end
-  
   describe "#resolve" do
     describe "<version>" do
       it "should match exact version" do
