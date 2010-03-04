@@ -44,6 +44,7 @@ cat << EOF
     register <name> <password>   Attempt to register the given <user> name and <password>
     update                       Install the latest release of every seed installed
     update self                  Updates kiwi to the latest release
+    whoami                       Output currently registered user name
     list                         Lists installed seeds and their associated versions
     envs                         List environments available to kiwi
     
@@ -421,6 +422,21 @@ require_auth() {
 }
 
 #
+# Output username.
+#
+
+output_username() {
+  if [[ -f $AUTH_DEST ]]; then
+    local auth=$(cat $AUTH_DEST)
+    echo ${auth%%:*}
+  else
+    echo "Credentials cannot be found, please register first."
+    echo "  if you have previously registered simply run:"
+    echo "  $ echo user:pass > $AUTH_DEST"
+  fi
+}
+
+#
 # Attempt to register the given <user> with <password>.
 # 
 #   - Saves credentials to $AUTH_DEST
@@ -573,6 +589,9 @@ parse() {
         ;;
       env|envs)
         list_environments
+        ;;
+      whoami)
+        output_username
         ;;
       repl)
         repl
