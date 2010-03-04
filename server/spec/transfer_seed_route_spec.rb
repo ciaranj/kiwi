@@ -3,7 +3,7 @@ describe "GET /seeds/:name/:version.seed" do
   before :each do
     DataMapper.auto_migrate!
     @user = User.create :name => 'tj', :password => 'foobar'
-    @oo = Seed.create :name => 'oo', :user => @user
+    @oo = @user.seeds.create :name => 'oo'
     @oo.versions.create :version => '1.2.0'  
   end
   
