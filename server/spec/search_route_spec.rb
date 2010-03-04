@@ -10,11 +10,12 @@ describe "GET /search" do
     @oo.versions.create :number => '1.1.0', :description => 'Class implementation'  
   end
   
-  it "should respond with a formatted list of available seeds / versions" do
+  it "should respond with a formatted list of available seeds and the latest version" do
     get '/search'
     last_response.should be_ok
     last_response.body.should include("sass : 0.0.1")
-    last_response.body.should include("  oo : 1.2.0 1.1.0")
+    last_response.body.should include("  oo : 1.2.0")
+    last_response.body.should_not include('1.1.0')
   end
   
   describe "given :name" do
