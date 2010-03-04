@@ -3,8 +3,6 @@ describe Seed do
   before :each do
     DataMapper.auto_migrate!
     @user = User.create :name => 'foo', :password => 'bar'
-    @sass = @user.seeds.create :name => 'sass'
-    @sass.versions.create :number => '0.0.1', :description => 'Sass to css engine'
     @oo = @user.seeds.create :name => 'oo'
     @oo.versions.create :number => '1.2.0', :description => 'Class implementation for JavaScript'  
     @oo.versions.create :number => '1.1.0', :description => 'Class implementation' 
@@ -13,6 +11,15 @@ describe Seed do
   describe "#path" do
     it "should return a path to the seed's directory" do
       @oo.path.should include('server/seeds/oo')
+    end
+  end
+  
+  describe "#downloads" do
+    it "should return total of downloads from all versions" do
+      @oo.versions.reload
+      @oo.versions.first.update :downloads => 5
+      @oo.versions.last.update :downloads => 2
+      @oo.downloads.should == 7
     end
   end
   

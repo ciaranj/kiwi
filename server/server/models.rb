@@ -119,6 +119,15 @@ class Seed
   end
   
   ##
+  # Return total download count of all versions.
+  
+  def downloads
+    versions.inject 0 do |sum, version|
+      sum + version.downloads
+    end
+  end
+  
+  ##
   # Return array of version numbers.
   
   def version_numbers
