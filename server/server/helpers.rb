@@ -16,7 +16,7 @@ helpers do
   
   def require_authentication
     name, password = credentials
-    @user = User.first(:name => name, :password => md5(password)) or fail 'failed to authenticate, register first'
+    @user = User.first(:name => name, :password => md5(password)) or fail 'failed to authenticate, please register'
   end
   
   ##
