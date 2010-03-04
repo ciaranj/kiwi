@@ -56,7 +56,7 @@ post '/:name/?' do
   require_authentication
   state = :published
   name, tarball, info = params[:name], params[:seed], params[:info]
-  
+
   # Verify ownership
   
   if seed = Seed.first(:name => name)
@@ -74,19 +74,18 @@ post '/:name/?' do
   
   fail '<version>.seed tarball required' unless tarball
   fail 'seed.yml required' unless info
-  
   version = File.basename tarball[:filename], '.seed'
   fail 'version is invalid; must be formatted as "n.n.n"' unless version =~ /\A\d+\.\d+\.\d+\z/
     
   # Save the seed data
-  
+
   FileUtils.mkdir_p SEEDS + "/#{name}"
   FileUtils.mv tarball[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
   FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml", :force => true
   
   # Update version data
   
-  info = YAML.load_file info[:tempfile].path
+  info = YAML.load_file SEEDS + "/#{name}/#{version}.yml"
   seed.versions.first_or_create :number => version, :description => info['description']
   
   "Succesfully #{state} #{name} #{version}.\n"
