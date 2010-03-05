@@ -131,6 +131,15 @@ describe "Kiwi" do
         kiwi('switch test')
         `rm -fr ~/.kiwi/trying_new_stuff`
       end
+      
+      it "should remove installed seeds when switching several times" do
+        kiwi('switch new_stuff')
+        kiwi('install oo')
+        kiwi('switch test')
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/oo')).should be_false
+        File.directory?(File.expand_path('~/.kiwi/new_stuff/seeds/oo')).should be_true
+        `rm -fr ~/.kiwi/new_stuff`
+      end
     end
   end
   
