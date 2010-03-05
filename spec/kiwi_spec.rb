@@ -220,6 +220,17 @@ describe "Kiwi" do
         kiwi('-v install haml').should include('already installed')
       end
       
+      it "should work when published via kiwi" do
+        in_fixture :valid do
+          kiwi('register foo bar')
+          kiwi('release foo 0.1.1').should include('Successfully')
+          kiwi('install foo 0.1.1')
+          File.directory?(File.expand_path('~/.kiwi/current/seeds/foo/0.1.1')).should be_true
+          File.file?(File.expand_path('~/.kiwi/current/seeds/foo/0.1.1/seed.yml')).should be_true
+        end
+        `rm -fr server/seeds/foo`
+      end
+      
       it "should install dependencies" do
         kiwi('install express')
         File.directory?(File.expand_path('~/.kiwi/current/seeds/express/0.0.1')).should be_true

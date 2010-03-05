@@ -88,5 +88,5 @@ post '/:name/?' do
   info = YAML.load_file SEEDS + "/#{name}/#{version}.yml"
   seed.versions.first_or_create :number => version, :description => info['description']
   
-  "Succesfully #{state} #{name} #{version}.\n"
+  "Successfully #{state} #{name} #{version}.\n"
 end
