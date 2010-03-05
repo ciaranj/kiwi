@@ -60,11 +60,7 @@ post '/:name/?' do
   # Verify ownership
   
   if seed = Seed.first(:name => name)
-    if seed.user == @user
-      state = :replaced
-    else
-      fail "unauthorized to publish #{name}"
-    end
+    fail "unauthorized to publish #{name}" if seed.user != @user
   else
     seed = @user.seeds.create :name => name
     state = :registered
@@ -86,7 +82,12 @@ post '/:name/?' do
   # Update version data
   
   info = YAML.load_file SEEDS + "/#{name}/#{version}.yml"
-  seed.versions.first_or_create :number => version, :description => info['description']
+  
+  if seed.versions.first :number => version
+    state = :replaced
+  else
+    seed.versions.create :number => version, :description => info['description']
+  end
   
   "Successfully #{state} #{name} #{version}.\n"
 end
