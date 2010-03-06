@@ -1,5 +1,7 @@
 var sys= require('sys');
 var http= require('http');
+var fs= require('fs');
+var path= require('path');
 
 var VERSION="0.0.1";
 var ORIGIN="git://github.com/ciaranj/kiwi.git";
@@ -7,10 +9,38 @@ var KIWI_DEST= "~/.kiwi";
 var AUTH_DEST= KIWI_DEST+"/.auth";
 var SEED_DEST= KIWI_DEST+"/current/seeds";
 var SERVER_ADDR= process.env.SERVER_ADDR?process.env.SERVER_ADDR : "173.203.199.182"; 
-
 var kiwiServer = http.createClient(process.env.SERVER_PORT?process.env.SERVER_PORT : "80",
                                    SERVER_ADDR);
 var inVerboseMode= false;
+
+function log (type, message ) {
+    if( inVerboseMode) sys.puts(fixedCharFormat(type,10) + " : "+ message);
+} 
+function abort(message, callback) {
+    sys.puts("Error: "+ message );
+    if( callback ) callback();
+}
+
+function fixedCharFormat(str, length) {
+    if( str.length == length ) return str;
+    if( str.length > length ) return str; // Substring ?
+    var padding= length -str.length;
+    for(var i= 0;i<padding;i++) {
+        str = (" "+str);
+    }
+    return str;
+}
+
+/*
+* Executes the callback with no arguments if seeds are present, otherwise the first argument
+* to the callback will be an error.s
+*/
+function require_seeds(callback) { 
+    fs.readdir(expand_path(SEED_DEST), function(err, files){
+        if( err || files.length == 0 ) callback(new Error("no seeds are installed."));
+        else callback();
+    });
+}
 
 /*
  * Print the usage instructions
@@ -41,7 +71,6 @@ function printUsage( inRepl ) {
     "      release <name> <version>     Build and publish seed <name> and <version>\n" +
     "      register <name> <password>   Attempt to register the given <user> name and <password>\n" +
     "      update                       Install the latest release of every seed installed\n" +
-    "      update self                  Updates kiwi to the latest release\n" +
     "      whoami                       Output currently registered user name\n" +
     "      list                         Lists installed seeds and their associated versions\n" +
     "      envs                         List environments available to kiwi\n";
@@ -49,9 +78,8 @@ function printUsage( inRepl ) {
         commands += "      help                         Help information\n";    
         commands += "      quit                         Exit the kiwi interactive console (REPL)\n";    
     }
-    else commands += "\n";
                                      
-    var installationOptions= "    Install:\n" +
+    var installationOptions= "\n    Install:\n" +
     "\n" +
     "      Installing the latest version of a seed:\n" +
     "\n" +
@@ -68,12 +96,78 @@ function printUsage( inRepl ) {
     "        >                 Greater than\n" +
     "        >=                Greater than or equal to\n" +
     "        >~                Greater than or equal to with compatibility (major must match)\n";
-    if( inRepl ) sys.puts(commands);
+    if( inRepl ) sys.puts(commands + installationOptions);
     else sys.puts(shellUsage + commands + installationOptions);
 }
 
-function setup() {
-    
+function expand_path(path) {
+     return path.replace("~", process.env.HOME);
+}
+
+function create_directory(path, callback) {
+    var path= expand_path(path); // First of all expand out the '~' home directory.
+    var pathSegments= path.split("/");   
+    if( pathSegments[0] == '' ) {
+        pathSegments= pathSegments.slice(1);
+    }
+    for(var i=0; i<=pathSegments.length; i++) {
+        var pathSegment= "/"+pathSegments.slice(0,i).join("/");
+        try {
+            fs.statSync(pathSegment); 
+        }
+        catch(e) {
+            fs.mkdirSync(pathSegment, 0777);
+        }
+    } 
+    callback();
+}   
+
+/* Switch "current" environment to [env].
+ * 
+ * [env]
+ *
+ */
+function switch_environment(env, callback) {
+    if(!env)  abort( "environment name required.", callback);
+    else {
+      var dir= expand_path(KIWI_DEST+ "/"+ env);
+   
+      path.exists( dir, function (exists) {
+          var nextStep= function() {
+              log("switch", "current -> "+ env);    
+              path.exists( expand_path(KIWI_DEST+"/current"), function(currentExists){
+                 var nextNextStep= function() {
+                     fs.symlink( dir, expand_path(KIWI_DEST + "/current"), callback );
+                 };
+                 
+                 if( currentExists ) {
+                     fs.unlink(expand_path(KIWI_DEST+"/current"), function(error) {
+                         //TODO: propagate errors properly.
+                         if(error) abort( error ); 
+                         nextNextStep();
+                     }); 
+                 }  else  nextNextStep();
+              });
+          };
+
+          if( exists ) nextStep();
+          else create_directory( dir, nextStep );
+      });
+  }  
+}
+
+
+function setup(callback) {
+    path.exists(expand_path(KIWI_DEST+"/default"), function (exists) {
+        var nextStep= function() {
+            path.exists(expand_path(SEED_DEST), function(exists){
+                if( exists ) callback();
+                else create_directory(SEED_DEST, callback);
+            });
+        };
+        if( exists ) nextStep();
+        else switch_environment( 'default',  nextStep );
+    });
 }
 
 /*
@@ -107,6 +201,7 @@ function parseArguments(args, callback) {
             case "-h":
             case "--help":
                 printUsage(inRepl);
+                callback();
                 break;
             case "-S":
             case "--seeds":
@@ -122,39 +217,81 @@ function parseArguments(args, callback) {
                 keepGoing= true;
                 break;
             case "update":
-              if( args[argIndex] == 'self' ) updateSelf(callback);
-              else update(callback);
-              break;
-            case "search":
-                search(null, callback);
+                update_all(callback);
                 break;
+            case "search":
+                search(args[argIndex], callback);
+                break;
+            case "env":
+            case "envs": 
+                  list_environments(callback);
+                  break;                
             case "repl":
               if(!inRepl) repl();
               else callback();
               break;
+            case "switch":
+                switch_environment(args[argIndex], callback);
+                break;
             case "list":
             case "ls":
                 list(callback);
                 break;
             default:
-                if(!inRepl) sys.puts("Error: invalid option `"+ command + "'. Use --help for more information");
+                if(!inRepl) abort("invalid option `"+ command + "'. Use --help for more information");
                 else callback();
         }
     }
 }
 
-function update(callback) { sys.puts('update');callback();}
-function updateSelf(callback) { sys.puts('update self');callback();} 
-function list(callback) { sys.puts('list');callback();}  
-   
-function run() {
-    if( process.argv.length == 2 && process.argv[0] == 'node' ) {
-        // Not quite sure about the node execution cycle is 'node foo.js' the only path or do hash-bangs work?
-        repl();
-    } else {
-        parseArguments(process.argv);
-    }
-}   
+function update_all(callback) { sys.puts('update_all');callback();}
+
+/*
+* List installed seeds and their associated versions.
+*/ 
+function list(callback) { 
+    require_seeds(function(error) { 
+        if( error ) abort(error.message, callback);
+        else {
+            fs.readdir(expand_path(SEED_DEST), function(err, files){
+                if( !err ) {
+                   var file, joinedPath;
+                   for(var i=0;i<files.length;i++) { 
+                       file= files[i];
+                       joinedPath= path.join(expand_path(SEED_DEST),file);
+                       sys.print( fixedCharFormat(file,15) + " : " );
+                       var versions= fs.readdirSync(joinedPath);
+                       for(var j=0;j<versions.length;j++) { 
+                           sys.print( versions[j] +" " );
+                       }
+                       sys.puts("");
+                   }
+                   callback();
+                }
+                else abort(err, callback);
+            });
+        }
+    });
+}  
+
+/*
+ * List environments, prefixing '*' to the current env.
+ */
+function list_environments(callback) {
+    var expanded_kiwi_dest= expand_path(KIWI_DEST);
+    fs.readlink(path.join(expanded_kiwi_dest,"current"), function(error, current) {
+        fs.readdir(expand_path(expanded_kiwi_dest), function(err, files){
+            for(var i=0;i<files.length;i++) {
+                if( files[i] != "current" ) {
+                    if( path.join(expanded_kiwi_dest, files[i]) == current )  sys.print("* ");
+                    else sys.print("  ");
+                    sys.puts(files[i]);
+                }
+            }
+            callback();
+        });
+    });
+}
 
 /*
 * Search remote seeds with the given [pattern].
@@ -162,9 +299,6 @@ function run() {
 * [pattern]
 */
 function search(pattern, callback) { 
-    sys.puts("search"); 
-    callback();
-    /*
     var url= "/search";
     if( pattern ) url+= "?name="+pattern;
     var request = kiwiServer.request("GET", url  , {"host": SERVER_ADDR});
@@ -175,10 +309,11 @@ function search(pattern, callback) {
         result += chunk;
       });
       response.addListener("end", function (chunk) {
-        sys.puts(result);
+        sys.puts(result); 
+        callback();
       });
     });
-    request.close();     */
+    request.close();
 }
  
 
@@ -207,6 +342,17 @@ function repl() {
                 prompt(); 
             });
         } 
+    });
+}
+
+function run() { 
+    setup(function() {
+        if( process.argv.length == 2 && process.argv[0] == 'node' ) {
+            // Not quite sure about the node execution cycle is 'node foo.js' the only path or do hash-bangs work?
+            repl();
+        } else {
+            parseArguments(process.argv);
+        }
     });
 }
 
