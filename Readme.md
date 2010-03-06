@@ -12,7 +12,7 @@
     - Ignores .{git,svn,cvs}
     - Ignores globs in .ignore when packing
   * Distributed packages as "seeds"
-    - installation
+    - installation (including node and kiwi itself)
     - uninstallation
     - updating
     - publishing to the kiwi seed server (similar to gemcutter for RubyGems)
@@ -20,7 +20,8 @@
     - searching of remote seeds
     - arbitrary build commands (so you can make, scons, jake, etc)
     - installation via flat-list of seeds and associated versions
-    - user registration
+    - collects stats such as seed download counts
+    - user registration via command-line
     - user authentication
   * Version resolution
     - via installation
@@ -29,6 +30,7 @@
     - Auto-detects and utilizes rlwrap
   * Multiple environments
     - Use one or more environments to manage your seeds
+  * Not dependant on GIT (like most other proposed node package managers)
   
 ## Installation
 
