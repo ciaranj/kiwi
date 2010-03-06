@@ -1,0 +1,5 @@
+---
+  name: Kiwi
+  description: Package management system
+  version: 0.0.1
+  build: sudo make install

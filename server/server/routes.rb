@@ -19,9 +19,10 @@ end
 #
 
 get '/search/?' do
-  Seed.names.map do |name|
-    next if params[:name] and not name.include? params[:name]
-    '%15s : %s' % [name, Kiwi::Seed.new(name).versions.reverse.join(' ')]
+  name = params[:name]
+  Seed.all.map do |seed|
+    next if name and not seed.name.include? name
+    '%15s : %s' % [seed.name, seed.current_version.number]
   end.compact.join("\n") + "\n"
 end
 
@@ -29,12 +30,12 @@ end
 # Resolve the given :version for seed _name_.
 
 get '/:name/resolve/?' do
-  seed = Kiwi::Seed.new params[:name]
-  require_seed seed
-  if params[:version] && !params[:version].empty?
-    seed.resolve(params[:version]) or not_found 'seed version does not exist.'
+  require_seed params[:name]
+  version = params[:version]
+  if version and not version.empty?
+    @seed.resolve(version) or not_found 'seed version does not exist.'
   else
-    seed.current_version
+    @seed.current_version.number
   end
 end
 
@@ -42,16 +43,10 @@ end
 # Transfer _version_ of the requested seed _name_.
 
 get '/seeds/:name/:version.seed' do
-  seed = Kiwi::Seed.new params[:name]
-  require_seed seed
-  require_seed seed, params[:version]
+  require_seed params[:name], params[:version]
   content_type :tar
-  if isnt = Seed.first(:name => params[:name])
-    if version = inst.versions.first(:version => params[:version])
-      version.update :downloads => version.downloads + 1
-    end
-  end
-  send_file seed.path_for(params[:version])
+  @version.update :downloads => @version.downloads + 1
+  send_file @version.path
 end
 
 ##
@@ -60,24 +55,39 @@ end
 post '/:name/?' do
   require_authentication
   state = :published
-  name, seed, info = params[:name], params[:seed], params[:info]
-  if inst = Seed.first(:name => name)
-    if inst.user == @user
-      state = :overwrote
-    else
-      fail "unauthorized to publish #{name}"
-    end
+  name, tarball, info = params[:name], params[:seed], params[:info]
+
+  # Verify ownership
+  
+  if seed = Seed.first(:name => name)
+    fail "unauthorized to publish #{name}" if seed.user != @user
   else
-    inst = @user.seeds.create :name => name
+    seed = @user.seeds.create :name => name
     state = :registered
   end
-  fail '<version>.seed required' unless seed
-  fail 'seed.yml required' unless info
-  version = File.basename seed[:filename], '.seed'
-  fail '<version> is invalid; must be formatted as "n.n.n"' unless version =~ /\A\d+\.\d+\.\d+\z/
+  
+  # Validate files
+  
+  fail '<version>.seed tarball is required' unless tarball
+  fail 'seed.yml is required' unless info
+  version = File.basename tarball[:filename], '.seed'
+  fail 'version is invalid; must be formatted as "n.n.n"' unless version =~ /\A\d+\.\d+\.\d+\z/
+    
+  # Save the seed data
+
   FileUtils.mkdir_p SEEDS + "/#{name}"
-  FileUtils.mv seed[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
+  FileUtils.mv tarball[:tempfile].path, SEEDS + "/#{name}/#{version}.seed", :force => true
   FileUtils.mv info[:tempfile].path, SEEDS + "/#{name}/#{version}.yml", :force => true
-  inst.versions.first_or_create :version => version, :description => Kiwi::Seed.new(name).info(version)['description']
-  "Succesfully #{state} #{name} #{version}.\n"
+  
+  # Update version data
+  
+  info = YAML.load_file SEEDS + "/#{name}/#{version}.yml"
+  
+  if seed.versions.first :number => version
+    state = :replaced
+  else
+    seed.versions.create :number => version, :description => info['description']
+  end
+  
+  "Successfully #{state} #{name} #{version}.\n"
 end

@@ -43,7 +43,6 @@ cat << EOF
     release <name> <version>     Build and publish seed <name> and <version>
     register <name> <password>   Attempt to register the given <user> name and <password>
     update                       Install the latest release of every seed installed
-    update self                  Updates kiwi to the latest release
     whoami                       Output currently registered user name
     list                         Lists installed seeds and their associated versions
     envs                         List environments available to kiwi
@@ -366,16 +365,6 @@ open_seed_directory() {
 }
 
 #
-# Update kiwi to the latest version.
-# 
-
-update_self() {
-  cd /tmp && git clone $ORIGIN && 
-  cd kiwi && sudo make install &&
-  echo -n 'Updated kiwi to ' && kiwi --version
-}
-
-#
 # Install the latest version of all installed seeds.
 # 
 
@@ -543,11 +532,7 @@ parse() {
         abort "invalid option \`$arg'. Use --help for more information"
         ;;
       update)
-        if [[ $1 = "self" ]]; then
-          update_self 
-        else
-          update_all
-        fi
+        update_all
         ;;
       open)
         require_seed_name $1

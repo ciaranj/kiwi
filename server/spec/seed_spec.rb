@@ -1,89 +1,77 @@
 
-describe Kiwi::Seed do
+describe Seed do
   before :each do
-    @seed = Kiwi::Seed.new 'oo'  
+    DataMapper.auto_migrate!
+    @user = User.create :name => 'foo', :password => 'bar'
+    @oo = @user.seeds.create :name => 'oo'
+    @oo.versions.create :number => '1.2.0', :description => 'Class implementation for JavaScript'  
+    @oo.versions.create :number => '1.1.0', :description => 'Class implementation' 
   end
   
   describe "#path" do
     it "should return a path to the seed's directory" do
-      @seed.path.should include('server/seeds/oo')
+      @oo.path.should include('server/seeds/oo')
     end
   end
   
-  describe "#versions" do
+  describe "#downloads" do
+    it "should return total of downloads from all versions" do
+      @oo.versions.reload
+      @oo.versions.first.update :downloads => 5
+      @oo.versions.last.update :downloads => 2
+      @oo.downloads.should == 7
+    end
+  end
+  
+  describe "#version_numbers" do
     it "should return an array of versions available" do
-      @seed.versions.should include('1.1.0', '1.2.0')
+      @oo.version_numbers.should include('1.1.0', '1.2.0')
     end
   end
   
   describe "#current_version" do
-    it "should return the latest version" do
-      @seed.current_version.should == '1.2.0'
-    end
-  end
-  
-  describe "#info" do
-    it "should return yml info for the given version" do
-      @seed.info('1.1.0')['name'].should == 'oo'
-    end
-  end
-  
-  describe "#exists?" do
-    it "should return true when the seed has versions" do
-      @seed.exists?.should be_true
-    end
-    
-    it "should return false when the seed has no versions" do
-      Kiwi::Seed.new('invalid').exists?.should be_false
-    end
-    
-    describe "given a version" do
-      it "should return true when the version exists" do
-        @seed.exists?('1.2.0').should be_true
-      end
-      
-      it "should return false when the version does not exist" do
-        @seed.exists?('9.9.9').should be_false
-      end
+    it "should return the latest Version" do
+      @oo.current_version.should be_a(Version)
+      @oo.current_version.number.should == '1.2.0'
     end
   end
   
   describe "#resolve" do
     describe "<version>" do
       it "should match exact version" do
-        @seed.resolve('1.1.0').should == '1.1.0'
-        @seed.resolve('9.9.9').should be_nil
+        @oo.resolve('1.1.0').should == '1.1.0'
+        @oo.resolve('9.9.9').should be_nil
       end
     end
     
     describe "= <version>" do
       it "should match exact version" do
-        @seed.resolve('= 1.1.0').should == '1.1.0'
-        @seed.resolve('= 9.9.9').should be_nil
+        @oo.resolve('= 1.1.0').should == '1.1.0'
+        @oo.resolve('= 9.9.9').should be_nil
       end
     end
     
     describe "> <version>" do
       it "should match greater than the given version" do
-        @seed.resolve('> 1.1.0').should == '1.2.0'
-        @seed.resolve('> 9.9.9').should be_nil
+        @oo.resolve('> 1.1.0').should == '1.2.0'
+        @oo.resolve('> 9.9.9').should be_nil
       end
     end
     
     describe ">= <version>" do
       it "should match greater than or equal to the given version" do
-        @seed.resolve('>= 1.1.0').should == '1.2.0'
-        @seed.resolve('>= 1.1.1').should == '1.2.0'
-        @seed.resolve('>= 9.9.9').should be_nil
+        @oo.resolve('>= 1.1.0').should == '1.2.0'
+        @oo.resolve('>= 1.1.1').should == '1.2.0'
+        @oo.resolve('>= 9.9.9').should be_nil
       end
     end
     
     describe ">~ <version>" do
       it "should match greater than or equal to the given version with compatibility" do
-        @seed.resolve('>~ 1.0.0').should == '1.2.0'
-        @seed.resolve('>~ 1.1.0').should == '1.2.0'
-        @seed.resolve('>~ 1.2.0').should == '1.2.0'
-        @seed.resolve('>~ 9.9.9').should be_nil
+        @oo.resolve('>~ 1.0.0').should == '1.2.0'
+        @oo.resolve('>~ 1.1.0').should == '1.2.0'
+        @oo.resolve('>~ 1.2.0').should == '1.2.0'
+        @oo.resolve('>~ 9.9.9').should be_nil
       end
     end
     

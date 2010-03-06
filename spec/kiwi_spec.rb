@@ -11,10 +11,6 @@ def in_fixture name, &block
   Dir.chdir fixture(name), &block
 end
 
-def mock_seed name, version
-  `mkdir -p ~/.kiwi/current/seeds/#{name}/#{version}`
-end
-
 kiwi('switch test')
 
 describe "Kiwi" do
@@ -68,11 +64,17 @@ describe "Kiwi" do
   end
   
   describe "list" do
-    describe "" do
+    describe "when nothing is installed" do
+      it "should output an error message" do
+        kiwi('list').should include('no seeds are installed')
+      end
+    end
+    
+    describe "when installed" do
       it "should output a list of installed seeds" do
-        mock_seed :haml, '0.1.1'
-        mock_seed :oo, '1.2.0'
-        mock_seed :oo, '1.1.0'
+        kiwi('install haml')
+        kiwi('install oo 1.1.0')
+        kiwi('install oo 1.2.0')
         kiwi('list').should include('haml : 0.1.1')
         kiwi('list').should include('  oo : 1.1.0 1.2.0')
       end
@@ -81,9 +83,9 @@ describe "Kiwi" do
   
   describe "search" do
     describe "" do
-      it "should output a list of available seeds and their associated versions" do
+      it "should output a list of available seeds and the latest version" do
         kiwi('search').should include('haml : 0.1.1')
-        kiwi('search').should include('  oo : 1.2.0 1.1.0')
+        kiwi('search').should include('  oo : 1.2.0')
       end
     end
     
@@ -129,23 +131,32 @@ describe "Kiwi" do
         kiwi('switch test')
         `rm -fr ~/.kiwi/trying_new_stuff`
       end
+      
+      it "should remove installed seeds when switching several times" do
+        kiwi('switch new_stuff')
+        kiwi('install oo')
+        kiwi('switch test')
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/oo')).should be_false
+        File.directory?(File.expand_path('~/.kiwi/new_stuff/seeds/oo')).should be_true
+        `rm -fr ~/.kiwi/new_stuff`
+      end
     end
   end
   
   describe "uninstall" do
     it "should not remove seed directories which contain seeds" do
-      mock_seed :haml, '1.0.0'
-      mock_seed :haml, '2.0.0'
-      kiwi('uninstall haml 1.0.0')
-      File.directory?(File.expand_path('~/.kiwi/current/seeds/haml')).should be_true
-      File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/2.0.0')).should be_true
-      File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/1.0.0')).should be_false
+      kiwi('install oo 1.1.0')
+      kiwi('install oo 1.2.0')
+      kiwi('uninstall oo 1.1.0')
+      File.directory?(File.expand_path('~/.kiwi/current/seeds/oo')).should be_true
+      File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.2.0')).should be_true
+      File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.1.0')).should be_false
     end
     
     it "should remove empty seed directories" do
-      mock_seed :haml, '1.0.0'
-      kiwi('uninstall haml 1.0.0')
-      File.directory?(File.expand_path('~/.kiwi/current/seeds/haml')).should be_false
+      kiwi('install oo 1.1.0')
+      kiwi('uninstall oo 1.1.0')
+      File.directory?(File.expand_path('~/.kiwi/current/seeds/oo')).should be_false
     end
     
     describe "" do
@@ -156,17 +167,21 @@ describe "Kiwi" do
     
     describe "<name>" do
       it "should uninstall all versions" do
-        mock_seed :haml, '0.1.1'
-        kiwi('uninstall haml')
-        File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1')).should be_false
-        File.directory?(File.expand_path('~/.kiwi/current/seeds/haml')).should be_false
+        kiwi('install oo 1.2.0')
+        kiwi('install oo 1.1.0')
+        kiwi('uninstall oo')
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.1.0')).should be_false
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.2.0')).should be_false
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/oo')).should be_false
       end
       
       describe "<version>" do
         it "should uninstall the version specified" do
-          mock_seed :haml, '0.1.1'
-          kiwi('uninstall haml 0.1.1')
-          File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1')).should be_false
+          kiwi('install oo 1.2.0')
+          kiwi('install oo 1.1.0')
+          kiwi('uninstall oo 1.1.0')
+          File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.2.0')).should be_true
+          File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.1.0')).should be_false
         end
       end
     end
@@ -182,6 +197,7 @@ describe "Kiwi" do
     describe "<file>" do
       it "should install from a flat-list of seeds" do
         kiwi('install ' + fixture('seeds'))
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/crypto/0.0.3')).should be_true
         File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1')).should be_true
         File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.2.0')).should be_true
       end
@@ -211,6 +227,25 @@ describe "Kiwi" do
       it "should skip when already installed" do
         kiwi('install haml')
         kiwi('-v install haml').should include('already installed')
+      end
+      
+      it "should work when published via kiwi" do
+        in_fixture :valid do
+          kiwi('register foo bar')
+          kiwi('release foo 0.1.1').should include('Successfully')
+          kiwi('install foo 0.1.1')
+          File.directory?(File.expand_path('~/.kiwi/current/seeds/foo/0.1.1')).should be_true
+          File.file?(File.expand_path('~/.kiwi/current/seeds/foo/0.1.1/seed.yml')).should be_true
+        end
+        `rm -fr server/seeds/foo`
+      end
+      
+      it "should install dependencies" do
+        kiwi('install express')
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/express/0.0.1')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/haml/0.1.1')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/sass/0.0.1')).should be_true
+        File.directory?(File.expand_path('~/.kiwi/current/seeds/oo/1.2.0')).should be_true
       end
       
       describe "when build command is specified" do
