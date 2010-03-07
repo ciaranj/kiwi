@@ -646,7 +646,7 @@ function download( name, version, callback) {
           request.addListener('response', function (response) {
             response.setBodyEncoding("binary");
             response.addListener("data", function (chunk) { 
-                sys.print(".");
+                if(inVerboseMode) sys.print(".");
                 fs.writeSync(fd, chunk, null, "binary");
             });
             response.addListener("end", function (chunk) {
@@ -654,7 +654,7 @@ function download( name, version, callback) {
                 callback( null, seedPath );
             });
           });
-          sys.print("Downloading...");
+          if(inVerboseMode) sys.print("Downloading...");
           request.close();          
       });
   })
@@ -666,21 +666,34 @@ function download( name, version, callback) {
 * <dir>
 */
 function build(dir, callback) {
-    callback();
-/*   local dir=$1
-  local info=$dir/seed.yml
-  require_seed_info_file $info
-  local command=$(cat $info | grep build | sed 's/build: * //' )
-  if [[ $command ]]; then
-    log cd $dir
-    cd $dir
-    log build $command
-    if [[ $VERBOSE ]]; then
-      eval $command
-    else
-      eval "$command > /dev/null"
-    fi
-  fi */
+    var info = path.join(dir, "seed.yml")
+    require_seed_info_file(info, function(error){
+        if(error) callback(error);
+        else {
+            splitFilesIntoLines(info, function(err, lines){
+                var command= undefined;
+                for(var i=0;i<lines.length;i++) {
+                    var matches= /^\s+build:\s(.+)$/.exec(lines[i]);
+                    if( matches ){
+                         sys.puts( matches[1] ); 
+                         command= matches[1];
+                         break;
+                     }
+                }
+                if( command ) {
+                    log("cd", dir);
+                    log("build", command);
+                    sys.exec("cd "+ dir+"; "+ command, function (err, stdout, stderr) {
+                      if (err) callback(err);
+                      else {
+                          if(inVerboseMode) sys.puts(stdout);
+                          callback();
+                      }
+                    });
+                } else callback();
+            });
+        }
+    });
 }
 
 /*
@@ -690,10 +703,11 @@ function build(dir, callback) {
 */
 function install_dependencies(seedInfoFile, callback) {
     require_seed_info_file(seedInfoFile, function(error) {
-        if( error ) {
-            callback(error);
-        }  else {
-            log("check", "dependencies");
+        if( error ) callback(error);
+        else {
+            log("check", "dependencies");  
+            sys.puts("STILL NEEDS IMPLEMENTING");
+            //TODO: TJ's server doesn't currently have any seeds with deps to do this.. and I'm lazy.
             splitFilesIntoLines(seedInfoFile, function(err, lines){
 //                sys.puts(lines);
                 callback();
@@ -751,3 +765,5 @@ function run() {
 }
 
 run();
+
+
