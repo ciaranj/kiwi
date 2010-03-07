@@ -223,6 +223,17 @@ function setup(callback) {
 }
 
 /*
+* Create SEED_DEST/<name>/<version>.
+* 
+* <name> <version>
+*/
+function setup_seed(name, version, callback) {
+  var dir= path.join(SEED_DEST, name, version);
+  log("create",  dir);
+  create_directory(dir, callback);
+}
+
+/*
  * Given an argument string, split it into its constituent parts
  * To pass arguments that contain whitespace, surround the argument
  * with double-quotes e.g. "foo bar"
@@ -370,44 +381,28 @@ function install(nameOrFile, version, callback) {
             } else {
                 var url= "/"+nameOrFile+"/resolve";
                 if( version ) url+= "?version="+escape(version);
-                var request = kiwiServer.request("GET", url  , {"host": SERVER_ADDR});
-                var result= "";
-                request.addListener('response', function (response) {
-                  response.setBodyEncoding("utf8");
-                  response.addListener("data", function (chunk) {
-                    result += chunk;
-                  });
-                  response.addListener("end", function (chunk) {
-                    log("resolve", "version "+ result);
-                    callback();
-                  });
+                get_from_server( url, function(error, resolvedVersion) {
+                    log("resolve", "version "+ resolvedVersion);  
+                    //TOOD: Error handling
+                    path.exists(path.join(expand_path(SEED_DEST),nameOrFile, resolvedVersion) , function(seedVersionExists){
+                        if( seedVersionExists ) {
+                            log("install", "already installed");
+                            callback();
+                        } else {
+                            download(nameOrFile, resolvedVersion, function(error, seedPath) {
+                                unpack(seedPath, callback);
+                            });
+//                            download $name $version
+//                            unpack $seed
+//                            build ${seed%/*}
+//                            install_dependencies ${seed%/*}/seed.yml
+//                            callback();
+                        }
+                    });
                 });
-                request.close();
             }
         });
     } 
-/*
-local name=$1; shift
-  local version=$*
-  log install $name $version
-  if [[ -f $name ]]; then
-    log install from file
-    cat $name | while read line; do
-      [[ $line =~ ^\s*- ]] && kiwi $FLAGS install $(normalize_version $line)
-    done
-  else
-    version=$(curl -s $SERVER/$name/resolve?version=$(urlencode $version))
-    log resolve version $version
-    if [[ -d $SEED_DEST/$name/$version ]]; then
-      log install already installed
-    else
-      download $name $version
-      unpack $seed
-      build ${seed%/*}
-      install_dependencies ${seed%/*}/seed.yml
-    fi
-  fi
- */     
 }
 
 function update_all(callback) { sys.puts('update_all');callback();}
@@ -512,15 +507,12 @@ function register_user( name, pass, callback ) {
     request.close();
 }
 
-
 /*
-* Search remote seeds with the given [pattern].
-* 
-* [pattern]
-*/
-function search(pattern, callback) { 
-    var url= "/search";
-    if( pattern ) url+= "?name="+pattern;
+ * Retrieves some data from the Kiwi server and returns
+ * it to the callback function.
+ * TODO: error handling.
+ */ 
+function get_from_server(url, callback) {
     var request = kiwiServer.request("GET", url  , {"host": SERVER_ADDR});
     var result= "";
     request.addListener('response', function (response) {
@@ -529,14 +521,114 @@ function search(pattern, callback) {
         result += chunk;
       });
       response.addListener("end", function (chunk) {
-        sys.puts(result); 
-        callback();
+        callback(null, result, response);
       });
     });
     request.close();
 }
- 
 
+
+function recursiveRmDir(dir, callback) {
+    fs.readdir(dir, function(error, results) {
+        if( results && results.length == 0 ) {
+            fs.rmdir( dir, callback );
+        } 
+        else {
+            var filesToRemove= results.length;
+            var decrementFiles= function() {
+                filesToRemove--;
+                if(filesToRemove<=0) {
+                    fs.rmdir( dir, callback );
+                }
+            };
+            for(var i=0;i<results.length;i++) {
+                var fullPath= path.join(dir, results[i]);
+                fs.stat(fullPath, function(err, stats) {
+                    if( stats.isDirectory() ) { 
+                        recursiveRmDir(fullPath, decrementFiles);
+                    } 
+                    else {
+                        fs.unlink(fullPath, decrementFiles );
+                    }
+                });
+            }
+            
+        }
+    });
+}
+
+/* Unpack <seed> using tar.
+*  TODO: REMOVE THE DEPENDENCY ON TAR somehow?!?! anyone
+* <seed>
+*/
+function unpack( seedPath, callback ) {
+  var dir= path.dirname( seedPath ); 
+  log( "unpack", seedPath );
+  sys.exec("tar -xzvf "+seedPath+ "xx -C "+ dir +" 2> /dev/null", function (err, stdout, stderr) {
+    var nextStep= function() {
+        log( "remove", seedPath );
+        fs.unlink(seedPath, callback)
+    };
+    if (err)  {
+        log( "remove", dir );
+        abort( "failed to unpack. Seed is invalid or corrupt.");
+        recursiveRmDir(dir,function(error) {
+            nextStep();
+        });
+    }
+    else {
+        nextStep();
+    }
+  });
+
+
+/*
+* Search remote seeds with the given [pattern].
+* 
+* [pattern]
+*/
+function search(pattern, callback) { 
+    var url= "/search";
+    if( pattern ) url+= "?name="+pattern; 
+    get_from_server( url, function(error, result) {
+        sys.puts(result); 
+        callback();
+    });
+} 
+
+/*
+* Download seed <name> with <version> to $SEED_DEST/<name>/<version>/<name>.seed
+* 
+* Passes the path to the seed archive back to the callback
+* 
+* <name> <version>
+*
+*/
+function download( name, version, callback) {
+  setup_seed(name, version, function() {
+      log( "fetch", version+".seed" );
+      var seedPath= path.join(expand_path(SEED_DEST), name, version, name+".seed");
+      fs.open(seedPath, "w", 0600, function(error, fd) {
+          var request = kiwiServer.request("GET", "/seeds/"+name+"/"+version+".seed"  , {"host": SERVER_ADDR});
+          
+          // TODO: should be able to sort out streaming to disk (not sure if async writes get queued linearly or not...)
+          request.addListener('response', function (response) {
+            response.setBodyEncoding("binary");
+            response.addListener("data", function (chunk) { 
+                sys.print(".");
+                fs.writeSync(fd, chunk, null, "binary");
+            });
+            response.addListener("end", function (chunk) {
+                sys.puts("");
+                callback( null, seedPath );
+            });
+          });
+          sys.print("Downloading...");
+          request.close();          
+      });
+  })
+}
+ 
 function trim(str) {
     return str.replace(/^\s*/, '').replace(/\s*$/, ''); 
 }                                                
