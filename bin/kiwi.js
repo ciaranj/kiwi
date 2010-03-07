@@ -8,9 +8,9 @@ var ORIGIN="git://github.com/ciaranj/kiwi.git";
 var KIWI_DEST= "~/.kiwi";
 var AUTH_DEST= KIWI_DEST+"/.auth";
 var SEED_DEST= KIWI_DEST+"/current/seeds";
-var SERVER_ADDR= process.env.SERVER_ADDR?process.env.SERVER_ADDR : "173.203.199.182"; 
-var kiwiServer = http.createClient(process.env.SERVER_PORT?process.env.SERVER_PORT : "80",
-                                   SERVER_ADDR);
+var SERVER_ADDR= process.env.SERVER_ADDR?process.env.SERVER_ADDR : "173.203.199.182";
+var SERVER_PORT= process.env.SERVER_PORT?process.env.SERVER_PORT : "80";
+var kiwiServer = http.createClient(SERVER_PORT,SERVER_ADDR);
 var inVerboseMode= false;
 
 function log (type, message ) {
@@ -20,6 +20,40 @@ function abort(message, callback) {
     sys.puts("Error: "+ message );
     if( callback ) callback();
 }
+ 
+// Base64 Encoder taken from: http://www.webtoolkit.info/javascript-base64.html
+var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+function encodeInBase64 (input) {
+	var output = "";
+	var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+	var i = 0;
+
+	while (i < input.length) {
+
+		chr1 = input.charCodeAt(i++);
+		chr2 = input.charCodeAt(i++);
+		chr3 = input.charCodeAt(i++);
+
+		enc1 = chr1 >> 2;
+		enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+		enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+		enc4 = chr3 & 63;
+
+		if (isNaN(chr2)) {
+			enc3 = enc4 = 64;
+		} else if (isNaN(chr3)) {
+			enc4 = 64;
+		}
+
+		output = output +
+		_keyStr.charAt(enc1) + _keyStr.charAt(enc2) +
+		_keyStr.charAt(enc3) + _keyStr.charAt(enc4);
+
+	}
+
+	return output;
+};
+
 
 function fixedCharFormat(str, length) {
     if( str.length == length ) return str;
@@ -219,22 +253,25 @@ function parseArguments(args, callback) {
             case "update":
                 update_all(callback);
                 break;
+            case "switch":
+                 switch_environment(args[argIndex], callback);
+                 break; 
+            case "register":
+                register_user( args[argIndex++], args[argIndex], callback);
+                break;
             case "search":
                 search(args[argIndex], callback);
                 break;
             case "env":
             case "envs": 
-                  list_environments(callback);
-                  break;                
-            case "switch":
-                 switch_environment(args[argIndex], callback);
-                 break;
-            case "repl":
-              if(!inRepl) repl();
-              else callback();
-              break;
+                list_environments(callback);
+                break;                
             case "whoami":
                 output_username(callback);
+                break;
+            case "repl":
+                if(!inRepl) repl();
+                else callback();
                 break;
             case "list":
             case "ls":
@@ -319,6 +356,36 @@ function output_username(callback) {
     });
     
 }
+ 
+/*
+ * Registers a username and password (using basic auth bleurgh!)
+ */
+function register_user( name, pass, callback ) { 
+    if( name === undefined ) { abort("user name required.", callback); return; }
+    if( pass === undefined ) { abort("abort password required.", callback); return; }
+    var request = kiwiServer.request("POST", "/user" , {"host": SERVER_ADDR,
+                                                        "Authorization": "Basic "+ encodeInBase64(name+":"+pass),
+                                                        "Content-Length": 0});
+    var result= "";
+    request.addListener('response', function (response) {
+      response.setBodyEncoding("utf8");
+      response.addListener("data", function (chunk) {
+        result += chunk;
+      });
+      response.addListener("end", function (chunk) {
+        if( trim(result) == "registration failed." ) {
+            abort("Registration failed.", callback);
+        } else {
+            log("create", expand_path(AUTH_DEST) );
+            fs.open(expand_path(AUTH_DEST), "w", 0600, function(err, fd) {
+                fs.write(fd, name +":"+ pass, 0, "utf-8", callback);
+            });   
+        }
+      });
+    });
+    request.close();
+}
+
 
 /*
 * Search remote seeds with the given [pattern].
