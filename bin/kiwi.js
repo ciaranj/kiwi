@@ -321,9 +321,6 @@ function parseArguments(args, callback) {
     }
 }
 
-function queueCallbacks(things, callback) {
-    
-}
 /*
 *
 * Install a seed <name> with [version].
@@ -370,8 +367,22 @@ function install(nameOrFile, version, callback) {
                   };
                   installLine();
                 });                
-            } else { 
-                callback();
+            } else {
+                var url= "/"+nameOrFile+"/resolve";
+                if( version ) url+= "?version="+escape(version);
+                var request = kiwiServer.request("GET", url  , {"host": SERVER_ADDR});
+                var result= "";
+                request.addListener('response', function (response) {
+                  response.setBodyEncoding("utf8");
+                  response.addListener("data", function (chunk) {
+                    result += chunk;
+                  });
+                  response.addListener("end", function (chunk) {
+                    log("resolve", "version "+ result);
+                    callback();
+                  });
+                });
+                request.close();
             }
         });
     } 
