@@ -77,6 +77,26 @@ function require_seeds(callback) {
 }
 
 /*
+* Require presence of seed [name] or abort.
+* 
+* <name>
+*/
+function require_seed_name( name, callback ) {
+  if( name === undefined ) abort("seed name required."); 
+  return name !== undefined;
+}
+
+/*
+* Require presence of seed [version] or abort.
+* 
+* <version>
+*/
+function require_seed_version( version, callback ) {
+    if( version === undefined ) abort("seed version required.");
+    return version !== undefined;
+}
+
+/*
  * Print the usage instructions
  * [inRepl] - If true then the REPL usage instructions will be displayed rather than the shell instructions.
  */
@@ -156,10 +176,8 @@ function create_directory(path, callback) {
     callback();
 }   
 
-/* Switch "current" environment to [env].
- * 
- * [env]
- *
+/* Switch "current" environment to <env>.
+ * <env>
  */
 function switch_environment(env, callback) {
     if(!env)  abort( "environment name required.", callback);
@@ -206,17 +224,32 @@ function setup(callback) {
 
 /*
  * Given an argument string, split it into its constituent parts
+ * To pass arguments that contain whitespace, surround the argument
+ * with double-quotes e.g. "foo bar"
  */
 function splitArgs(argString) {
-    // TODO: this should be smarter to allow for whitespace escaping... 
-   return argString.split(/\s/);
+    var regex= /"[^"]*?"|[^\s]+/g; 
+    var results= [];
+    do {
+        var result=  regex.exec(argString);
+        if(result)  {
+            result= result[0];
+            trim(result);
+            if( result[0] == "\"") result= result.substr(1);
+            if( result[result.length] == "\"") result= result.substr(0, result.length-1);
+            
+            results[results.length]= result;
+        }
+        
+    } while( result != null );
+   return results;
 }   
 
 
 /** 
  * Parse either command line arguments or REPL commands
- * [args]
- * [inRepl]
+ * <args>
+ * [callback]
  */
 function parseArguments(args, callback) {  
     var inRepl = (callback != undefined);
@@ -226,7 +259,6 @@ function parseArguments(args, callback) {
         keepGoing= true, 
         arg="";
     if( typeof(args) == 'string' ) args= splitArgs(args);
-
     while(keepGoing && argIndex < args.length) {
         var command= args[argIndex++];   
         keepGoing=false;
@@ -252,6 +284,11 @@ function parseArguments(args, callback) {
                 break;
             case "update":
                 update_all(callback);
+                break;
+            case "install":
+            case "add":
+            case "get":
+                install( args[argIndex++], args[argIndex], callback );
                 break;
             case "switch":
                  switch_environment(args[argIndex], callback);
@@ -282,6 +319,84 @@ function parseArguments(args, callback) {
                 else callback();
         }
     }
+}
+
+function queueCallbacks(things, callback) {
+    
+}
+/*
+*
+* Install a seed <name> with [version].
+*
+* When a <file> is passed, it should be a flat-list
+* of seeds to install, formatted as:
+*   <name> [op] <version>\n
+*   <name> [op] <version>\n
+*   ...
+*
+* Otherwise:
+* 
+*   - Fetches latest version when [version] absent
+*   - Downloads seed tarball
+*   - Unpacks the tarball
+* 
+* <nameOrFile> [version]
+*
+*/
+function install(nameOrFile, version, callback) {
+    if( !require_seed_name(nameOrFile) ) callback();
+    else {
+        log( "install", nameOrFile + " " + (version?version:"") );
+        path.exists(nameOrFile, function(exists) {
+            if( exists ) {
+                log( "install", "from file" );
+                fs.readFile( nameOrFile, function (err, data) {
+                    //TODO: propagate errors properly..
+                  var lines= data.replace("\r","").split("\n");
+                  var lineIndex=0;
+                  var installLine= function() {
+                      var lineArgs= splitArgs(lines[lineIndex]);
+                      if( lineArgs.length == 3 ) {
+                          // We need to join the last two args as they'll be version args.
+                          var version= lineArgs.pop();
+                          var op= lineArgs.pop();
+                          lineArgs.push( op+" "+version );
+                      }
+                      lineArgs.unshift("install");
+                      parseArguments( lineArgs, function() {
+                       if( ++lineIndex < lines.length ) installLine();
+                       else callback();
+                      });
+                  };
+                  installLine();
+                });                
+            } else { 
+                callback();
+            }
+        });
+    } 
+/*
+local name=$1; shift
+  local version=$*
+  log install $name $version
+  if [[ -f $name ]]; then
+    log install from file
+    cat $name | while read line; do
+      [[ $line =~ ^\s*- ]] && kiwi $FLAGS install $(normalize_version $line)
+    done
+  else
+    version=$(curl -s $SERVER/$name/resolve?version=$(urlencode $version))
+    log resolve version $version
+    if [[ -d $SEED_DEST/$name/$version ]]; then
+      log install already installed
+    else
+      download $name $version
+      unpack $seed
+      build ${seed%/*}
+      install_dependencies ${seed%/*}/seed.yml
+    fi
+  fi
+ */     
 }
 
 function update_all(callback) { sys.puts('update_all');callback();}
