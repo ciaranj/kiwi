@@ -18,7 +18,7 @@ function log (type, message ) {
 } 
 function abort(message, callback) {
     sys.puts("Error: "+ message );
-    if( callback ) callback();
+    if( callback ) callback(new Error(message));
 }
  
 // Base64 Encoder taken from: http://www.webtoolkit.info/javascript-base64.html
@@ -73,6 +73,18 @@ function require_seeds(callback) {
     fs.readdir(expand_path(SEED_DEST), function(err, files){
         if( err || files.length == 0 ) callback(new Error("no seeds are installed."));
         else callback();
+    });
+}
+
+/*
+* Require presence of seed info <file> or abort.
+* 
+* <file>
+*/
+function require_seed_info_file(file, callback) {
+    path.exists( file, function (exists) { 
+        if( exists ) callback();
+        else abort("seed.yml file required.", callback);
     });
 }
 
@@ -247,7 +259,7 @@ function splitArgs(argString) {
             result= result[0];
             trim(result);
             if( result[0] == "\"") result= result.substr(1);
-            if( result[result.length] == "\"") result= result.substr(0, result.length-1);
+            if( result[result.length-1] == "\"") result= result.substr(0, result.length-1);
             
             results[results.length]= result;
         }
@@ -298,8 +310,8 @@ function parseArguments(args, callback) {
                 break;
             case "install":
             case "add":
-            case "get":
-                install( args[argIndex++], args[argIndex], callback );
+            case "get": 
+                install( args[argIndex++], args[argIndex++], args[argIndex], callback );
                 break;
             case "switch":
                  switch_environment(args[argIndex], callback);
@@ -334,7 +346,7 @@ function parseArguments(args, callback) {
 
 /*
 *
-* Install a seed <name> with [version].
+* Install a seed <name> with [version]. (Version may be a 'bounded version')
 *
 * When a <file> is passed, it should be a flat-list
 * of seeds to install, formatted as:
@@ -348,28 +360,24 @@ function parseArguments(args, callback) {
 *   - Downloads seed tarball
 *   - Unpacks the tarball
 * 
-* <nameOrFile> [version]
+* <nameOrFile> [<operator> <version] | [version]]
 *
 */
-function install(nameOrFile, version, callback) {
+function install(nameOrFile, versionOrOperator, version, callback) {
+    if( version ) version= versionOrOperator + " " + version;
+    else version= versionOrOperator;
+    
     if( !require_seed_name(nameOrFile) ) callback();
     else {
         log( "install", nameOrFile + " " + (version?version:"") );
         path.exists(nameOrFile, function(exists) {
             if( exists ) {
                 log( "install", "from file" );
-                fs.readFile( nameOrFile, function (err, data) {
+                splitFilesIntoLines(nameOrFile, function(err,lines){
                     //TODO: propagate errors properly..
-                  var lines= data.replace("\r","").split("\n");
                   var lineIndex=0;
                   var installLine= function() {
                       var lineArgs= splitArgs(lines[lineIndex]);
-                      if( lineArgs.length == 3 ) {
-                          // We need to join the last two args as they'll be version args.
-                          var version= lineArgs.pop();
-                          var op= lineArgs.pop();
-                          lineArgs.push( op+" "+version );
-                      }
                       lineArgs.unshift("install");
                       parseArguments( lineArgs, function() {
                        if( ++lineIndex < lines.length ) installLine();
@@ -382,23 +390,30 @@ function install(nameOrFile, version, callback) {
                 var url= "/"+nameOrFile+"/resolve";
                 if( version ) url+= "?version="+escape(version);
                 get_from_server( url, function(error, resolvedVersion) {
-                    log("resolve", "version "+ resolvedVersion);  
-                    //TOOD: Error handling
-                    path.exists(path.join(expand_path(SEED_DEST),nameOrFile, resolvedVersion) , function(seedVersionExists){
-                        if( seedVersionExists ) {
-                            log("install", "already installed");
-                            callback();
-                        } else {
-                            download(nameOrFile, resolvedVersion, function(error, seedPath) {
-                                unpack(seedPath, callback);
-                            });
-//                            download $name $version
-//                            unpack $seed
-//                            build ${seed%/*}
-//                            install_dependencies ${seed%/*}/seed.yml
-//                            callback();
-                        }
-                    });
+                    if( resolvedVersion == "seed version does not exist."  ||
+                        resolvedVersion == "seed does not exist.") {
+                        abort(resolvedVersion, callback);
+                    } 
+                    else {
+                        log("resolve", "version "+ resolvedVersion);  
+                        path.exists(path.join(expand_path(SEED_DEST),nameOrFile, resolvedVersion) , function(seedVersionExists){
+                            if( seedVersionExists ) {
+                                log("install", "already installed");
+                                callback();
+                            } else {
+                                download(nameOrFile, resolvedVersion, function(error, seedPath) {
+                                    unpack(seedPath, function(err) {
+                                        if( err ) callback(err); 
+                                        else {
+                                            build(path.dirname(seedPath), function() { 
+                                                install_dependencies(path.join(path.dirname(seedPath), "seed.yml"), callback);
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    }
                 });
             }
         });
@@ -560,7 +575,20 @@ function recursiveRmDir(dir, callback) {
     });
 }
 
-/* Unpack <seed> using tar.
+/*
+ * Given a file, will return a set of (line ending removed/normalised) lines
+ * to a given callback, or an error as the first argument
+ */
+function splitFilesIntoLines( file, callback ) {
+    fs.readFile( file, function (err, data) {
+        if( err ) callback(err);
+        else {
+            callback(null, data.replace("\r","").split("\n")) ;
+        }
+    });
+}
+
+/* Unpack <seed> using tar. 
 *  TODO: REMOVE THE DEPENDENCY ON TAR somehow?!?! anyone
 * <seed>
 */
@@ -568,22 +596,22 @@ function unpack( seedPath, callback ) {
   var dir= path.dirname( seedPath ); 
   log( "unpack", seedPath );
   sys.exec("tar -xzvf "+seedPath+ " -C "+ dir +" 2> /dev/null", function (err, stdout, stderr) {
-    var nextStep= function() {
+    var nextStep= function(err) {
         log( "remove", seedPath );
-        fs.unlink(seedPath, callback)
+        fs.unlink(seedPath, function() { callback(err); });
     };
     if (err)  {
         log( "remove", dir );
         abort( "failed to unpack. Seed is invalid or corrupt.");
         recursiveRmDir(dir,function(error) {
-            nextStep();
+            nextStep(err);
         });
     }
     else {
         nextStep();
     }
   });
-
+}
 
 /*
 * Search remote seeds with the given [pattern].
@@ -630,6 +658,57 @@ function download( name, version, callback) {
           request.close();          
       });
   })
+}
+
+/*
+* Build seed in the given <dir>.
+* 
+* <dir>
+*/
+function build(dir, callback) {
+    callback();
+/*   local dir=$1
+  local info=$dir/seed.yml
+  require_seed_info_file $info
+  local command=$(cat $info | grep build | sed 's/build: * //' )
+  if [[ $command ]]; then
+    log cd $dir
+    cd $dir
+    log build $command
+    if [[ $VERBOSE ]]; then
+      eval $command
+    else
+      eval "$command > /dev/null"
+    fi
+  fi */
+}
+
+/*
+* Install dependencies defined in the given seed info <file>.
+* 
+* <file>
+*/
+function install_dependencies(seedInfoFile, callback) {
+    require_seed_info_file(seedInfoFile, function(error) {
+        if( error ) {
+            callback(error);
+        }  else {
+            log("check", "dependencies");
+            splitFilesIntoLines(seedInfoFile, function(err, lines){
+//                sys.puts(lines);
+                callback();
+            });
+        }
+    });    
+/*  require_seed_info_file $1
+  log check dependencies
+  deps=0
+  cat $1 | while read line; do
+    [[ $line =~ dependencies: ]] && deps=1
+    [[ $deps -ne 0 && $line =~ ^\s*- ]] && deps=2
+    [[ $deps -eq 2 && $line =~ ^\s*.+: ]] && deps=0
+    [[ $deps -eq 2 ]] && kiwi $FLAGS install $(normalize_version $line)
+  done */
 }
  
 function trim(str) {
