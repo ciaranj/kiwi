@@ -527,7 +527,10 @@ function get_from_server(url, callback) {
     request.close();
 }
 
-
+/*
+ * Tediously enough this function does a recursive rmdir, deleting
+ * all the contents of a folder (and all its child folders).
+ */
 function recursiveRmDir(dir, callback) {
     fs.readdir(dir, function(error, results) {
         if( results && results.length == 0 ) {
@@ -564,7 +567,7 @@ function recursiveRmDir(dir, callback) {
 function unpack( seedPath, callback ) {
   var dir= path.dirname( seedPath ); 
   log( "unpack", seedPath );
-  sys.exec("tar -xzvf "+seedPath+ "xx -C "+ dir +" 2> /dev/null", function (err, stdout, stderr) {
+  sys.exec("tar -xzvf "+seedPath+ " -C "+ dir +" 2> /dev/null", function (err, stdout, stderr) {
     var nextStep= function() {
         log( "remove", seedPath );
         fs.unlink(seedPath, callback)
