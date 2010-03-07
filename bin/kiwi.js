@@ -1,7 +1,7 @@
-var sys= require('sys');
-var http= require('http');
-var fs= require('fs');
-var path= require('path');
+var sys= require('sys'),
+    http= require('http'),
+    fs= require('fs'),
+    path= require('path');
 
 var VERSION="0.0.1";
 var ORIGIN="git://github.com/ciaranj/kiwi.git";
@@ -226,12 +226,15 @@ function parseArguments(args, callback) {
             case "envs": 
                   list_environments(callback);
                   break;                
+            case "switch":
+                 switch_environment(args[argIndex], callback);
+                 break;
             case "repl":
               if(!inRepl) repl();
               else callback();
               break;
-            case "switch":
-                switch_environment(args[argIndex], callback);
+            case "whoami":
+                output_username(callback);
                 break;
             case "list":
             case "ls":
@@ -282,7 +285,7 @@ function list_environments(callback) {
     fs.readlink(path.join(expanded_kiwi_dest,"current"), function(error, current) {
         fs.readdir(expand_path(expanded_kiwi_dest), function(err, files){
             for(var i=0;i<files.length;i++) {
-                if( files[i] != "current" ) {
+                if( files[i] != "current" && files[i] != ".auth") {
                     if( path.join(expanded_kiwi_dest, files[i]) == current )  sys.print("* ");
                     else sys.print("  ");
                     sys.puts(files[i]);
@@ -291,6 +294,30 @@ function list_environments(callback) {
             callback();
         });
     });
+}
+
+/*
+ * Output username.
+ */
+function output_username(callback) {
+    var expanded_auth_dest= expand_path( AUTH_DEST );
+    path.exists(expanded_auth_dest, function(exists) {
+        if( !exists ) {
+            sys.puts( "Credentials cannot be found, please register first." );
+            sys.puts( "  If you have previously registered simply run:" );
+            sys.puts( "  $ echo user:pass > " + expand_path( AUTH_DEST ) );
+            callback();
+        }
+        else {
+            fs.readFile(expanded_auth_dest, function (err, data) {
+                //Errors?
+              sys.puts(data.substr(0,data.indexOf(":")));
+              callback();
+            });            
+        }
+        
+    });
+    
 }
 
 /*
