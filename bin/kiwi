@@ -300,8 +300,8 @@ install() {
     else
       download $name $version
       unpack $seed
-      build ${seed%/*}
       install_dependencies ${seed%/*}/seed.yml
+      build ${seed%/*}
     fi
   fi
 }
