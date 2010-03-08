@@ -1,6 +1,6 @@
 
 SPEC = spec
-DEST = /usr/bin
+DEST = /usr/local/bin
 LIB_DEST = /usr/local/lib/node/libraries
 
 all: test
