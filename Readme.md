@@ -3,6 +3,11 @@
 
   JavaScript package management system for node.js
   
+## About
+
+Kiwi development is sponsored by [Vision Media](http://vision-media.ca) and hosting
+is sponsored by [Slicehost](http://slicehost.com).
+  
 ## Features
 
   * Fast / Solid
