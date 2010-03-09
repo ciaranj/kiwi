@@ -22,7 +22,8 @@ get '/search/?' do
   name = params[:name]
   Seed.all.map do |seed|
     next if name and not seed.name.include? name
-    '%15s : %s' % [seed.name, seed.current_version.number]
+    version = seed.current_version
+    '%15s : %s - %s' % [seed.name, version.number, version.description]
   end.compact.join("\n") + "\n"
 end
 
