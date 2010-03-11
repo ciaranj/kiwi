@@ -15,7 +15,7 @@ SEED_DEST=$KIWI_DEST/current/seeds
 DOCS=/usr/local/etc/kiwi/docs
 
 #
-# Output global or [command] usage.
+# Output global or [command] usage, piped into less.
 #
 
 usage() {
@@ -23,7 +23,8 @@ usage() {
   case $command in
     env) command=envs ;;
   esac
-  cat $DOCS/$command
+  cat $DOCS/$command | less
+  exit
 }
 
 #
@@ -482,7 +483,7 @@ parse() {
       -V|--version) echo $VERSION ;;
       -S|--seeds) echo $SEED_DEST ;;
       -h|--help|help)
-        usage $* | less
+        usage $*
         ;;
       -v|--verbose) 
         VERBOSE=1

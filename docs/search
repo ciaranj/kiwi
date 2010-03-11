@@ -1,0 +1,21 @@
+
+  Usage:
+  
+    kiwi search [pattern]
+    
+  Description:
+  
+    Searches the remote kiwi server for seeds
+    matching the given [pattern] or simply
+    lists all seeds.
+    
+  Examples:
+    
+    List all available seeds:
+    
+      $ kiwi search
+    
+    List all seeds including the text "ml":
+    
+      $ kiwi search ml
+
