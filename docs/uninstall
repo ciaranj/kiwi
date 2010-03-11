@@ -1,0 +1,20 @@
+  
+  Usage:
+  
+    kiwi uninstall <name> [version]
+    
+  Description:
+  
+    Uninstalls all versions of <name>, or the specific
+    [version] passed.
+    
+  Examples:
+    
+    Uninstalls only 0.9.9:
+    
+      $ kiwi uninstall sass 0.9.9
+    
+    Uninstalls all versions of sass:
+    
+      $ kiwi uninstall sass
+  
