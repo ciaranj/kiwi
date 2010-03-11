@@ -1,0 +1,14 @@
+  
+  Usage:
+  
+    kiwi register <name> <password>
+    
+  Description:
+  
+    Attempt to regster the user <name> with
+    the given <password>.
+    
+  Examples:
+    
+    $ kiwi register keyboard cat
+

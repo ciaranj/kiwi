@@ -1,6 +1,7 @@
 
 SPEC = spec
 DEST = /usr/local/bin
+DOC_DEST = /usr/local/etc/kiwi
 LIB_DEST = /usr/local/lib/node/libraries
 
 all: test
@@ -20,6 +21,8 @@ server-stop:
 install: bin/kiwi
 	install bin/kiwi $(DEST)/kiwi
 	install lib/kiwi.js $(LIB_DEST)/kiwi.js
+	mkdir -p $(DOC_DEST)
+	cp -fr docs $(DOC_DEST)
 	
 uninstall: $(DEST)/kiwi
 	rm $(DEST)/kiwi
