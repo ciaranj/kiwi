@@ -201,7 +201,7 @@ build() {
   local dir=$1
   local info=$dir/seed.yml
   require_seed_info_file $info
-  local command=$(cat $info | grep build | sed 's/build: *//' )
+  local command=$(cat $info | grep build: | cut -d ':' -f 2 )
   if [[ $command ]]; then
     log cd $dir
     cd $dir
