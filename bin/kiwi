@@ -12,6 +12,7 @@ SERVER=http://$SERVER_ADDR:$SERVER_PORT
 KIWI_DEST=~/.kiwi
 AUTH_DEST=$KIWI_DEST/.auth
 SEED_DEST=$KIWI_DEST/current/seeds
+DOCS=/usr/local/etc/kiwi/docs
 
 #
 # Output global or [command] usage.
@@ -19,7 +20,7 @@ SEED_DEST=$KIWI_DEST/current/seeds
 
 usage() {
   local command=${1:-kiwi}
-  cat docs/$command
+  cat $DOCS/$command
 }
 
 #
