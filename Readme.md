@@ -37,6 +37,16 @@ is sponsored by [Slicehost](http://slicehost.com).
     - Use one or more environments to manage your seeds
   * Not dependant on GIT (like most other proposed node package managers)
   
+## Kiwi Vs Others
+
+Other node package management systems utilize absolute urls
+in order to fetch their tarballs, below is an example of
+both **kiwi** and **npm** installing the same library.
+
+    $ kiwi install haml
+    
+    $ npm install http://github.com/creationix/haml-js/tarball/0.1.2
+  
 ## Installation
 
     $ [sudo] make install
