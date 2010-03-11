@@ -1,7 +1,7 @@
 
-# Kiwi
+# Kiwi - Node.js Package Management
 
-  JavaScript package management system for node.js
+  JavaScript package management system for **node.js**
   
 ## About
 
