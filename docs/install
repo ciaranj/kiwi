@@ -3,9 +3,26 @@
   
     kiwi install <name> [version]
     
+  Description:
+  
+    Installs the latest version of <seed>, or attempts
+    to install the given [version].
+    
   Examples:
     
     Install the lastest version of a seed:
     
       $ kiwi install sass
+    
+    Installing a specific version:
+    
+      $ kiwi install sass ">~ major.minor.patch"
   
+    The following operators are supported for matching versions:
+    
+      n/a               Equal to
+      =                 Equal to
+      >                 Greater than
+      >=                Greater than or equal to
+      >~                Greater than or equal to with compatibility (major must match)
+

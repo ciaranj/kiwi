@@ -26,22 +26,4 @@
     list                         Lists installed seeds and their associated versions
     envs                         List environments available to kiwi
     help [command]               Output this help or specific [command] help
-    
-  Install:
-  
-    Installing the latest version of a seed:
-    
-      $ kiwi install sass
-      
-    Installing a specific version:
-    
-      $ kiwi install sass ">~ major.minor.patch"
-  
-    The following operators are supported for matching versions:
-    
-      n/a               Equal to
-      =                 Equal to
-      >                 Greater than
-      >=                Greater than or equal to
-      >~                Greater than or equal to with compatibility (major must match)
   
