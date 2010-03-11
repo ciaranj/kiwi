@@ -26,3 +26,11 @@
       >=                Greater than or equal to
       >~                Greater than or equal to with compatibility (major must match)
 
+  Aliases:
+  
+    add, get
+    
+  See Also:
+  
+    uninstall
+

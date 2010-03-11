@@ -18,3 +18,11 @@
     
       $ kiwi uninstall sass
   
+  Aliases:
+  
+    remote, delete, rm
+    
+  See Also:
+  
+    install
+
