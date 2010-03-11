@@ -22,6 +22,8 @@ usage() {
   local command=${1:-kiwi}
   case $command in
     env) command=envs ;;
+    add|get) command=install ;;
+    remove|delete|rm) command=uninstall ;;
   esac
   cat $DOCS/$command | less
   exit
