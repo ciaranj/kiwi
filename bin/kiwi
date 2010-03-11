@@ -20,6 +20,9 @@ DOCS=/usr/local/etc/kiwi/docs
 
 usage() {
   local command=${1:-kiwi}
+  case $command in
+    env) command=envs ;;
+  esac
   cat $DOCS/$command
 }
 
