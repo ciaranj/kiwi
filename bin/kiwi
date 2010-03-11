@@ -4,7 +4,7 @@
 # Defaults
 #
 
-VERSION=0.0.1
+VERSION=0.1.0
 ORIGIN=git://github.com/visionmedia/kiwi.git
 SERVER_PORT=${SERVER_PORT:-80}
 SERVER_ADDR=${SERVER_ADDR:-173.203.199.182}
