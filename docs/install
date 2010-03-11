@@ -1,0 +1,11 @@
+
+  Usage:
+  
+    kiwi install <name> [version]
+    
+  Examples:
+    
+    Install the lastest version of a seed:
+    
+      $ kiwi install sass
+  

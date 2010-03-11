@@ -14,58 +14,12 @@ AUTH_DEST=$KIWI_DEST/.auth
 SEED_DEST=$KIWI_DEST/current/seeds
 
 #
-# Output usage.
+# Output global or [command] usage.
 #
 
 usage() {
-cat << EOF
-
-  Usage:
-    
-    ${0##*/} [options] [command] [arguments]
-    
-  Options:
-    
-    -v, --verbose     Verbose output
-    -V, --version     Current version triplet
-    -S, --seeds       Output seed directory
-    -h, --help        Help information
-    
-  Commands:
-    
-    <void>                       Starts a kiwi interactive console (REPL)
-    install <name> [version]     Installs a seed <name> with optional [version]
-    uninstall <name> [version]   Uninstalls all versions of seed <name> or the given [version]
-    switch <env>                 Switch to kiwi to use the given seed <env>
-    search [pattern]             Search remotely available seeds with optional [pattern]
-    build <version>              Build <version>.seed with the contents of the current directory
-    publish <name> <version>     Push seed <name> and <version> to the kiwi server
-    release <name> <version>     Build and publish seed <name> and <version>
-    register <name> <password>   Attempt to register the given <user> name and <password>
-    update                       Install the latest release of every seed installed
-    whoami                       Output currently registered user name
-    list                         Lists installed seeds and their associated versions
-    envs                         List environments available to kiwi
-    
-  Install:
-  
-    Installing the latest version of a seed:
-    
-      $ kiwi install sass
-      
-    Installing a specific version:
-    
-      $ kiwi install sass ">~ major.minor.patch"
-  
-    The following operators are supported for matching versions:
-    
-      n/a               Equal to
-      =                 Equal to
-      >                 Greater than
-      >=                Greater than or equal to
-      >~                Greater than or equal to with compatibility (major must match)
-
-EOF
+  local command=${1:-kiwi}
+  cat docs/$command
 }
 
 #
@@ -523,7 +477,9 @@ parse() {
     case $arg in
       -V|--version) echo $VERSION ;;
       -S|--seeds) echo $SEED_DEST ;;
-      -h|--help|help) usage | less ;;
+      -h|--help|help)
+        usage $* | less
+        ;;
       -v|--verbose) 
         VERBOSE=1
         FLAGS="$FLAGS --verbose"
