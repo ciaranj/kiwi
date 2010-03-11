@@ -1,0 +1,21 @@
+  
+  Usage:
+  
+    kiwi publish <name> <version>
+    
+  Description:
+  
+    Pushes the tarball named "<version>.seed" to
+    the kiwi server. In order to do so you must
+    be the owner of the seed.
+    
+  Examples:
+    
+    From within the root directory of your project:
+    
+      $ kiwi publish haml 1.2.0
+    
+  See Also:
+  
+    register, build, publish
+  

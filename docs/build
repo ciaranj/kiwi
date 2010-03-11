@@ -1,0 +1,23 @@
+  
+  Usage:
+  
+    kiwi build <version>
+    
+  Description:
+  
+    Builds tarball named "<version>.seed" within
+    the current directory. This tarball contains
+    the contents of this directory, so be careful
+    to ensure that you are in fact in the correct
+    directory.
+    
+  Examples:
+    
+    From within the root directory of your project:
+    
+      $ kiwi build 1.2.0
+    
+  See Also:
+  
+    register, build, publish
+  
