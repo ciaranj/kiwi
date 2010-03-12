@@ -8,6 +8,14 @@ describe Seed do
     @oo.versions.create :number => '1.1.0', :description => 'Class implementation' 
   end
   
+  describe "Version" do
+    it "should allow large descriptions" do
+      seed = @user.seeds.create :name => 'sass'
+      version = seed.versions.create :number => '1.0.0', :description => '*' * 255
+      version.should be_valid
+    end
+  end
+  
   describe "#path" do
     it "should return a path to the seed's directory" do
       @oo.path.should include('server/seeds/oo')

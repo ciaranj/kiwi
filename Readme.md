@@ -1,7 +1,12 @@
 
-# Kiwi
+# Kiwi - Node.js Package Management
 
-  JavaScript package management system for node.js
+  JavaScript package management system for **node.js**
+  
+## About
+
+Kiwi development is sponsored by [Vision Media](http://vision-media.ca) and hosting
+is sponsored by [Slicehost](http://slicehost.com).
   
 ## Features
 
@@ -31,6 +36,20 @@
   * Multiple environments
     - Use one or more environments to manage your seeds
   * Not dependant on GIT (like most other proposed node package managers)
+  
+## Kiwi Vs Others
+
+Other node package management systems utilize absolute urls
+in order to fetch their tarballs, below is an example of
+both **kiwi** and **npm** installing the same library.
+
+kiwi:
+
+    $ kiwi install haml
+    
+npm:
+    
+    $ npm install http://github.com/creationix/haml-js/tarball/0.1.2
   
 ## Installation
 

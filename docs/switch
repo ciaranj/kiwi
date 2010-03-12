@@ -1,0 +1,25 @@
+  
+  Usage:
+  
+    kiwi switch <env>
+    
+  Description:
+  
+    Switches to the given <env>, creating it when it 
+    does not exist. Kiwi allows multiple environments
+    which may have different seeds installed. 
+    
+  Examples:
+    
+    Create and switch to the "test" environment:
+    
+      $ kiwi switch test
+    
+    Switch back to the "default" environment:
+    
+      $ kiwi switch test
+  
+  See Also:
+  
+    env, envs
+

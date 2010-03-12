@@ -1,0 +1,24 @@
+  
+  Usage:
+  
+    kiwi release <name> <version>
+    
+  Description:
+  
+    Releases seed <name> and <version> to the kiwi
+    server. In order to do so you must be the owner
+    of this seed.
+    
+    Essentially this is a shortcut for both building
+    then publishing your seed.
+    
+  Examples:
+    
+    From within the root directory of your project:
+    
+      $ kiwi release haml 1.2.0
+    
+  See Also:
+  
+    register, build, publish
+  
