@@ -23,7 +23,7 @@ get '/search/?' do
   Seed.all.map do |seed|
     next if name and not seed.name.include? name
     version = seed.current_version
-    '%15s : %s - %s (%d)' % [seed.name, version.number, version.description, version.downloads]
+    '%15s : %s - %s (%d)' % [seed.name, version.number, version.description, seed.downloads]
   end.compact.join("\n") + "\n"
 end
 
