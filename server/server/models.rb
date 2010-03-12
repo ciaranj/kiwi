@@ -90,7 +90,7 @@ class Seed
   #++
   
   property :id,          Serial
-  property :name,        String,   :index => true, :required => true, :format => /\A\w+\z/
+  property :name,        String,   :index => true, :required => true, :format => /\A[\w-]+\z/
   property :created_at,  DateTime, :index => true
   property :updated_at,  DateTime, :index => true
   
