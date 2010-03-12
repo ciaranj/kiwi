@@ -26,5 +26,7 @@ install: bin/kiwi
 	
 uninstall: $(DEST)/kiwi
 	rm $(DEST)/kiwi
+	rm $(LIB_DEST)/kiwi.js
+	rm -fr $(DOC_DEST)
 	
 .PHONY: install uninstall server-start server-stop test test-server
