@@ -20,7 +20,7 @@ end
 
 get '/search/?' do
   name = params[:name]
-  Seed.all.map do |seed|
+  Seed.all(:order => [:name.asc]).map do |seed|
     next if name and not seed.name.include? name
     version = seed.current_version
     '%15s : %s - %s (%d)' % [seed.name, version.number, version.description, seed.downloads]
