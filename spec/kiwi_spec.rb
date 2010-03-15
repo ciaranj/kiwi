@@ -15,7 +15,7 @@ kiwi('switch test')
 
 describe "Kiwi" do
   after :each do
-    `rm -fr ~/.kiwi/test ~/.kiwi/current ~/.kiwi/.auth`  
+    `rm -fr ~/.kiwi/test ~/.kiwi/current`  
   end
   
   describe "--version" do
