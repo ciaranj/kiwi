@@ -131,7 +131,7 @@ class Seed
   # Return array of version numbers.
   
   def version_numbers
-    versions.map { |version| version.number }
+    versions.all(:order => [:number.desc]).map { |version| version.number }
   end
   
   ##

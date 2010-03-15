@@ -6,6 +6,9 @@ describe Seed do
     @oo = @user.seeds.create :name => 'oo'
     @oo.versions.create :number => '1.2.0', :description => 'Class implementation for JavaScript'  
     @oo.versions.create :number => '1.1.0', :description => 'Class implementation' 
+    @ext = @user.seeds.create :name => 'ext'
+    @ext.versions.create :number => '0.2.2', :description => 'Extensions'
+    @ext.versions.create :number => '0.2.3', :description => 'Extensions'
   end
   
   describe "Version" do
@@ -71,6 +74,7 @@ describe Seed do
         @oo.resolve('>= 1.1.0').should == '1.2.0'
         @oo.resolve('>= 1.1.1').should == '1.2.0'
         @oo.resolve('>= 9.9.9').should be_nil
+        @ext.resolve('>= 0.2.2').should == '0.2.3'
       end
     end
     
@@ -80,6 +84,7 @@ describe Seed do
         @oo.resolve('>~ 1.1.0').should == '1.2.0'
         @oo.resolve('>~ 1.2.0').should == '1.2.0'
         @oo.resolve('>~ 9.9.9').should be_nil
+        @ext.resolve('>~ 0.2.2').should == '0.2.3'
       end
     end
     
