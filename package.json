@@ -1,0 +1,14 @@
+{
+  "name": "Kiwi",
+  "description": "Package management system",
+  "version": "0.1.0",
+  "keywords": ["package", "manager", "kiwi"],
+  "directories": {
+    "lib": "lib",
+    "bin": "bin"
+  },
+  "scripts": {
+    "install": "sudo make install"
+  },
+  "engines": { "node": ">= 0.0.1" }
+}
