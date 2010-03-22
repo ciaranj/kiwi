@@ -2,7 +2,7 @@
 SPEC = spec
 DEST = /usr/local/bin
 DOC_DEST = /usr/local/etc/kiwi
-LIB_DEST = /usr/local/lib/node/libraries
+LIB_DEST = ~/.node_libraries
 
 all: test
 
