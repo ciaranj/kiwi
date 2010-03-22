@@ -1,4 +1,12 @@
 
+0.2.0 / 2010-03-22
+==================
+
+  * Added package.json
+  * Added `$ kiwi stats`
+  * Added subcommand command help via `$ kiwi help COMMAND`. Closes #52
+  * Fixed; Installing kiwi to ~/.node_libraries due to recent node change
+
 0.1.0 / 2010-03-11
 ==================
 

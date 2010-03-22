@@ -1,4 +1,7 @@
 
+##
+# Output kiwi statistics.
+
 get '/stats' do
   format = '%15s : %d'
   [ format % ['users', User.count],
