@@ -1,4 +1,13 @@
 
+get '/stats' do
+  format = '%15s : %d'
+  [ format % ['users', User.count],
+    format % ['downloads', Version.all.map{ |v| v.downloads }.inject(0) { |sum, n| sum + n }],
+    format % ['seeds', Seed.count],
+    format % ['seed versions', Version.count]
+  ].join('\n')
+end
+
 ##
 # Register user via HTTP basic auth credentials.
 
