@@ -5,7 +5,7 @@ get '/stats' do
     format % ['downloads', Version.all.map{ |v| v.downloads }.inject(0) { |sum, n| sum + n }],
     format % ['seeds', Seed.count],
     format % ['seed versions', Version.count]
-  ].join("\n")
+  ].join("\n") + "\n"
 end
 
 ##
