@@ -387,6 +387,14 @@ output_username() {
 }
 
 #
+# Output stats.
+# 
+
+output_stats() {
+  curl -s http://$SERVER_ADDR:$SERVER_PORT/stats
+}
+
+#
 # Attempt to register the given <user> with <password>.
 # 
 #   - Saves credentials to $AUTH_DEST
@@ -543,6 +551,9 @@ parse() {
         ;;
       repl)
         repl
+        ;;
+      stats)
+        output_stats
         ;;
       list|ls)
         list $*
