@@ -20,6 +20,7 @@ server-stop:
 	
 install: bin/kiwi
 	install bin/kiwi $(DEST)/kiwi
+	mkdir -p $(LIB_DEST)
 	install lib/kiwi.js $(LIB_DEST)/kiwi.js
 	mkdir -p $(DOC_DEST)
 	cp -fr docs $(DOC_DEST)
