@@ -20,11 +20,11 @@
   
     The following operators are supported for matching versions:
     
-      n/a               Equal to
-      =                 Equal to
-      >                 Greater than
-      >=                Greater than or equal to
-      >~                Greater than or equal to with compatibility (major must match)
+      n/a  Equal to
+      =    Equal to
+      >    Greater than
+      >=   Greater than or equal to
+      >~   Greater than or equal to with compatibility (major must match)
 
   Aliases:
   
