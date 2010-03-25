@@ -1,4 +1,11 @@
 
+0.2.2 / 2010-03-25
+==================
+
+  * Fixed; actually removing tempfile. Closes #134
+    This appears to fix the bug with releasing when
+    --verbose is NOT used, for whatever reason :)
+  
 0.2.1 / 2010-03-25
 ==================
 
