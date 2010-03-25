@@ -2,7 +2,7 @@
 0.2.1 / 2010-03-25
 ==================
 
-  * Localize mktemp file, and added Xs to template. Closes #132
+  * Fixed mktemp template. Closes #132
 
 0.2.0 / 2010-03-22
 ==================

@@ -105,6 +105,7 @@ pack() {
   log pack "* -> $1.seed"
   tar --exclude-from $tmpfile -czf $1.seed .
   log remove $tmpfile
+  rm -f $tmpfile
 }
 
 #

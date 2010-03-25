@@ -15,7 +15,7 @@ kiwi('switch test')
 
 describe "Kiwi" do
   after :each do
-    `rm -fr ~/.kiwi/test ~/.kiwi/current`  
+    `rm -fr ~/.kiwi/test ~/.kiwi/current ~/.kiwi/.auth`
   end
   
   describe "--version" do
@@ -56,8 +56,8 @@ describe "Kiwi" do
       kiwi('whoami').should include('If you have previously registered simply run:')
     end
     
-    it "should output username when registered" do
-      kiwi('register foo bar')
+    it "should output message when successfully registered" do
+      kiwi('register foo bar').should include('registration successful')
       kiwi('whoami').should include('foo')
       kiwi('whoami').should_not include('bar')
     end
@@ -231,7 +231,7 @@ describe "Kiwi" do
       
       it "should work when published via kiwi" do
         in_fixture :valid do
-          kiwi('register foo bar')
+          kiwi('register some person').should include('registration successful')
           kiwi('release foo 0.1.1').should include('Successfully')
           kiwi('install foo 0.1.1')
           File.directory?(File.expand_path('~/.kiwi/current/seeds/foo/0.1.1')).should be_true

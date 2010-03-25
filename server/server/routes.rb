@@ -69,7 +69,7 @@ post '/:name/?' do
   require_authentication
   state = :published
   name, tarball, info = params[:name], params[:seed], params[:info]
-
+  
   # Verify ownership
   
   if seed = Seed.first(:name => name)
