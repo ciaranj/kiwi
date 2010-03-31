@@ -19,6 +19,7 @@ server-stop:
 	@cat server/server.pid | xargs kill -TERM
 	
 install: bin/kiwi
+	mkdir -p $(DEST)
 	install bin/kiwi $(DEST)/kiwi
 	mkdir -p $(LIB_DEST)
 	install lib/kiwi.js $(LIB_DEST)/kiwi.js
