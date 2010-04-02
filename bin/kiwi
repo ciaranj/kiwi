@@ -96,9 +96,9 @@ pack() {
   require_seed_info_file seed.yml
   local tmpfile=$(mktemp kiwi-ignore.XXXX)
   log create $tmpfile
-  if [[ -f .ignore ]]; then
-    log ignore globs in .ignore
-    ls -AR | egrep --file .ignore > $tmpfile
+  if [[ -f .gitignore ]]; then
+    log ignore globs in .gitignore
+    ls -AR | egrep --file .gitignore > $tmpfile
   fi
   log ignore common scm directories
   echo -e ".git\n.svn\n.cvs" >> $tmpfile

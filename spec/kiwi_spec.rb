@@ -311,12 +311,13 @@ describe "Kiwi" do
           end
         end
         
-        it "should respect .ignore" do
+        it "should respect .gitignore" do
           in_fixture :valid do
             kiwi('build 0.1.1')
             contents = `tar --list -zf 0.1.1.seed`
-            contents.should include('.foo')
-            contents.should include('.ignore')
+            contents.should include('install.js')
+            contents.should include('lib')
+            contents.should include('lib/haml.js')
             contents.should_not include('foo.log')
             contents.should_not include('pkg')
             contents.should_not include('pkg/blah.js')
