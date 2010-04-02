@@ -1,4 +1,10 @@
 
+0.2.3 / 2010-04-02
+==================
+
+  * Changed; Always output as --verbose. Closes #130
+  * Changed; Packaging respects .gitignore instead of .ignore
+
 0.2.2 / 2010-03-25
 ==================
 
