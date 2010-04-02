@@ -40,14 +40,14 @@ abort() {
 }
 
 #
-# Log the given <msg ...> when $VERBOSE is true.
+# Log the given <msg ...>.
 # 
 # <msg ...>
 #
 
 log() {
   local key=$1; shift
-  [[ $VERBOSE ]] && printf "%10s : %s\n" $key "$*"
+  printf "%10s : %s\n" $key "$*"
 }
 
 #
@@ -170,11 +170,7 @@ build() {
     log cd $dir
     cd $dir
     log build $command
-    if [[ $VERBOSE ]]; then
-      eval $command
-    else
-      eval "$command > /dev/null"
-    fi
+    eval "$command > /dev/null"
   fi
 }
 
@@ -497,10 +493,6 @@ parse() {
       -S|--seeds) echo $SEED_DEST ;;
       -h|--help|help)
         usage $*
-        ;;
-      -v|--verbose) 
-        VERBOSE=1
-        FLAGS="$FLAGS --verbose"
         ;;
       --*) 
         abort "invalid option \`$arg'. Use --help for more information"

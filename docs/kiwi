@@ -5,7 +5,6 @@
     
   Options:
     
-    -v, --verbose     Verbose output
     -V, --version     Current version triplet
     -S, --seeds       Output seed directory
     -h, --help        Help information
