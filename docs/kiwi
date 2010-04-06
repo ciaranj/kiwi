@@ -24,5 +24,6 @@
     whoami                       Output currently registered user name
     list                         Lists installed seeds and their associated versions
     envs                         List environments available to kiwi
+    open <name>                  Open seed <name> directory in $EDITOR
     help [command]               Output this help or specific [command] help
   
