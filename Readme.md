@@ -53,7 +53,14 @@ npm:
   
 ## Installation
 
+Download kiwi or clone the repo and run:
+
     $ [sudo] make install
+    
+Or if you have [homebrew](http://github.com/mxcl/homebrew) installed
+you can simply run:
+
+    $ [sudo] brew install kiwi
 
 ## Uninstallation
 
