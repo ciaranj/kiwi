@@ -1,4 +1,11 @@
 
+0.2.4 / 2010-04-06
+==================
+
+  * Added docs for `kiwi open <name>`
+  * Notice: Kiwi is now installable via homebrew `$ brew install kiwi`
+  * Fixed; No longer redirecting tar stderr to /dev/null
+
 0.2.3 / 2010-04-02
 ==================
 
