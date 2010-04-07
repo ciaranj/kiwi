@@ -93,7 +93,7 @@ Then run it with node:
 
 Specs are run using Ruby RSpec's `spec` executable.
   
-    $ make server-start && make test && make server-stop
+    $ make test
     
 ## Dependencies
 

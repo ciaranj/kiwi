@@ -6,12 +6,14 @@ LIB_DEST = ~/.node_libraries
 
 all: test
 
-test: bin/kiwi
+test: server-stop server-start test-bin
+
+test-bin: bin/kiwi
 	@$(SPEC) spec --color
 	
 test-server:
 	@cd server && $(SPEC) spec -r spec/spec_helper --color
-	
+
 server-start:
 	@thin -e test -c server --rackup config.ru start -p 8888 -d -P server.pid -l server.log
 	
@@ -31,4 +33,4 @@ uninstall: $(DEST)/kiwi
 	rm $(LIB_DEST)/kiwi.js
 	rm -fr $(DOC_DEST)
 	
-.PHONY: install uninstall server-start server-stop test test-server
+.PHONY: install uninstall server-start server-stop test test-server test-bin
