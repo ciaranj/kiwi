@@ -57,7 +57,11 @@ end
 
 get '/seeds/:name/info' do |name|
   require_seed name
-  @seed.current_version.info
+  if @seed.current_version.info.empty?
+    'Not available'
+  else
+    @seed.current_version.info
+  end
 end
 
 ##
@@ -102,12 +106,13 @@ post '/:name/?' do |name|
   
   # Update version data
   
-  info = YAML.load_file SEEDS + "/#{name}/#{version}.yml"
+  file = SEEDS + "/#{name}/#{version}.yml"
+  info = YAML.load_file file
   
   if seed.versions.first :number => version
     state = :replaced
   else
-    seed.versions.create :number => version, :description => info['description']
+    seed.versions.create :number => version, :description => info['description'], :info => File.read(file)
   end
   
   "Successfully #{state} #{name} #{version}.\n"
