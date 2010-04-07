@@ -118,7 +118,7 @@ unpack() {
   local seed=$1
   local dir=${seed%/*}
   log unpack $seed
-  tar -xzf $seed -C $dir 2> /dev/null
+  tar -xzf $seed -C $dir
   if [[ $? -ne 0 ]]; then
     log remove $dir
     rm -fr $dir
