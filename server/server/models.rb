@@ -54,6 +54,7 @@ class Version
   property :id,          Serial
   property :number,      String,   :index => true, :required => true, :format => /\A\d+\.\d+\.\d+\z/
   property :description, String,   :index => true, :length => 0..255
+  property :info,        Text
   property :downloads,   Integer,  :index => true, :default => 0
   property :created_at,  DateTime, :index => true
   property :updated_at,  DateTime, :index => true

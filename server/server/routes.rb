@@ -53,6 +53,14 @@ get '/:name/resolve/?' do
 end
 
 ##
+# Transfer the latest yml info for _name_.
+
+get '/seeds/:name/info' do |name|
+  require_seed name
+  @seed.current_version.info
+end
+
+##
 # Transfer _version_ of the requested seed _name_.
 
 get '/seeds/:name/:version.seed' do
