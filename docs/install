@@ -6,7 +6,8 @@
   Description:
   
     Installs the latest version of <seed>, or attempts
-    to install the given [version].
+    to install the given [version]. When <name> is a file
+    it must be a flat list of seeds to install.
     
   Examples:
     
@@ -25,6 +26,16 @@
       >    Greater than
       >=   Greater than or equal to
       >~   Greater than or equal to with compatibility (major must match)
+    
+    Installation from a flat file. For example the file "seeds" contains:
+        
+      - haml >= 0.0.1
+      - sass >= 0.5.0
+      - express >~ 0.0.1
+    
+    After which all three seeds can be installed by executing:
+    
+      $ kiwi install seeds
 
   Aliases:
   
