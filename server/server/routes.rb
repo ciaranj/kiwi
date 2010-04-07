@@ -42,8 +42,8 @@ end
 ##
 # Resolve the given :version for seed _name_.
 
-get '/:name/resolve/?' do
-  require_seed params[:name]
+get '/:name/resolve/?' do |name|
+  require_seed name
   version = params[:version]
   if version and not version.empty?
     @seed.resolve(version) or not_found 'seed version does not exist.'
@@ -63,8 +63,8 @@ end
 ##
 # Transfer _version_ of the requested seed _name_.
 
-get '/seeds/:name/:version.seed' do
-  require_seed params[:name], params[:version]
+get '/seeds/:name/:version.seed' do |name, version|
+  require_seed name, version
   content_type :tar
   @version.update :downloads => @version.downloads + 1
   send_file @version.path
@@ -73,10 +73,10 @@ end
 ##
 # Publish seed _name_. Requires _seed_ archive and _info_ file.
 
-post '/:name/?' do
+post '/:name/?' do |name|
   require_authentication
   state = :published
-  name, tarball, info = params[:name], params[:seed], params[:info]
+  tarball, info = params[:seed], params[:info]
   
   # Verify ownership
   
