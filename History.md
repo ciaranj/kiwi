@@ -1,4 +1,9 @@
 
+0.2.5 / 2010-04-14
+==================
+
+  * Fixed issue preventing dependencies with hyphens. Closes #146
+
 0.2.4 / 2010-04-06
 ==================
 

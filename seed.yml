@@ -1,5 +1,5 @@
 ---
   name: Kiwi
   description: Package management system
-  version: 0.2.4
+  version: 0.2.5
   build: sudo make install
