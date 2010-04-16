@@ -6,6 +6,13 @@
     %meta{ :name => 'description', :content => 'The NodeJs Package Manager' }
     %style(type='text/css')
       :sass
+        =inset
+          :border 1px solid #eee
+          :-webkit-box-shadow 1px 1px 1px #fff
+          :-moz-box-shadow 1px 1px 1px rgba(0,0,0,0.1)
+          :-webkit-border-radius 5px
+          :-moz-border-radius 5px
+          :background #fff
         html
           :background #fff
         body
@@ -28,6 +35,12 @@
           :text-align right
           :font-size 11px
           :clear both
+        #ribbon
+          :position absolute
+          :top 0
+          :right 0
+          img
+            :border none
         #logo
           :font-size 60px
           :-webkit-text-stroke 0.5px #fff
@@ -48,24 +61,20 @@
           :font-size 16px
         pre
           :padding 5px 10px
-          :border 1px solid #eee
-          :-webkit-box-shadow 1px 1px 1px rgba(0,0,0,0.1)
-          :-moz-box-shadow 1px 1px 1px rgba(0,0,0,0.1)
-          :-webkit-border-radius 5px
-          :-moz-border-radius 5px
-          :background #fff
+          +inset
         code
           :font-family "Courier", monospace
           :background #fff
         table
-          :border-collapse collapse
           :width 100%
+          :border-collapse collapse
+          +inset
           tr
             :border-bottom 1px solid #eee
           tr:last-child
             :border-bottom none
           tr:nth-child(even)
-            :background #fff
+            :background #f8f8f8
           td
             :padding 5px 10px
             &:nth-child(2)
@@ -81,3 +90,5 @@
           Copyright &copy; 2010 TJ Holowaychuk. All rights reserved. Hosting sponsored by 
           %a(href='http://slicehost.com') Slicehost
           \.
+    %a#ribbon(href='http://github.com/visionmedia/kiwi')
+      %img{ :alt => 'fork me on Github', :src => 'http://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png' }
