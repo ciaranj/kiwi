@@ -1,5 +1,14 @@
 
 ##
+# Front page.
+
+get '/' do
+  haml :front
+end
+
+# API
+
+##
 # Output kiwi statistics.
 
 get '/stats' do

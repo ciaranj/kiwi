@@ -1,0 +1,44 @@
+%h1
+  %a{ :href => 'http://nodejs.org' } NodeJS
+  Package Manager
+
+%p
+  Kiwi is a package management system
+  writing for installing and managing
+  "seeds".
+
+%h2 Installation
+
+%p
+  Download the latest kiwi
+  %a{ :href => 'http://github.com/visionmedia/kiwi/downloads' } tarball
+  or clone the
+  %a{ :href => 'http://github.com/visionmedia/kiwi' } git repository
+  and run the following command:
+
+%pre
+  %code $ [sudo] make install
+
+%p
+  Installation via 
+  %a{ :href => 'http://github.com/mxcl/homebrew' } homebrew
+  \:
+
+%pre
+  %code $ [sudo] brew install kiwi
+
+%h2 Get Started
+
+%p Install your first seed, the "haml" template engine by running the following command:
+
+%pre
+  %code $ kiwi install haml
+  
+%p For more information you can view kiwi's command-line help at the global or command-level:
+
+%pre
+  %code $ kiwi help
+
+%pre
+  %code $ kiwi help install
+

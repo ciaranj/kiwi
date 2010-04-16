@@ -1,5 +1,6 @@
 
 require 'rubygems'
+require 'haml'
 require 'dm-core'
 require 'dm-validations'
 require 'dm-aggregates'
@@ -9,6 +10,10 @@ require 'sinatra'
 require 'fileutils'
 require 'digest/md5'
 require 'server/models'
+
+configure do
+  set :views, File.dirname(__FILE__) + '/../views'
+end
 
 configure :test do
   set :seed_path, File.dirname(__FILE__) + '/../seeds'
