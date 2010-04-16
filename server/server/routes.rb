@@ -3,7 +3,12 @@
 # Front page.
 
 get '/' do
-  haml :front
+  haml :front, :locals => {
+    :user_count => User.count,
+    :download_count => Version.sum(:downloads),
+    :seed_count => Seed.count,
+    :seed_version_count => Version.count
+  }
 end
 
 # API
@@ -14,7 +19,7 @@ end
 get '/stats' do
   format = '%15s : %d'
   [ format % ['users', User.count],
-    format % ['downloads', Version.all.map{ |v| v.downloads }.inject(0) { |sum, n| sum + n }],
+    format % ['downloads', Version.sum(:downloads)],
     format % ['seeds', Seed.count],
     format % ['seed versions', Version.count]
   ].join("\n") + "\n"

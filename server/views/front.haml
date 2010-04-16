@@ -3,7 +3,7 @@
   Package Manager
 
 .block-2
-  %h2 Installation
+  %h2 Getting Started
   
   %p
     Download the latest kiwi
@@ -22,21 +22,36 @@
   
   %pre
     %code $ [sudo] brew install kiwi
-
-.block-2
-  %h2 Get Started
-  
-  %p Install your first "seed", the haml template engine by running the following command:
-  
+    
+  %p
+    Installing a 
+    %em seed
+    \:
   %pre
     %code $ kiwi install haml
-    
-  %p For more information you can view kiwi's command-line help at the global or command-level:
   
+  %p
+    For more information use the
+    %em help
+    command:
   %pre
     %code $ kiwi help
+    
+
+.block-2
+  %h2 Statistics
   
-  %pre
-    %code $ kiwi help install
-  
+  %table#stats
+    %tr
+      %td Users
+      %td= user_count
+    %tr
+      %td Seeds Downloaded
+      %td= download_count
+    %tr
+      %td Unique Seeds
+      %td= seed_count
+    %tr
+      %td Seed Versions
+      %td= seed_version_count
   
