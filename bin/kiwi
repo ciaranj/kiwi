@@ -234,21 +234,32 @@ remove_empty_seed_directories() {
 #   <name> [op] <version>\n
 #   ...
 #
+# When [version].seed is passed, the seed will be
+# installed from the local build.
+#
 # Otherwise:
 # 
 #   - Fetches latest version when [version] absent
 #   - Downloads seed tarball
 #   - Unpacks the tarball
 # 
-# <name|file> [version]
+# <name|file> [version[.seed]]
 #
 
 install() {
   local name=$1; shift
   local version=$*
   log install $name $version
-  if [[ -f $name ]]; then
-    log install from file
+  if [[ $version =~ seed\n?$ ]]; then
+    log install local
+    seed=$SEED_DEST/$name/${version%*.seed}/$name.seed
+    mkdir -p ${seed%/*}
+    cp $version $seed
+    unpack $seed
+    install_dependencies ${seed%/*}/seed.yml
+    build ${seed%/*}
+  elif [[ -f $name ]]; then
+    log install list
     cat $name | while read line; do
       [[ $line =~ ^\s*- ]] && kiwi $FLAGS install $(normalize_version $line)
       echo

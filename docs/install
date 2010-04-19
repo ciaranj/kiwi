@@ -7,7 +7,9 @@
   
     Installs the latest version of <seed>, or attempts
     to install the given [version]. When <name> is a file
-    it must be a flat list of seeds to install.
+    it must be a flat list of seeds to install. When [version]
+    is the filename of a locally built seed, then it will be installed,
+    which is useful for testing a built before releasing it.
     
   Examples:
     
@@ -36,6 +38,11 @@
     After which all three seeds can be installed by executing:
     
       $ kiwi install seeds
+    
+    Build and install the seed before releasing:
+    
+      $ kiwi build 0.4.0
+      $ kiwi install sass 0.4.0.seed
 
   Aliases:
   
