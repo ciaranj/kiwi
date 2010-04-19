@@ -1,4 +1,9 @@
 
+0.3.0 / 2010-04-19
+==================
+
+  * Added support for installing locally built seeds. Closes #140
+
 0.2.5 / 2010-04-14
 ==================
 
