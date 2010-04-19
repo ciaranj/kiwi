@@ -252,9 +252,11 @@ install() {
   log install $name $version
   if [[ $version =~ seed\n?$ ]]; then
     log install local
-    seed=$SEED_DEST/$name/${version%*.seed}/$name.seed
+    local file=$version
+    version=$(basename -s '.seed' $file)
+    seed=$SEED_DEST/$name/$version/$name.seed
     mkdir -p ${seed%/*}
-    cp $version $seed
+    cp $file $seed
     unpack $seed
     install_dependencies ${seed%/*}/seed.yml
     build ${seed%/*}
