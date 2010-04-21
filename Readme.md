@@ -113,9 +113,9 @@ Currently tested with:
   * curl 7.16.3
   * egrep (GNU grep) 2.5.1
   
-## Example REPL (interactive console) Session
+## More Information
 
-  [http://gist.github.com/283360](http://gist.github.com/283360)
+  * [Overview Blog Article](http://tjholowaychuk.com/post/537372859/nodejs-package-manager)
   
 ## License 
 
