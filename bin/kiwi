@@ -268,7 +268,7 @@ install() {
     done
   else
     version=$(curl -s $SERVER/$name/resolve?version=$(urlencode $version))
-    log resolve version $version
+    log version $version
     if [[ -d $SEED_DEST/$name/$version ]]; then
       log install already installed
     else
