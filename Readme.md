@@ -18,6 +18,7 @@ is sponsored by [Slicehost](http://slicehost.com).
     - Ignores globs in .ignore when packing
   * Distributed packages as "seeds"
     - installation (including node and kiwi itself)
+    - installation of local seeds
     - uninstallation
     - updating
     - publishing to the kiwi seed server (similar to gemcutter for RubyGems)
