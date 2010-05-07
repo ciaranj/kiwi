@@ -13,6 +13,7 @@ KIWI_DEST=~/.kiwi
 AUTH_DEST=$KIWI_DEST/.auth
 SEED_DEST=$KIWI_DEST/current/seeds
 DOCS=/usr/local/etc/kiwi/docs
+KIWI_BIN=$0
 
 #
 # Output global or [command] usage, piped into less.
@@ -205,7 +206,7 @@ install_dependencies() {
     [[ $line =~ dependencies: ]] && deps=1
     [[ $deps -ne 0 && $line =~ ^\s*- ]] && deps=2
     [[ $deps -eq 2 && $line =~ ^\s*.+: ]] && deps=0
-    [[ $deps -eq 2 ]] && kiwi $FLAGS install $(normalize_version $line)
+    [[ $deps -eq 2 ]] && $KIWI_BIN $FLAGS install $(normalize_version $line)
   done
 }
 
@@ -263,7 +264,7 @@ install() {
   elif [[ -f $name ]]; then
     log install list
     cat $name | while read line; do
-      [[ $line =~ ^\s*- ]] && kiwi $FLAGS install $(normalize_version $line)
+      [[ $line =~ ^\s*- ]] && $KIWI_BIN $FLAGS install $(normalize_version $line)
       echo
     done
   else
@@ -583,9 +584,9 @@ setup
 
 if [[ $# -eq 0 ]]; then
   if [[ $(which rlwrap) ]]; then
-    rlwrap kiwi repl
+    rlwrap $KIWI_BIN repl
   else
-    kiwi repl
+    $KIWI_BIN repl
   fi
 else
   parse $*  
